@@ -5,6 +5,6 @@
     android:theme="@android:style/Theme.Translucent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="winterei.se.rtraffic.DisplayMessageActivity">
+    tools:context="se.winterei.rtraffic.DisplayMessageActivity">
 
 </android.support.constraint.ConstraintLayout>
