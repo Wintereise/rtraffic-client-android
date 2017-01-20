@@ -9,7 +9,7 @@
 
     <!-- Sign-in status messages for G-sign in-->
 
-    <string name="title_text">Log-in with Google</string>
+    <string name="title_text">Realtime Traffic Management</string>
 
     <string name="signed_in_fmt">Signed in as: %s</string>
     <string name="signed_in">Signed in</string>
