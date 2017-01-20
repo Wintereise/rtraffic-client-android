@@ -1,10 +1,10 @@
 <resources>
-    <string name="app_name">rtraffic</string>
+    <string name="app_name">rTraffic</string>
 
     <string name="edit_message">Enter a message</string>
     <string name="button_send">Send</string>
-    <string name="action_favorite">Favorite</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_refresh">Reload</string>
+    <string name="action_search">Search</string>
     <string name="title_activity_maps">Map</string>
 
     <!-- Sign-in status messages for G-sign in-->

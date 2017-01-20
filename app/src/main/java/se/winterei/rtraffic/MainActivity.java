@@ -1,6 +1,7 @@
 package se.winterei.rtraffic;
 
 import android.content.Intent;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -13,13 +14,23 @@ public class MainActivity extends AppCompatActivity
 {
     public final static String EXTRA_MESSAGE = "se.winterei.rtraffic.MESSAGE";
 
+    private void setupToolbar ()
+    {
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar_generic);
+        setSupportActionBar(myToolbar);
+
+        final ActionBar ab = getSupportActionBar();
+        ab.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
+        ab.setDisplayHomeAsUpEnabled(true);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar_generic);
-        setSupportActionBar(myToolbar);
+
+        setupToolbar();
     }
 
     public void sendMessage (View view)
@@ -47,11 +58,11 @@ public class MainActivity extends AppCompatActivity
     {
         switch (item.getItemId())
         {
-            case R.id.action_settings:
+            case R.id.action_search:
                 // User chose the "Settings" item, show the app settings UI...
                 return true;
 
-            case R.id.action_favorite:
+            case R.id.action_refresh:
                 // User chose the "Favorite" action, mark the current item
                 // as a favorite...
                 return true;
