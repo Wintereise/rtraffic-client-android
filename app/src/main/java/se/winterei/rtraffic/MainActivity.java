@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements
         (
                 new SearchView.OnQueryTextListener ()
                 {
+                    @Override
                     public boolean onQueryTextSubmit (String query)
                     {
                         return false;
