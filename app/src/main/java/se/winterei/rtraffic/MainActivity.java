@@ -33,7 +33,8 @@ public class MainActivity extends AppCompatActivity implements
     {
         MenuItem myActionMenuItem = menu.findItem(R.id.action_search);
         final SearchView searchView = (SearchView) myActionMenuItem.getActionView();
-        searchView.setOnQueryTextListener(
+        searchView.setOnQueryTextListener
+        (
                 new SearchView.OnQueryTextListener ()
                 {
                     public boolean onQueryTextSubmit (String query)
