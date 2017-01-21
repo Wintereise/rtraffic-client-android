@@ -70,6 +70,8 @@ public class MainActivity extends AppCompatActivity implements
     {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_titlebar, menu);
+        setupSearchBar(menu);
+
         return true;
     }
 
