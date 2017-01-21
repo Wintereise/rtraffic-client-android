@@ -6,6 +6,7 @@
         android:icon="@drawable/ic_search_white_48dp"
         android:orderInCategory="101"
         android:title="@string/action_search"
+        app:actionViewClass="android.support.v7.widget.SearchView"
         app:showAsAction="always"/>
 
     <item
@@ -14,7 +15,5 @@
         android:orderInCategory="102"
         android:title="@string/action_refresh"
         app:showAsAction="always"/>
-
-
 
 </menu>
