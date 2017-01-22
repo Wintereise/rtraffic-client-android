@@ -29,7 +29,7 @@ public class GSignInActivity extends AppCompatActivity implements
     private TextView mStatusTextView;
     private ProgressDialog mProgressDialog;
 
-    private final RTraffic appContext = (RTraffic) getApplicationContext();
+    private RTraffic appContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -39,6 +39,8 @@ public class GSignInActivity extends AppCompatActivity implements
 
         // Views
         mStatusTextView = (TextView) findViewById(R.id.status);
+
+        appContext = (RTraffic) getApplicationContext();
 
         // Button listeners
         findViewById(R.id.sign_in_button).setOnClickListener(this);

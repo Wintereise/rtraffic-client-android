@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity implements
         OnMapReadyCallback
 {
     private GoogleMap mMap;
-    private RTraffic appContext = (RTraffic) getApplicationContext();
+    private RTraffic appContext;
 
     DrawerLayout drawerLayout;
 
@@ -71,6 +71,8 @@ public class MainActivity extends AppCompatActivity implements
 
         setupNavigationView();
         setupToolbar();
+
+        appContext = (RTraffic) getApplicationContext();
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
