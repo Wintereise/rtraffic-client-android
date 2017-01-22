@@ -1,5 +1,6 @@
 package se.winterei.rtraffic;
 
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -9,6 +10,8 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -17,7 +20,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MainActivity extends AppCompatActivity implements
-        OnMapReadyCallback
+        OnMapReadyCallback, View.OnClickListener
 {
     private GoogleMap mMap;
     private RTraffic appContext;
@@ -63,6 +66,14 @@ public class MainActivity extends AppCompatActivity implements
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
     }
 
+    private void setupFloatingActionButton ()
+    {
+        FloatingActionButton fab_report = (FloatingActionButton) findViewById(R.id.fab_report);
+        if (fab_report != null)
+            fab_report.setOnClickListener(this);
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -71,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements
 
         setupNavigationView();
         setupToolbar();
+        setupFloatingActionButton();
 
         appContext = (RTraffic) getApplicationContext();
 
@@ -128,7 +140,8 @@ public class MainActivity extends AppCompatActivity implements
      * installed Google Play services and returned to the app.
      */
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(GoogleMap googleMap)
+    {
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
@@ -136,6 +149,15 @@ public class MainActivity extends AppCompatActivity implements
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 
+    }
 
+    @Override
+    public void onClick (View view)
+    {
+        switch (view.getId())
+        {
+            case R.id.fab_report:
+                break;
+        }
     }
 }

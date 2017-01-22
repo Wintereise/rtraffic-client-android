@@ -31,9 +31,26 @@
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context="se.winterei.rtraffic.MainActivity" />
+            tools:context="se.winterei.rtraffic.MainActivity">
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab_report"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_add_white_36dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_gravity="bottom|right"
+                app:fabSize="normal"
+                app:elevation="13dp" />
+
+        </fragment>
+
+
 
     </LinearLayout>
+
+
 
     <android.support.design.widget.NavigationView
         android:id="@+id/navigation"
