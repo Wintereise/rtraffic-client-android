@@ -29,6 +29,8 @@ public class GSignInActivity extends AppCompatActivity implements
     private TextView mStatusTextView;
     private ProgressDialog mProgressDialog;
 
+    private final RTraffic appContext = (RTraffic) getApplicationContext();
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -58,6 +60,7 @@ public class GSignInActivity extends AppCompatActivity implements
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
+        appContext.put("GSignIn", mGoogleApiClient);
         // [END build_client]
 
         // [START customize_button]

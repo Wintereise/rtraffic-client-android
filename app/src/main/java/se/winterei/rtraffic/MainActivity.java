@@ -20,6 +20,8 @@ public class MainActivity extends AppCompatActivity implements
         OnMapReadyCallback
 {
     private GoogleMap mMap;
+    private RTraffic appContext = (RTraffic) getApplicationContext();
+
     DrawerLayout drawerLayout;
 
     private void setupToolbar ()
