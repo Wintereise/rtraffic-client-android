@@ -216,6 +216,7 @@ public class MainActivity extends AppCompatActivity implements
     {
         if(backButtonCount >= 1)
         {
+            backButtonCount = 0;
             Intent intent = new Intent(Intent.ACTION_MAIN);
             intent.addCategory(Intent.CATEGORY_HOME);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
