@@ -20,4 +20,8 @@
     <color name="white">#fafafa</color>
     <color name="white_pressed">#f1f1f1</color>
     <color name="black_semi_transparent">#B2000000</color>
+
+    <color name="PrimaryColorR8">#2196F3</color>
+    <color name="PrimaryDarkColorR8">#1976D2</color>
+
 </resources>
