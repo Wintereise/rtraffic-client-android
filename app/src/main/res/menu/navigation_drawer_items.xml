@@ -6,19 +6,28 @@
     <group android:checkableBehavior="all">
         <item
             android:id="@+id/action_acct"
-            android:title="Account Mgmt."/>
+            android:title="@string/nav_acct_mgmt"
+            android:icon="@drawable/ic_account_box_black_24dp"/>
+
+        <item
+            android:id="@+id/action_exclude_regions"
+            android:title="@string/nav_exclude_regions"
+            android:icon="@drawable/ic_not_interested_black_24dp"/>
 
         <item
             android:id="@+id/action_notif_reg"
-            android:title="Notifications"/>
+            android:title="@string/nav_notif_reg"
+            android:icon="@drawable/ic_explore_black_24dp"/>
 
         <item
             android:id="@+id/action_settings"
-            android:title="Settings"/>
+            android:title="@string/nav_settings"
+            android:icon="@drawable/ic_settings_black_24dp"/>
 
         <item
             android:id="@+id/action_help"
-            android:title="Help"/>
+            android:title="@string/nav_help"
+            android:icon="@drawable/ic_help_black_24dp"/>
     </group>
 
 </menu>

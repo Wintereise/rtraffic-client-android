@@ -218,14 +218,28 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public boolean onNavigationItemSelected (MenuItem menuItem)
     {
+        Intent tmp = null;
         switch (menuItem.getItemId())
         {
             case R.id.action_acct:
-                Intent tmp = new Intent(this, GSignInActivity.class);
+                tmp = new Intent(this, GSignInActivity.class);
                 tmp.putExtra("se.winterei.rtraffic.GSignInActivityFilter", "ok");
-                startActivity(tmp);
+                break;
+            case R.id.action_settings:
+                tmp = new Intent(this, SettingsActivity.class);
+                break;
+            case R.id.action_notif_reg:
+                tmp = new Intent(this, SettingsActivity.class);
+                break;
+            case R.id.action_help:
+                tmp = new Intent(this, SettingsActivity.class);
+                break;
+            case R.id.action_exclude_regions:
+                tmp = new Intent(this, SettingsActivity.class);
                 break;
         }
+        if (tmp != null)
+            startActivity(tmp);
         menuItem.setChecked(true);
         drawerLayout.closeDrawers();
         return false;
