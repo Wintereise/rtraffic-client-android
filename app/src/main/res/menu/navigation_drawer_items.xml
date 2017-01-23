@@ -5,15 +5,20 @@
 
     <group android:checkableBehavior="all">
         <item
-            android:id="@+id/navigation_item_1"
-            android:title="Toolbar"/>
-        <item
-            android:id="@+id/navigation_item_2"
-            android:title="FloatActionButton"/>
+            android:id="@+id/action_acct"
+            android:title="Account Mgmt."/>
 
         <item
-            android:id="@+id/navigation_item_3"
-            android:title="NavigationView"/>
+            android:id="@+id/action_notif_reg"
+            android:title="Notifications"/>
+
+        <item
+            android:id="@+id/action_settings"
+            android:title="Settings"/>
+
+        <item
+            android:id="@+id/action_help"
+            android:title="Help"/>
     </group>
 
 </menu>

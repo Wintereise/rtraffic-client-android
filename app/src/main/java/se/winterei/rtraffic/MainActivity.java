@@ -3,6 +3,7 @@ package se.winterei.rtraffic;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
 import android.content.Intent;
+import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -24,7 +25,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MainActivity extends AppCompatActivity implements
-        OnMapReadyCallback, View.OnClickListener
+        OnMapReadyCallback, View.OnClickListener, NavigationView.OnNavigationItemSelectedListener
 {
     private GoogleMap mMap;
     private RTraffic appContext;
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements
     private int backButtonCount = 0;
 
     DrawerLayout drawerLayout;
+    NavigationView navigationView;
 
     private void setupToolbar ()
     {
@@ -70,6 +72,8 @@ public class MainActivity extends AppCompatActivity implements
     private void setupNavigationView ()
     {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        navigationView = (NavigationView) findViewById(R.id.navigation);
+        navigationView.setNavigationItemSelectedListener(this);
     }
 
     private void setupFloatingActionButton ()
@@ -209,6 +213,22 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.fab_report:
                 break;
         }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected (MenuItem menuItem)
+    {
+        switch (menuItem.getItemId())
+        {
+            case R.id.action_acct:
+                Intent tmp = new Intent(this, GSignInActivity.class);
+                tmp.putExtra("se.winterei.rtraffic.GSignInActivityFilter", "ok");
+                startActivity(tmp);
+                break;
+        }
+        menuItem.setChecked(true);
+        drawerLayout.closeDrawers();
+        return false;
     }
 
     @Override

@@ -137,8 +137,11 @@ public class GSignInActivity extends AppCompatActivity implements
             {
                 Log.d(TAG, "Thread sleep: " + e.getMessage());
             }
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+            if(getIntent().getStringExtra("se.winterei.rtraffic.GSignInActivityFilter") == null)
+            {
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+            }
         }
         else
         {
