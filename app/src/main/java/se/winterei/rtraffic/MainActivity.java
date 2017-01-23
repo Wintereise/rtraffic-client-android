@@ -1,6 +1,6 @@
 package se.winterei.rtraffic;
 
-import android.support.design.widget.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -69,9 +69,25 @@ public class MainActivity extends AppCompatActivity implements
 
     private void setupFloatingActionButton ()
     {
-        FloatingActionButton fab_report = (FloatingActionButton) findViewById(R.id.fab_report);
-        if (fab_report != null)
-            fab_report.setOnClickListener(this);
+        final FloatingActionButton action_report_info = (FloatingActionButton) findViewById(R.id.action_report_info);
+        final FloatingActionButton action_report_traffic = (FloatingActionButton) findViewById(R.id.action_report_traffic);
+        action_report_info.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                //proc the appropriate activity via intents here
+            }
+        });
+
+        action_report_traffic.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                //proc the appropriate activity via intents here
+            }
+        });
 
     }
 

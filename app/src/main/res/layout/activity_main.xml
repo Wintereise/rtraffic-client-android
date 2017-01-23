@@ -4,6 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -33,22 +34,39 @@
             android:layout_height="match_parent"
             tools:context="se.winterei.rtraffic.MainActivity">
 
-            <android.support.design.widget.FloatingActionButton
+            <com.getbase.floatingactionbutton.FloatingActionsMenu
                 android:id="@+id/fab_report"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_add_white_36dp"
+                android:layout_gravity="bottom|right"
+                fab:fab_addButtonColorNormal="@color/accent"
+                fab:fab_addButtonColorPressed="@color/accent_light"
+                fab:fab_addButtonPlusIconColor="@color/icons"
+                fab:fab_expandDirection="up"
+                fab:fab_labelStyle="@style/menu_labels_style"
                 android:layout_marginBottom="65dp"
                 android:layout_marginRight="20dp"
-                android:layout_marginLeft="20dp"
-                android:layout_gravity="bottom|end"
-                app:fabSize="normal"
-                app:elevation="4dp" />
-
+                android:layout_marginLeft="20dp">
+                <com.getbase.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/action_report_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    fab:fab_colorNormal="@color/white"
+                    fab:fab_colorPressed="@color/white_pressed"
+                    fab:fab_size="mini"
+                    fab:fab_icon="@drawable/ic_info_outline_black_18dp"
+                    fab:fab_title="@string/info_report"/>
+                <com.getbase.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/action_report_traffic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    fab:fab_colorNormal="@color/white"
+                    fab:fab_title="@string/traffic_report"
+                    fab:fab_size="mini"
+                    fab:fab_icon="@drawable/ic_traffic_black_18dp"
+                    fab:fab_colorPressed="@color/white_pressed"/>
+            </com.getbase.floatingactionbutton.FloatingActionsMenu>
         </fragment>
-
-
-
     </LinearLayout>
 
 
