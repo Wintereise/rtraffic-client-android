@@ -1,6 +1,8 @@
 package se.winterei.rtraffic;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
+
+import android.content.Intent;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -11,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -25,6 +28,8 @@ public class MainActivity extends AppCompatActivity implements
 {
     private GoogleMap mMap;
     private RTraffic appContext;
+
+    private int backButtonCount = 0;
 
     DrawerLayout drawerLayout;
 
@@ -203,6 +208,23 @@ public class MainActivity extends AppCompatActivity implements
         {
             case R.id.fab_report:
                 break;
+        }
+    }
+
+    @Override
+    public void onBackPressed ()
+    {
+        if(backButtonCount >= 1)
+        {
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
+        else
+        {
+            Toast.makeText(this, "Press the back button once again to close the application.", Toast.LENGTH_SHORT).show();
+            backButtonCount++;
         }
     }
 }
