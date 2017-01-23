@@ -143,14 +143,4 @@
     <string name="pref_title_vibrate">Vibrate</string>
 
 
-
-
-    <string name="inbox_string">Inbox</string>
-    <string name="starred_string">Starred</string>
-    <string name="sent_mail_string">Sent Mail</string>
-    <string name="draft_string">Drafts</string>
-    <string name="all_mail_string">All Mails</string>
-    <string name="trash_string">Trash</string>
-    <string name="spam_string">Spam</string>
-
 </resources>
