@@ -237,7 +237,7 @@ public class MainActivity extends AppCompatActivity implements
                 tmp = new Intent(this, SettingsActivity.class);
                 break;
             case R.id.action_help:
-                tmp = new Intent(this, SettingsActivity.class);
+                tmp = new Intent(this, HelpActivity.class);
                 break;
             case R.id.action_exclude_regions:
                 tmp = new Intent(this, SettingsActivity.class);
