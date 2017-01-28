@@ -7,26 +7,31 @@
         <item
             android:id="@+id/action_acct"
             android:title="@string/nav_acct_mgmt"
+            android:checked="false"
             android:icon="@drawable/ic_account_box_black_24dp"/>
 
         <item
             android:id="@+id/action_exclude_regions"
             android:title="@string/nav_exclude_regions"
+            android:checked="false"
             android:icon="@drawable/ic_not_interested_black_24dp"/>
 
         <item
             android:id="@+id/action_notif_reg"
             android:title="@string/nav_notif_reg"
+            android:checked="false"
             android:icon="@drawable/ic_explore_black_24dp"/>
 
         <item
             android:id="@+id/action_settings"
             android:title="@string/nav_settings"
+            android:checked="false"
             android:icon="@drawable/ic_settings_black_24dp"/>
 
         <item
             android:id="@+id/action_help"
             android:title="@string/nav_help"
+            android:checked="false"
             android:icon="@drawable/ic_help_black_24dp"/>
     </group>
 

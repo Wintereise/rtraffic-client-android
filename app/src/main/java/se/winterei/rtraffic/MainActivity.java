@@ -33,12 +33,12 @@ public class MainActivity extends AppCompatActivity implements
 
     DrawerLayout drawerLayout;
     NavigationView navigationView;
-
+    Toolbar myToolbar;
 
 
     private void setupToolbar ()
     {
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar_generic);
+        myToolbar = (Toolbar) findViewById(R.id.toolbar_generic);
         setSupportActionBar(myToolbar);
 
         final ActionBar ab = getSupportActionBar();
@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
-    {
+    { //for the ActionBar
         switch (item.getItemId())
         {
             case R.id.action_search:
