@@ -1,11 +1,9 @@
 package se.winterei.rtraffic;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
-import android.widget.Toast;
 
 public class HelpActivity extends BaseActivity
 {

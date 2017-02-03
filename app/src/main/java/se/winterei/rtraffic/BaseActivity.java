@@ -1,5 +1,6 @@
 package se.winterei.rtraffic;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,9 +11,11 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -23,7 +26,7 @@ public abstract class BaseActivity extends AppCompatActivity
     implements NavigationView.OnNavigationItemSelectedListener
 {
     private int backButtonCount = 0;
-    private String userName, userEmail;
+    private String userName = "Singed out", userEmail = "test@example.com";
 
     DrawerLayout drawerLayout;
     NavigationView navigationView;
@@ -73,6 +76,11 @@ public abstract class BaseActivity extends AppCompatActivity
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.navigation);
         navigationView.setNavigationItemSelectedListener(this);
+        View header = navigationView.getHeaderView(0);
+
+        TextView navHeader = (TextView) header.findViewById(R.id.headerUsername);
+        navHeader.setSingleLine(false);
+        navHeader.setText(userName + "\n" + userEmail);
     }
 
     private boolean authCheck ()
@@ -102,7 +110,6 @@ public abstract class BaseActivity extends AppCompatActivity
             startActivity(new Intent(this, GSignInActivity.class));
         }
     }
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState)
