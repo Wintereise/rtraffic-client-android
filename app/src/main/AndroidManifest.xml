@@ -35,7 +35,9 @@
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings" />
-        <activity android:name=".HelpActivity"></activity>
+        <activity android:name=".HelpActivity"
+            android:label="@string/help_label"
+        />
     </application>
 
 </manifest>

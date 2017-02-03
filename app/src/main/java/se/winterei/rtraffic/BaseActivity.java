@@ -2,6 +2,7 @@ package se.winterei.rtraffic;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -14,28 +15,36 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 
 
-public class BaseActivity extends AppCompatActivity
+public abstract class BaseActivity extends AppCompatActivity
     implements NavigationView.OnNavigationItemSelectedListener
 {
     private int backButtonCount = 0;
+    private String userName, userEmail;
 
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     Toolbar myToolbar;
 
-    private final void setupToolbar ()
-    {
-        myToolbar = (Toolbar) findViewById(R.id.toolbar_generic);
-        setSupportActionBar(myToolbar);
+    private RTraffic appContext;
 
+
+    public final void setupToolbar (@Nullable View view)
+    {
+        if(view != null)
+            myToolbar = (Toolbar) view.findViewById(R.id.toolbar_generic);
+        else
+            myToolbar = (Toolbar) findViewById(R.id.toolbar_generic);
+        setSupportActionBar(myToolbar);
         final ActionBar ab = getSupportActionBar();
         ab.setHomeAsUpIndicator(R.drawable.ic_menu);
         ab.setDisplayHomeAsUpEnabled(true);
     }
 
-    private final void setupSearchBar (Menu menu)
+    public final void setupSearchBar (Menu menu)
     {
         MenuItem myActionMenuItem = menu.findItem(R.id.action_search);
         final SearchView searchView = (SearchView) myActionMenuItem.getActionView();
@@ -59,23 +68,54 @@ public class BaseActivity extends AppCompatActivity
                 );
     }
 
-    private final void setupNavigationView ()
+    public final void setupNavigationView ()
     {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.navigation);
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState)
+    private boolean authCheck ()
     {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        setupNavigationView();
-        setupToolbar();
+        appContext = (RTraffic) getApplicationContext();
+        GoogleSignInResult googleSignInResult = (GoogleSignInResult) appContext.get("GSignInResult");
+        if(googleSignInResult != null && googleSignInResult.isSuccess())
+        {
+            GoogleSignInAccount acct = googleSignInResult.getSignInAccount();
+            if(acct != null)
+            {
+                userName = acct.getDisplayName();
+                userEmail = acct.getEmail();
+                return true;
+            }
+            else
+                return false;
+        }
+        else
+            return false;
     }
 
+    private void redirectOnAuthFailure ()
+    {
+        if(!authCheck())
+        {
+            startActivity(new Intent(this, GSignInActivity.class));
+        }
+    }
+
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        redirectOnAuthFailure();
+    }
+
+    @Override
+    protected void onResume ()
+    {
+        redirectOnAuthFailure();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)

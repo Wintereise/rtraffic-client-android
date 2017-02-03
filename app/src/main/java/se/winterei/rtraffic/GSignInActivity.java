@@ -62,7 +62,6 @@ public class GSignInActivity extends AppCompatActivity implements
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
-        appContext.put("GSignIn", mGoogleApiClient);
         // [END build_client]
 
         // [START customize_button]
@@ -123,20 +122,13 @@ public class GSignInActivity extends AppCompatActivity implements
     private void handleSignInResult(GoogleSignInResult result)
     {
         Log.d(TAG, "handleSignInResult:" + result.isSuccess());
+        appContext.put("GSignInResult", result);
         if (result.isSuccess())
         {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
             mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
             updateUI(true);
-            try
-            {
-                Thread.sleep(500);
-            }
-            catch (InterruptedException e)
-            {
-                Log.d(TAG, "Thread sleep: " + e.getMessage());
-            }
             if(getIntent().getStringExtra("se.winterei.rtraffic.GSignInActivityFilter") == null)
             {
                 Intent intent = new Intent(this, MainActivity.class);

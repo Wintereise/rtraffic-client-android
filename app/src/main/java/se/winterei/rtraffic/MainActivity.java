@@ -1,16 +1,9 @@
 package se.winterei.rtraffic;
 
-import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
+import android.support.v4.app.ActivityCompat;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -23,61 +16,31 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MainActivity extends AppCompatActivity implements
-        OnMapReadyCallback, View.OnClickListener, NavigationView.OnNavigationItemSelectedListener
+public class MainActivity extends BaseActivity
+        implements OnMapReadyCallback, View.OnClickListener
 {
     private GoogleMap mMap;
     private RTraffic appContext;
 
-    private int backButtonCount = 0;
-
-    DrawerLayout drawerLayout;
-    NavigationView navigationView;
-    Toolbar myToolbar;
-
-
-    private void setupToolbar ()
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
     {
-        myToolbar = (Toolbar) findViewById(R.id.toolbar_generic);
-        setSupportActionBar(myToolbar);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-        final ActionBar ab = getSupportActionBar();
-        ab.setHomeAsUpIndicator(R.drawable.ic_menu);
-        ab.setDisplayHomeAsUpEnabled(true);
+        setupToolbar(null);
+        setupNavigationView();
+        setupFloatingActionButton();
+
+        appContext = (RTraffic) getApplicationContext();
+
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
     }
 
-    private void setupSearchBar (Menu menu)
-    {
-        MenuItem myActionMenuItem = menu.findItem(R.id.action_search);
-        final SearchView searchView = (SearchView) myActionMenuItem.getActionView();
-        searchView.setOnQueryTextListener
-        (
-                new SearchView.OnQueryTextListener ()
-                {
-                    @Override
-                    public boolean onQueryTextSubmit (String query)
-                    {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onQueryTextChange (String newText)
-                    {
-                        //map filtering logic along with Google Maps API goes here
-                        return true;
-                    }
-                }
-        );
-    }
-
-    private void setupNavigationView ()
-    {
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        navigationView = (NavigationView) findViewById(R.id.navigation);
-        navigationView.setNavigationItemSelectedListener(this);
-    }
-
-    private void setupFloatingActionButton ()
+    private final void setupFloatingActionButton ()
     {
         final FloatingActionButton action_report_info = (FloatingActionButton) findViewById(R.id.action_report_info);
         final FloatingActionButton action_report_traffic = (FloatingActionButton) findViewById(R.id.action_report_traffic);
@@ -98,30 +61,7 @@ public class MainActivity extends AppCompatActivity implements
                 //proc the appropriate activity via intents here
             }
         });
-
     }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        setupNavigationView();
-        setupToolbar();
-        setupFloatingActionButton();
-
-        appContext = (RTraffic) getApplicationContext();
-
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-
-
-    }
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -131,34 +71,6 @@ public class MainActivity extends AppCompatActivity implements
         setupSearchBar(menu);
 
         return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    { //for the ActionBar
-        switch (item.getItemId())
-        {
-            case R.id.action_search:
-                // User chose the "Settings" item, show the app settings UI...
-                return true;
-
-            case R.id.action_refresh:
-                // User chose the "Favorite" action, mark the current item
-                // as a favorite...
-                return true;
-
-            case android.R.id.home:
-                if (drawerLayout != null)
-                {
-                    drawerLayout.openDrawer(GravityCompat.START);
-                }
-                return true;
-
-            default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
-                return super.onOptionsItemSelected(item);
-        }
     }
 
     /**
@@ -207,6 +119,20 @@ public class MainActivity extends AppCompatActivity implements
         mMap.addMarker(new MarkerOptions().position(new LatLng(23.738348, 90.372999)).title("Zigatala"));
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(23.794847, 90.414213), 15));
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            Toast.makeText(this, "We seem to be missing the permissions that allow us to access location.", Toast.LENGTH_SHORT).show();
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, 2);
+            return;
+        }
+        mMap.setMyLocationEnabled(true);
 
     }
 
@@ -217,54 +143,6 @@ public class MainActivity extends AppCompatActivity implements
         {
             case R.id.fab_report:
                 break;
-        }
-    }
-
-    @Override
-    public boolean onNavigationItemSelected (MenuItem menuItem)
-    {
-        Intent tmp = null;
-        switch (menuItem.getItemId())
-        {
-            case R.id.action_acct:
-                tmp = new Intent(this, GSignInActivity.class);
-                tmp.putExtra("se.winterei.rtraffic.GSignInActivityFilter", "ok");
-                break;
-            case R.id.action_settings:
-                tmp = new Intent(this, SettingsActivity.class);
-                break;
-            case R.id.action_notif_reg:
-                tmp = new Intent(this, SettingsActivity.class);
-                break;
-            case R.id.action_help:
-                tmp = new Intent(this, HelpActivity.class);
-                break;
-            case R.id.action_exclude_regions:
-                tmp = new Intent(this, SettingsActivity.class);
-                break;
-        }
-        if (tmp != null)
-            startActivity(tmp);
-        menuItem.setChecked(true);
-        drawerLayout.closeDrawers();
-        return false;
-    }
-
-    @Override
-    public void onBackPressed ()
-    {
-        if(backButtonCount >= 1)
-        {
-            backButtonCount = 0;
-            Intent intent = new Intent(Intent.ACTION_MAIN);
-            intent.addCategory(Intent.CATEGORY_HOME);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        }
-        else
-        {
-            Toast.makeText(this, "Press the back button once again to close the application.", Toast.LENGTH_SHORT).show();
-            backButtonCount++;
         }
     }
 }
