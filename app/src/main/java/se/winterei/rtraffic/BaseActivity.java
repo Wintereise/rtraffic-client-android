@@ -26,7 +26,7 @@ public abstract class BaseActivity extends AppCompatActivity
     implements NavigationView.OnNavigationItemSelectedListener
 {
     private int backButtonCount = 0;
-    private String userName = "Singed out", userEmail = "test@example.com";
+    private String userName = "Signed out", userEmail = "test@example.com";
 
     DrawerLayout drawerLayout;
     NavigationView navigationView;
@@ -85,7 +85,6 @@ public abstract class BaseActivity extends AppCompatActivity
 
     private boolean authCheck ()
     {
-        appContext = (RTraffic) getApplicationContext();
         GoogleSignInResult googleSignInResult = (GoogleSignInResult) appContext.get("GSignInResult");
         if(googleSignInResult != null && googleSignInResult.isSuccess())
         {
@@ -115,6 +114,7 @@ public abstract class BaseActivity extends AppCompatActivity
     protected void onCreate(@Nullable Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        appContext = (RTraffic) getApplicationContext();
         redirectOnAuthFailure();
     }
 

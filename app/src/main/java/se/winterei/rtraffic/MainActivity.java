@@ -1,5 +1,6 @@
 package se.winterei.rtraffic;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -21,6 +22,7 @@ public class MainActivity extends BaseActivity
 {
     private GoogleMap mMap;
     private RTraffic appContext;
+    private MainActivity instance = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -58,7 +60,7 @@ public class MainActivity extends BaseActivity
             @Override
             public void onClick(View v)
             {
-                //proc the appropriate activity via intents here
+                startActivity(new Intent(instance, TrafficReportActivity.class));
             }
         });
     }
