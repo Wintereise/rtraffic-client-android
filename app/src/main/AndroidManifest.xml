@@ -41,8 +41,10 @@
         <activity
             android:name=".TrafficReportActivity"
             android:label="@string/traffic_report" />
-        <activity android:name=".ExcludedRegions" />
-        <activity android:name=".PointsOfInterest"></activity>
+        <activity android:name=".ExcludedRegions"
+            android:label="@string/nav_exclude_regions"/>
+        <activity android:name=".PointsOfInterest"
+            android:label="@string/nav_notif_reg"></activity>
     </application>
 
 </manifest>
