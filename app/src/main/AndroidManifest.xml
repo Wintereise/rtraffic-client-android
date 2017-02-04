@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="se.winterei.rtraffic">
 
+    <!--for google-location-services -->
+    <meta-data android:name="com.google.android.gms.version"
+        android:value="@integer/google_play_services_version"/>
+
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
@@ -44,7 +48,15 @@
         <activity android:name=".ExcludedRegions"
             android:label="@string/nav_exclude_regions"/>
         <activity android:name=".PointsOfInterest"
-            android:label="@string/nav_notif_reg"></activity>
+            android:label="@string/nav_notif_reg">
+
+        </activity>
+        <activity
+            android:name=".MyLocationActivity"
+            android:label="@string/nav_mylocation" />
+
+
+
     </application>
 
 </manifest>
