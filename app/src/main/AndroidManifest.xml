@@ -38,8 +38,11 @@
         <activity
             android:name=".HelpActivity"
             android:label="@string/help_label" />
-        <activity android:name=".TrafficReportActivity"
-            android:label="@string/traffic_report"/>
+        <activity
+            android:name=".TrafficReportActivity"
+            android:label="@string/traffic_report" />
+        <activity android:name=".ExcludedRegions" />
+        <activity android:name=".PointsOfInterest"></activity>
     </application>
 
 </manifest>
