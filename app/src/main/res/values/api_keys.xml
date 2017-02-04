@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="google_directions_api">AIzaSyCplu6VxagTgNeMkxNjo29Wq9W7XAreWbY</string>
+    <string name="google_roads_api">AIzaSyCCXEI2MrnXxFCW3CIiSI7Im5vetTR5_q8</string>
+</resources>

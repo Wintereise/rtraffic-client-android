@@ -1,14 +1,24 @@
 package se.winterei.rtraffic;
 
+import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
+import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
-import android.widget.Toast;
 
+import com.akexorcist.googledirection.DirectionCallback;
+import com.akexorcist.googledirection.GoogleDirection;
+import com.akexorcist.googledirection.constant.TransportMode;
+import com.akexorcist.googledirection.model.Direction;
+import com.akexorcist.googledirection.util.DirectionConverter;
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -17,12 +27,19 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+
 public class MainActivity extends BaseActivity
-        implements OnMapReadyCallback, View.OnClickListener
+        implements OnMapReadyCallback, View.OnClickListener, DirectionCallback, LocationListener
 {
     private GoogleMap mMap;
     private RTraffic appContext;
     private MainActivity instance = this;
+    private ArrayList<LatLng> markerPoints = new ArrayList<>();
+    LatLng src, dst;
+    private LocationManager locationManager;
+    private static final long MIN_TIME = 400;
+    private static final float MIN_DISTANCE = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -40,6 +57,13 @@ public class MainActivity extends BaseActivity
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        if(checkGPSPermissions())
+        {
+            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME, MIN_DISTANCE, this); //You can also use LocationManager.GPS_PROVIDER and LocationManager.PASSIVE_PROVIDER
+        }
+
     }
 
     private final void setupFloatingActionButton ()
@@ -88,6 +112,7 @@ public class MainActivity extends BaseActivity
     public void onMapReady(GoogleMap googleMap)
     {
         mMap = googleMap;
+        appContext.put("GMap", mMap);
 
         // Ghetto, shameful marker implementation to get by for now.
         mMap.addMarker(new MarkerOptions().position(new LatLng(23.794403, 90.401070)).title("Airport Road (Dhaka-Mymensingh Hwy) and Kemal Ataturk Avenue"));
@@ -120,22 +145,50 @@ public class MainActivity extends BaseActivity
         mMap.addMarker(new MarkerOptions().position(new LatLng(23.768240, 90.382861)).title("Zia Udyan"));
         mMap.addMarker(new MarkerOptions().position(new LatLng(23.738348, 90.372999)).title("Zigatala"));
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(23.794847, 90.414213), 15));
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            Toast.makeText(this, "We seem to be missing the permissions that allow us to access location.", Toast.LENGTH_SHORT).show();
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, 2);
-            return;
-        }
-        mMap.setMyLocationEnabled(true);
+       if (checkGPSPermissions())
+           mMap.setMyLocationEnabled(true);
 
+        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener()
+        {
+            @Override
+            public void onMapLongClick(LatLng point)
+            {
+                if(markerPoints.size() > 1)
+                {
+                    markerPoints.clear();
+                }
+                markerPoints.add(point);
+                MarkerOptions options = new MarkerOptions();
+
+                // Setting the position of the marker
+                options.position(point);
+
+                /**
+                 * For the start location, the color of marker is GREEN and
+                 * for the end location, the color of marker is RED.
+                 */
+                if (markerPoints.size() == 1)
+                {
+                    options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                }
+                else if (markerPoints.size() == 2)
+                {
+                    options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                }
+                mMap.addMarker(options);
+                if (markerPoints.size() == 2)
+                {
+                    src = markerPoints.get(0);
+                    dst = markerPoints.get(1);
+                    Snackbar.make(findViewById(android.R.id.content), getString(R.string.loading), Snackbar.LENGTH_SHORT).show();
+                    GoogleDirection.withServerKey(getString(R.string.google_directions_api))
+                            .from(src)
+                            .to(dst)
+                            .transitMode(TransportMode.DRIVING)
+                            .execute(instance);
+                }
+            }
+        });
     }
 
     @Override
@@ -147,4 +200,42 @@ public class MainActivity extends BaseActivity
                 break;
         }
     }
+
+    @Override
+    public void onDirectionSuccess(Direction direction, String rawBody)
+    {
+        if (direction.isOK())
+        {
+            //mMap.addMarker(new MarkerOptions().position(src));
+            //mMap.addMarker(new MarkerOptions().position(dst));
+
+            ArrayList<LatLng> directionPositionList = direction.getRouteList().get(0).getLegList().get(0).getDirectionPoint();
+            mMap.addPolyline(DirectionConverter.createPolyline(this, directionPositionList, 5, Color.RED));
+        }
+    }
+
+    @Override
+    public void onDirectionFailure(Throwable t)
+    {
+        Log.d("Direction API: ", t.getMessage());
+    }
+
+    @Override
+    public void onLocationChanged(Location location)
+    {
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 12);
+        mMap.animateCamera(cameraUpdate);
+        locationManager.removeUpdates(this);
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) { }
+
+    @Override
+    public void onProviderEnabled(String provider) { }
+
+    @Override
+    public void onProviderDisabled(String provider) { }
+
 }

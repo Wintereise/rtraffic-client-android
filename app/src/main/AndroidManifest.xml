@@ -38,7 +38,8 @@
         <activity
             android:name=".HelpActivity"
             android:label="@string/help_label" />
-        <activity android:name=".TrafficReportActivity"></activity>
+        <activity android:name=".TrafficReportActivity"
+            android:label="@string/traffic_report"/>
     </application>
 
 </manifest>
