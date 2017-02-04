@@ -10,7 +10,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -47,29 +46,7 @@ public abstract class BaseActivity extends AppCompatActivity
         ab.setDisplayHomeAsUpEnabled(true);
     }
 
-    public final void setupSearchBar (Menu menu)
-    {
-        MenuItem myActionMenuItem = menu.findItem(R.id.action_search);
-        final SearchView searchView = (SearchView) myActionMenuItem.getActionView();
-        searchView.setOnQueryTextListener
-                (
-                        new SearchView.OnQueryTextListener ()
-                        {
-                            @Override
-                            public boolean onQueryTextSubmit (String query)
-                            {
-                                return false;
-                            }
 
-                            @Override
-                            public boolean onQueryTextChange (String newText)
-                            {
-                                //map filtering logic along with Google Maps API goes here
-                                return true;
-                            }
-                        }
-                );
-    }
 
     public final void setupNavigationView ()
     {
@@ -130,7 +107,6 @@ public abstract class BaseActivity extends AppCompatActivity
     {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_titlebar, menu);
-        setupSearchBar(menu);
 
         return true;
     }
@@ -227,6 +203,17 @@ public abstract class BaseActivity extends AppCompatActivity
             return false;
         }
         return true;
+    }
+
+    public void genericFixToolbar (Menu menu)
+    {
+        MenuItem tmp = menu.findItem(R.id.action_search);
+        if(tmp != null)
+            tmp.setVisible(false);
+        tmp = menu.findItem(R.id.action_refresh);
+        if(tmp != null)
+            tmp.setVisible(false);
+        invalidateOptionsMenu();
     }
 
 }
