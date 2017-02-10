@@ -162,6 +162,9 @@ public abstract class BaseActivity extends AppCompatActivity
             case R.id.action_exclude_regions:
                 tmp = new Intent(this, ExcludedRegions.class);
                 break;
+            case R.id.action_mylocation:
+                tmp = new Intent(this, MyLocationActivity.class);
+                break;
         }
         if (tmp != null)
             startActivity(tmp);
