@@ -38,6 +38,7 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:2.1.0' //for adding circular profile picture
     compile 'com.akexorcist:googledirectionlibrary:1.0.5'
     compile 'com.google.maps.android:android-maps-utils:0.5+'
+    compile 'com.afollestad.material-dialogs:core:0.9.3.0'
     testCompile 'junit:junit:4.12'
 }
 

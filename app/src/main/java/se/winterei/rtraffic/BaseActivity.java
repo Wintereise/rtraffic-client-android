@@ -220,18 +220,6 @@ public abstract class BaseActivity extends AppCompatActivity
         invalidateOptionsMenu();
     }
 
-    public Snackbar showSnackbar (@Nullable View v, int stringID, int length)
-    {
-        View vTemp;
-        if(v != null)
-            vTemp = v;
-        else
-            vTemp = getWindow().getDecorView().getRootView();
-        Snackbar tmp = Snackbar.make(vTemp, getString(stringID),length);
-        tmp.show();
-        return tmp;
-    }
-
     public Snackbar showSnackbar (@Nullable View v, String str, int length)
     {
         View vTemp;
@@ -244,17 +232,20 @@ public abstract class BaseActivity extends AppCompatActivity
         return tmp;
     }
 
+    public Snackbar showSnackbar (@Nullable View v, int stringID, int length)
+    {
+        View vTemp;
+        if(v != null)
+            vTemp = v;
+        else
+            vTemp = getWindow().getDecorView().getRootView();
+        return showSnackbar(vTemp, getString(stringID), length);
+    }
+
     public void dismissSnackbar (Snackbar s)
     {
         if(s != null && s.isShownOrQueued())
             s.dismiss();
-    }
-
-    public Toast showToast (int stringID, int length)
-    {
-        Toast tmp = Toast.makeText(this, getString(stringID),length);
-        tmp.show();
-        return tmp;
     }
 
     public Toast showToast (String str, int length)
@@ -262,6 +253,11 @@ public abstract class BaseActivity extends AppCompatActivity
         Toast tmp = Toast.makeText(this, str,length);
         tmp.show();
         return tmp;
+    }
+
+    public Toast showToast (int stringID, int length)
+    {
+        return showToast(getString(stringID), length);
     }
 
 

@@ -6,14 +6,18 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.akexorcist.googledirection.DirectionCallback;
 import com.akexorcist.googledirection.GoogleDirection;
 import com.akexorcist.googledirection.constant.TransportMode;
@@ -54,12 +58,15 @@ public class TrafficReportActivity extends BaseActivity
     private int polyLineIndex = 0;
     private Random rnd = new Random();
     private static final int MENU_CLEAR = 500;
+    private boolean showPolyLineHelp = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_traffic_report);
+
+        showPolyLineHelp = true;
 
         setupToolbar(null);
         setupNavigationView();
@@ -85,6 +92,7 @@ public class TrafficReportActivity extends BaseActivity
     {
         super.onCreateOptionsMenu(menu);
         genericFixToolbar(menu);
+
         menu.add(0, MENU_CLEAR, Menu.NONE, R.string.clear).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         return true;
     }
@@ -97,8 +105,34 @@ public class TrafficReportActivity extends BaseActivity
             case MENU_CLEAR:
                 if(mMap != null)
                     mMap.clear();
+                showToast(R.string.traffic_report_toast_clear_markers, Toast.LENGTH_SHORT);
+                dismissSnackbar(snackbar);
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void radioButtonClicked (View view)
+    {
+        boolean checked = ((RadioButton) view).isChecked();
+    }
+
+    public void showReportDialog ()
+    {
+        dismissSnackbar(snackbar);
+        MaterialDialog dialog = new MaterialDialog.Builder(this)
+                .title(R.string.traffic_report_dialog_compose_report)
+                .customView(R.layout.dialog_traffic_report, true)
+                .positiveText(R.string.submit)
+                .negativeText(R.string.cancel)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which)
+                    {
+
+                    }
+                }).build();
+        dialog.show();
     }
 
     /**
@@ -147,6 +181,7 @@ public class TrafficReportActivity extends BaseActivity
                 if (markerPoints.size() == 1)
                 {
                     options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                    showToast(R.string.traffic_report_second_instruction, Toast.LENGTH_SHORT);
                 }
                 else if (markerPoints.size() == 2)
                 {
@@ -221,6 +256,20 @@ public class TrafficReportActivity extends BaseActivity
         }
         polyline.setColor(ContextCompat.getColor(this, R.color.accent_light));
         polyline.setWidth(Utility.dpToPx(this, 5));
+        if(showPolyLineHelp)
+        {
+            showToast(R.string.traffic_report_polyline_select, Toast.LENGTH_LONG);
+            showPolyLineHelp = false;
+        }
+        snackbar = Snackbar.make(fragment.getView(), R.string.traffic_report_snackbar_confirm_report, Snackbar.LENGTH_INDEFINITE);
+        snackbar.setAction(R.string.confirm, new View.OnClickListener() {
+            @Override
+            public void onClick (View view)
+            {
+                showReportDialog();
+            }
+        });
+        snackbar.show();
     }
 
     @Override
@@ -237,6 +286,7 @@ public class TrafficReportActivity extends BaseActivity
         dismissSnackbar(snackbar);
         mMap.animateCamera(cameraUpdate);
         locationManager.removeUpdates(this);
+        showToast(R.string.traffic_report_initial_instructions, Toast.LENGTH_LONG);
     }
 
     @Override

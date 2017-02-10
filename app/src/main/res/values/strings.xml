@@ -12,7 +12,24 @@
     <string name="loading_main">Getting map and GPS data</string>
     <string name="something_went_wrong">Something went wrong, please try again later.</string>
     <string name="traffic_report_multipath_chooser">Found %1$d paths, please select the correct path by tapping on it.</string>
+    <string name="traffic_report_initial_instructions">Please tap and hold at the location where you believe the traffic congestion begins.</string>
+    <string name="traffic_report_second_instruction">Now tap and hold the location where you believe the traffic congestion ends.</string>
+    <string name="traffic_report_polyline_select">If you\'re satisfied with your selection, please confirm below. If not, you can choose another path, or start anew via the Clear button.</string>
     <string name="clear">Clear</string>
+    <string name="commit">Commit</string>
+    <string name="report">Report</string>
+    <string name="submit">Submit</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="traffic_report_toast_clear_markers">Markers and pathways have been cleared.</string>
+    <string name="traffic_report_snackbar_confirm_report">Ready to submit report</string>
+    <string name="traffic_report_dialog_compose_report">Compose Report</string>
+    <string name="traffic_report_dialog_congestion_severity">Congestion Severity</string>
+    <string name="traffic_report_dialog_comment">Comment (if any)</string>
+    <string name="traffic_report_dialog_report_anonymously">Submit the report anonymously</string>
+    <string name="traffic_report_state_congested">Fully Congested</string>
+    <string name="traffic_report_state_sbm">Slow but moving</string>
+    <string name="traffic_report_state_free">No Congestion</string>
 
     <!-- Sign-in status messages for G-sign in-->
 
