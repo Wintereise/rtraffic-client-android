@@ -2,4 +2,6 @@
 <resources>
     <string name="google_directions_api">AIzaSyCplu6VxagTgNeMkxNjo29Wq9W7XAreWbY</string>
     <string name="google_roads_api">AIzaSyCCXEI2MrnXxFCW3CIiSI7Im5vetTR5_q8</string>
+    <string name="doorbell_app_id">5708</string>
+    <string name="doorbell_api">864KR5WxLGZt07j1niNuUJxFYslgqLbfH1wrC4MZxQewVQcMDs5YeHp3xmvyy6yS</string>
 </resources>

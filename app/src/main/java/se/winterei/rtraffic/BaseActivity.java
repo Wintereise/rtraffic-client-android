@@ -21,16 +21,20 @@ import android.widget.Toast;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 
+import io.doorbell.android.Doorbell;
+import io.doorbell.android.callbacks.OnFeedbackSentCallback;
+
 
 public abstract class BaseActivity extends AppCompatActivity
     implements NavigationView.OnNavigationItemSelectedListener
 {
     private int backButtonCount = 0;
-    private String userName = "Signed out", userEmail = "test@example.com";
+    public String userName = "Signed out", userEmail = "test@example.com";
 
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     Toolbar myToolbar;
+    Doorbell doorbell;
 
     private RTraffic appContext;
 
@@ -165,6 +169,9 @@ public abstract class BaseActivity extends AppCompatActivity
             case R.id.action_mylocation:
                 tmp = new Intent(this, MyLocationActivity.class);
                 break;
+            case R.id.action_feedback:
+                showDoorbell();
+                break;
         }
         if (tmp != null)
             startActivity(tmp);
@@ -258,6 +265,23 @@ public abstract class BaseActivity extends AppCompatActivity
     public Toast showToast (int stringID, int length)
     {
         return showToast(getString(stringID), length);
+    }
+
+    public void showDoorbell ()
+    {
+        doorbell = new Doorbell(this, Integer.parseInt(getString(R.string.doorbell_app_id)), getString(R.string.doorbell_api));
+        doorbell.setEmail(userEmail);
+        doorbell.setName(userName);
+        doorbell.setEmailFieldVisibility(View.GONE);
+        doorbell.setPoweredByVisibility(View.GONE);
+        doorbell.setOnFeedbackSentCallback(new OnFeedbackSentCallback() {
+            @Override
+            public void handle(String s)
+            {
+                showToast(R.string.feedback_thank_you, Toast.LENGTH_SHORT);
+            }
+        });
+        doorbell.show();
     }
 
 

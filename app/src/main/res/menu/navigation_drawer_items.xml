@@ -29,15 +29,23 @@
             android:icon="@drawable/ic_settings_black_24dp"/>
 
         <item
-            android:id="@+id/action_help"
-            android:title="@string/nav_help"
-            android:checked="false"
-            android:icon="@drawable/ic_help_black_24dp"/>
-        <item
             android:id="@+id/action_mylocation"
             android:title="@string/nav_mylocation"
             android:checked="false"
             android:icon="@drawable/ic_help_black_24dp"/>
+
+        <item
+        android:id="@+id/action_help"
+        android:title="@string/nav_help"
+        android:checked="false"
+        android:icon="@drawable/ic_help_black_24dp"/>
+
+        <item
+            android:id="@+id/action_feedback"
+            android:title="@string/nav_feedback"
+            android:checked="false"
+            android:icon="@drawable/ic_feedback_black_24dp"/>
+
     </group>
 
 </menu>
