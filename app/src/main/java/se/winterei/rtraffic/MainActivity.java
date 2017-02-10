@@ -6,6 +6,8 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,6 +33,8 @@ public class MainActivity extends BaseActivity
     private LocationManager locationManager;
     private static final long MIN_TIME = 400;
     private static final float MIN_DISTANCE = 1000;
+    private SupportMapFragment fragment;
+    private Snackbar snackbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -44,10 +48,11 @@ public class MainActivity extends BaseActivity
 
         appContext = (RTraffic) getApplicationContext();
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        fragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        fragment.getMapAsync(this);
 
         if(checkGPSPermissions())
         {
@@ -160,9 +165,11 @@ public class MainActivity extends BaseActivity
         mMap.addMarker(new MarkerOptions().position(new LatLng(23.738348, 90.372999)).title("Zigatala").icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_traffic_black_yellow)));
         mMap.addMarker(new MarkerOptions().position(new LatLng(23.794847, 90.414213)).title("Gulshan Circle 2").icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_traffic_black_green)));
 
+        snackbar = showSnackbar(fragment.getView(), R.string.loading_main, Snackbar.LENGTH_INDEFINITE);
 
         if (checkGPSPermissions())
            mMap.setMyLocationEnabled(true);
+
 
     }
 
@@ -181,6 +188,7 @@ public class MainActivity extends BaseActivity
     {
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 12);
+        dismissSnackbar(snackbar);
         mMap.animateCamera(cameraUpdate);
         locationManager.removeUpdates(this);
     }

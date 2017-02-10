@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -153,13 +154,13 @@ public abstract class BaseActivity extends AppCompatActivity
                 tmp = new Intent(this, SettingsActivity.class);
                 break;
             case R.id.action_notif_reg:
-                tmp = new Intent(this, SettingsActivity.class);
+                tmp = new Intent(this, PointsOfInterest.class);
                 break;
             case R.id.action_help:
                 tmp = new Intent(this, HelpActivity.class);
                 break;
             case R.id.action_exclude_regions:
-                tmp = new Intent(this, SettingsActivity.class);
+                tmp = new Intent(this, ExcludedRegions.class);
                 break;
         }
         if (tmp != null)
@@ -197,7 +198,7 @@ public abstract class BaseActivity extends AppCompatActivity
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
-            Toast.makeText(this, getString(R.string.permission_location_err), Toast.LENGTH_SHORT).show();
+            showToast(R.string.permission_location_err, Toast.LENGTH_SHORT);
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, 2);
             return false;
@@ -215,5 +216,51 @@ public abstract class BaseActivity extends AppCompatActivity
             tmp.setVisible(false);
         invalidateOptionsMenu();
     }
+
+    public Snackbar showSnackbar (@Nullable View v, int stringID, int length)
+    {
+        View vTemp;
+        if(v != null)
+            vTemp = v;
+        else
+            vTemp = getWindow().getDecorView().getRootView();
+        Snackbar tmp = Snackbar.make(vTemp, getString(stringID),length);
+        tmp.show();
+        return tmp;
+    }
+
+    public Snackbar showSnackbar (@Nullable View v, String str, int length)
+    {
+        View vTemp;
+        if(v != null)
+            vTemp = v;
+        else
+            vTemp = getWindow().getDecorView().getRootView();
+        Snackbar tmp = Snackbar.make(vTemp, str,length);
+        tmp.show();
+        return tmp;
+    }
+
+    public void dismissSnackbar (Snackbar s)
+    {
+        if(s != null && s.isShownOrQueued())
+            s.dismiss();
+    }
+
+    public Toast showToast (int stringID, int length)
+    {
+        Toast tmp = Toast.makeText(this, getString(stringID),length);
+        tmp.show();
+        return tmp;
+    }
+
+    public Toast showToast (String str, int length)
+    {
+        Toast tmp = Toast.makeText(this, str,length);
+        tmp.show();
+        return tmp;
+    }
+
+
 
 }

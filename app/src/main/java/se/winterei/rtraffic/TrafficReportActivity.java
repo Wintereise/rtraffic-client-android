@@ -7,14 +7,18 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.akexorcist.googledirection.DirectionCallback;
 import com.akexorcist.googledirection.GoogleDirection;
 import com.akexorcist.googledirection.constant.TransportMode;
 import com.akexorcist.googledirection.model.Direction;
+import com.akexorcist.googledirection.model.Route;
 import com.akexorcist.googledirection.util.DirectionConverter;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -24,11 +28,17 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import se.winterei.rtraffic.libs.Utility;
 
 public class TrafficReportActivity extends BaseActivity
-        implements OnMapReadyCallback, View.OnClickListener, DirectionCallback, LocationListener
+        implements OnMapReadyCallback, View.OnClickListener, DirectionCallback, LocationListener, GoogleMap.OnPolylineClickListener
 {
     private GoogleMap mMap;
     private RTraffic appContext;
@@ -38,6 +48,12 @@ public class TrafficReportActivity extends BaseActivity
     private LocationManager locationManager;
     private static final long MIN_TIME = 400;
     private static final float MIN_DISTANCE = 1000;
+    private SupportMapFragment fragment;
+    private Snackbar snackbar;
+    private List<Polyline> polylineList = new ArrayList<>();
+    private int polyLineIndex = 0;
+    private Random rnd = new Random();
+    private static final int MENU_CLEAR = 500;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -51,9 +67,9 @@ public class TrafficReportActivity extends BaseActivity
         appContext = (RTraffic) getApplicationContext();
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        fragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        fragment.getMapAsync(this);
 
         if(checkGPSPermissions())
         {
@@ -69,7 +85,20 @@ public class TrafficReportActivity extends BaseActivity
     {
         super.onCreateOptionsMenu(menu);
         genericFixToolbar(menu);
+        menu.add(0, MENU_CLEAR, Menu.NONE, R.string.clear).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected (MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case MENU_CLEAR:
+                if(mMap != null)
+                    mMap.clear();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -85,12 +114,16 @@ public class TrafficReportActivity extends BaseActivity
     public void onMapReady(GoogleMap googleMap)
     {
         mMap = googleMap;
-        appContext.put("CleanGMap", mMap);
+        appContext.put("TrafficReportGMap", mMap);
 
-        // Ghetto, shameful marker implementation to get by for now.
+        snackbar = showSnackbar(fragment.getView(), R.string.loading_main, Snackbar.LENGTH_INDEFINITE);
 
         if (checkGPSPermissions())
             mMap.setMyLocationEnabled(true);
+
+        mMap.setOnPolylineClickListener(this);
+
+
 
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener()
         {
@@ -124,11 +157,12 @@ public class TrafficReportActivity extends BaseActivity
                 {
                     src = markerPoints.get(0);
                     dst = markerPoints.get(1);
-                    Snackbar.make(findViewById(android.R.id.content), getString(R.string.loading), Snackbar.LENGTH_SHORT).show();
+                    snackbar = showSnackbar(fragment.getView(), R.string.loading, Snackbar.LENGTH_INDEFINITE);
                     GoogleDirection.withServerKey(getString(R.string.google_directions_api))
                             .from(src)
                             .to(dst)
                             .transitMode(TransportMode.DRIVING)
+                            .alternativeRoute(true)
                             .execute(instance);
                 }
             }
@@ -148,14 +182,45 @@ public class TrafficReportActivity extends BaseActivity
     @Override
     public void onDirectionSuccess(Direction direction, String rawBody)
     {
+        dismissSnackbar(snackbar);
+        mMap.clear();
+        polylineList.clear();
+
+
         if (direction.isOK())
         {
-            //mMap.addMarker(new MarkerOptions().position(src));
-            //mMap.addMarker(new MarkerOptions().position(dst));
+            mMap.addMarker(new MarkerOptions().position(src).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+            mMap.addMarker(new MarkerOptions().position(dst).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
 
-            ArrayList<LatLng> directionPositionList = direction.getRouteList().get(0).getLegList().get(0).getDirectionPoint();
-            mMap.addPolyline(DirectionConverter.createPolyline(this, directionPositionList, 5, Color.RED));
+            List<Route> routes = direction.getRouteList();
+
+            showToast(getString(R.string.traffic_report_multipath_chooser, routes.size()), Toast.LENGTH_SHORT);
+
+            for (int i = 0; i < routes.size(); i++)
+            {
+                Route route = routes.get(i);
+                ArrayList<LatLng> directionPositionList = route.getLegList().get(0).getDirectionPoint();
+                PolylineOptions polylineOptions = DirectionConverter.createPolyline(this, directionPositionList, 5, Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256)));
+                Polyline polyline = mMap.addPolyline(polylineOptions);
+                polyline.setClickable(true);
+                polylineList.add(polyline);
+            }
         }
+        else
+            showSnackbar(fragment.getView(), R.string.something_went_wrong, Snackbar.LENGTH_SHORT);
+    }
+
+    @Override
+    public void onPolylineClick(Polyline polyline)
+    {
+        polyLineIndex =  polylineList.indexOf(polyline);
+        for (Polyline line : polylineList)
+        {
+            line.setColor(Color.GRAY);
+            line.setWidth(Utility.dpToPx(this, 3));
+        }
+        polyline.setColor(ContextCompat.getColor(this, R.color.accent_light));
+        polyline.setWidth(Utility.dpToPx(this, 5));
     }
 
     @Override
@@ -169,6 +234,7 @@ public class TrafficReportActivity extends BaseActivity
     {
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
+        dismissSnackbar(snackbar);
         mMap.animateCamera(cameraUpdate);
         locationManager.removeUpdates(this);
     }

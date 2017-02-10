@@ -1,6 +1,7 @@
 package se.winterei.rtraffic;
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.view.Menu;
 import android.webkit.WebView;
 
