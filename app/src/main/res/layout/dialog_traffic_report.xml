@@ -15,26 +15,27 @@
         android:textSize="@dimen/customTitle" />
 
     <RadioGroup
+        android:id="@+id/congestionPicker"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="16dp">
 
         <RadioButton
-            android:id="@+id/radioButton1"
+            android:id="@+id/fullyCongested"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="radioButtonClicked"
             android:text="@string/traffic_report_state_congested" />
 
         <RadioButton
-            android:id="@+id/radioButton2"
+            android:id="@+id/moderatelyCongested"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="radioButtonClicked"
             android:text="@string/traffic_report_state_sbm" />
 
         <RadioButton
-            android:id="@+id/radioButton3"
+            android:id="@+id/notCongested"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="false"

@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -66,11 +67,13 @@ public class MainActivity extends BaseActivity
     {
         final FloatingActionButton action_report_info = (FloatingActionButton) findViewById(R.id.action_report_info);
         final FloatingActionButton action_report_traffic = (FloatingActionButton) findViewById(R.id.action_report_traffic);
+        final FloatingActionsMenu fab_report = (FloatingActionsMenu) findViewById(R.id.fab_report) ;
         action_report_info.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
+                fab_report.collapse();
                 //proc the appropriate activity via intents here
             }
         });
@@ -80,6 +83,7 @@ public class MainActivity extends BaseActivity
             @Override
             public void onClick(View v)
             {
+                fab_report.collapse();
                 startActivity(new Intent(instance, TrafficReportActivity.class));
             }
         });

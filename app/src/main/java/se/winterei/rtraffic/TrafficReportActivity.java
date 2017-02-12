@@ -6,6 +6,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -13,7 +14,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -44,7 +48,7 @@ import se.winterei.rtraffic.libs.Utility;
 public class TrafficReportActivity extends BaseActivity
         implements OnMapReadyCallback, View.OnClickListener, DirectionCallback, LocationListener, GoogleMap.OnPolylineClickListener
 {
-    private GoogleMap mMap;
+    private GoogleMap mMap, mainMap;
     private RTraffic appContext;
     private TrafficReportActivity instance = this;
     private ArrayList<LatLng> markerPoints = new ArrayList<>();
@@ -55,10 +59,15 @@ public class TrafficReportActivity extends BaseActivity
     private SupportMapFragment fragment;
     private Snackbar snackbar;
     private List<Polyline> polylineList = new ArrayList<>();
+    private List<PolylineOptions> polylineOptionsList = new ArrayList<>();
     private int polyLineIndex = 0;
     private Random rnd = new Random();
     private static final int MENU_CLEAR = 500;
     private boolean showPolyLineHelp = true;
+    private RadioButton congestionPicker;
+    private int congestionChoiceID;
+    private EditText commentInput;
+    private CheckBox checkBoxInput;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -72,6 +81,7 @@ public class TrafficReportActivity extends BaseActivity
         setupNavigationView();
 
         appContext = (RTraffic) getApplicationContext();
+        mainMap = (GoogleMap) appContext.get("GMap");
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         fragment = (SupportMapFragment) getSupportFragmentManager()
@@ -105,8 +115,10 @@ public class TrafficReportActivity extends BaseActivity
             case MENU_CLEAR:
                 if(mMap != null)
                     mMap.clear();
-                showToast(R.string.traffic_report_toast_clear_markers, Toast.LENGTH_SHORT);
                 dismissSnackbar(snackbar);
+                markerPoints.clear();
+                polyLineIndex = 0;
+                showToast(R.string.traffic_report_toast_clear_markers, Toast.LENGTH_SHORT);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -129,9 +141,50 @@ public class TrafficReportActivity extends BaseActivity
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which)
                     {
-
+                        Polyline polyline = mainMap.addPolyline(polylineOptionsList.get(polyLineIndex));
+                        switch (congestionChoiceID)
+                        {
+                            case R.id.fullyCongested:
+                                polyline.setColor(Color.RED);
+                                break;
+                            case R.id.moderatelyCongested:
+                                polyline.setColor(Color.YELLOW);
+                                break;
+                            case R.id.notCongested:
+                                polyline.setColor(Color.GREEN);
+                                break;
+                            default:
+                                showSnackbar(fragment.getView(), R.string.something_went_wrong, Snackbar.LENGTH_SHORT);
+                        }
+                        showToast(R.string.traffic_report_thank_you, Toast.LENGTH_SHORT);
+                        finish();
                     }
                 }).build();
+
+        commentInput = (EditText)  dialog.getCustomView().findViewById(R.id.comment);
+        checkBoxInput = (CheckBox) dialog.getCustomView().findViewById(R.id.anonymous_report);
+
+        final View positiveAction =  dialog.getActionButton(DialogAction.POSITIVE);
+        RadioGroup radioGroup  = (RadioGroup) dialog.getCustomView().findViewById(R.id.congestionPicker);
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId)
+            {
+                positiveAction.setEnabled(true);
+                RadioButton tmp = (RadioButton) group.findViewById(checkedId);
+                if(tmp != null)
+                {
+                    if(tmp.isChecked())
+                    {
+                        congestionPicker = tmp;
+                        congestionChoiceID = checkedId;
+                    }
+                }
+            }
+        });
+
+        positiveAction.setEnabled(false);
         dialog.show();
     }
 
@@ -180,12 +233,12 @@ public class TrafficReportActivity extends BaseActivity
                  */
                 if (markerPoints.size() == 1)
                 {
-                    options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                    options.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_start_marker));
                     showToast(R.string.traffic_report_second_instruction, Toast.LENGTH_SHORT);
                 }
                 else if (markerPoints.size() == 2)
                 {
-                    options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                    options.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_end_marker));
                 }
                 mMap.addMarker(options);
                 if (markerPoints.size() == 2)
@@ -220,12 +273,13 @@ public class TrafficReportActivity extends BaseActivity
         dismissSnackbar(snackbar);
         mMap.clear();
         polylineList.clear();
+        polylineOptionsList.clear();
 
 
         if (direction.isOK())
         {
-            mMap.addMarker(new MarkerOptions().position(src).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
-            mMap.addMarker(new MarkerOptions().position(dst).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+            mMap.addMarker(new MarkerOptions().position(src).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_start_marker)));
+            mMap.addMarker(new MarkerOptions().position(dst).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_end_marker)));
 
             List<Route> routes = direction.getRouteList();
 
@@ -239,6 +293,7 @@ public class TrafficReportActivity extends BaseActivity
                 Polyline polyline = mMap.addPolyline(polylineOptions);
                 polyline.setClickable(true);
                 polylineList.add(polyline);
+                polylineOptionsList.add(polylineOptions);
             }
         }
         else

@@ -30,6 +30,7 @@
     <string name="traffic_report_state_congested">Fully Congested</string>
     <string name="traffic_report_state_sbm">Slow but moving</string>
     <string name="traffic_report_state_free">No Congestion</string>
+    <string name="traffic_report_thank_you">Thank you for your report!</string>
 
     <string name="feedback_thank_you">Thank you for your feedback!</string>
 
