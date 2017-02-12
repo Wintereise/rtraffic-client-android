@@ -172,6 +172,9 @@ public abstract class BaseActivity extends AppCompatActivity
             case R.id.action_feedback:
                 showDoorbell();
                 break;
+            case R.id.action_geofence:
+                tmp = new Intent(this, GeoFenceActivity.class);
+                break;
         }
         if (tmp != null)
             startActivity(tmp);

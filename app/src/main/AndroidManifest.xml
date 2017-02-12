@@ -55,6 +55,20 @@
         <activity
             android:name=".MyLocationActivity"
             android:label="@string/nav_mylocation" />
+
+        <activity
+            android:name=".GeoFenceActivity"
+            android:label="@string/nav_geofence">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
+
+        <service android:name=".GeofenceTransitionsIntentService" />
     </application>
 
 </manifest>
