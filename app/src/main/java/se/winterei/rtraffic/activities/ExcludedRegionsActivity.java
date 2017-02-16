@@ -1,9 +1,11 @@
-package se.winterei.rtraffic;
+package se.winterei.rtraffic.activities;
 
 import android.os.Bundle;
 import android.view.Menu;
 
-public class ExcludedRegions extends BaseActivity
+import se.winterei.rtraffic.R;
+
+public class ExcludedRegionsActivity extends BaseActivity
 {
 
     @Override

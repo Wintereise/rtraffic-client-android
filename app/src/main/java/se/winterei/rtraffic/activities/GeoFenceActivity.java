@@ -1,9 +1,8 @@
-package se.winterei.rtraffic;
+package se.winterei.rtraffic.activities;
 
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -26,6 +25,11 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.Map;
+
+import se.winterei.rtraffic.libs.geofencing.Constants;
+import se.winterei.rtraffic.libs.geofencing.GeofenceErrorMessages;
+import se.winterei.rtraffic.libs.geofencing.GeofenceTransitionsIntentService;
+import se.winterei.rtraffic.R;
 
 
 public class GeoFenceActivity extends BaseActivity implements
@@ -240,7 +244,7 @@ public class GeoFenceActivity extends BaseActivity implements
 
         // Get an instance of the Notification manager
         NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
         // Issue the notification
         mNotificationManager.notify(0, builder.build());

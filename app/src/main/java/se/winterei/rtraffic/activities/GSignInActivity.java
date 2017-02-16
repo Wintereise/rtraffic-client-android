@@ -1,4 +1,4 @@
-package se.winterei.rtraffic;
+package se.winterei.rtraffic.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -18,6 +18,9 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+
+import se.winterei.rtraffic.R;
+import se.winterei.rtraffic.RTraffic;
 
 public class GSignInActivity extends AppCompatActivity implements
         View.OnClickListener, GoogleApiClient.OnConnectionFailedListener

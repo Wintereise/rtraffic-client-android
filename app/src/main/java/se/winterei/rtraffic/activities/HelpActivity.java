@@ -1,19 +1,28 @@
-package se.winterei.rtraffic;
+package se.winterei.rtraffic.activities;
 
 import android.os.Bundle;
 import android.view.Menu;
+import android.webkit.WebView;
 
-public class PointsOfInterest extends BaseActivity
+import se.winterei.rtraffic.R;
+
+public class HelpActivity extends BaseActivity
 {
+
+    private WebView webView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_points_of_interest);
+        setContentView(R.layout.activity_help);
 
         setupToolbar(null);
         setupNavigationView();
+
+        webView = (WebView) findViewById(R.id.web_help);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.loadUrl("http://voile.tomoyo.eu/rhelp/");
     }
 
     @Override
@@ -31,4 +40,3 @@ public class PointsOfInterest extends BaseActivity
         finish();
     }
 }
-

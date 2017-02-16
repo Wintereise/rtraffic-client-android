@@ -1,4 +1,4 @@
-package se.winterei.rtraffic.libs;
+package se.winterei.rtraffic.libs.generic;
 
 import android.support.annotation.Nullable;
 

@@ -1,12 +1,10 @@
-package se.winterei.rtraffic;
+package se.winterei.rtraffic.activities;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -43,7 +41,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import se.winterei.rtraffic.libs.Utility;
+import se.winterei.rtraffic.R;
+import se.winterei.rtraffic.RTraffic;
+import se.winterei.rtraffic.libs.generic.Utility;
 
 public class TrafficReportActivity extends BaseActivity
         implements OnMapReadyCallback, View.OnClickListener, DirectionCallback, LocationListener, GoogleMap.OnPolylineClickListener
@@ -64,7 +64,6 @@ public class TrafficReportActivity extends BaseActivity
     private Random rnd = new Random();
     private static final int MENU_CLEAR = 500;
     private boolean showPolyLineHelp = true;
-    private RadioButton congestionPicker;
     private int congestionChoiceID;
     private EditText commentInput;
     private CheckBox checkBoxInput;
@@ -90,7 +89,7 @@ public class TrafficReportActivity extends BaseActivity
 
         if(checkGPSPermissions())
         {
-            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME, MIN_DISTANCE, this); //You can also use LocationManager.GPS_PROVIDER and LocationManager.PASSIVE_PROVIDER
         }
 
@@ -173,13 +172,9 @@ public class TrafficReportActivity extends BaseActivity
             {
                 positiveAction.setEnabled(true);
                 RadioButton tmp = (RadioButton) group.findViewById(checkedId);
-                if(tmp != null)
+                if(tmp != null && tmp.isChecked())
                 {
-                    if(tmp.isChecked())
-                    {
-                        congestionPicker = tmp;
-                        congestionChoiceID = checkedId;
-                    }
+                    congestionChoiceID = checkedId;
                 }
             }
         });

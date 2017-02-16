@@ -1,4 +1,4 @@
-package se.winterei.rtraffic;
+package se.winterei.rtraffic.libs.geofencing;
 
 /**
  * Created by pinku on 2/12/17.
@@ -21,6 +21,9 @@ import com.google.android.gms.location.GeofencingEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import se.winterei.rtraffic.R;
+import se.winterei.rtraffic.activities.MainActivity;
 
 /**
  * Created by lmoroney on 12/16/14.

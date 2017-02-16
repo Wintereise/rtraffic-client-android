@@ -20,7 +20,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".GSignInActivity">
+        <activity android:name=".activities.GSignInActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -32,32 +32,32 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".SettingsActivity"
+            android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings" />
         <activity
-            android:name=".HelpActivity"
+            android:name=".activities.HelpActivity"
             android:label="@string/help_label" />
         <activity
-            android:name=".TrafficReportActivity"
+            android:name=".activities.TrafficReportActivity"
             android:label="@string/traffic_report" />
         <activity
-            android:name=".ExcludedRegions"
+            android:name=".activities.ExcludedRegionsActivity"
             android:label="@string/nav_exclude_regions" />
         <activity
-            android:name=".PointsOfInterest"
+            android:name=".activities.PointsOfInterestActivity"
             android:label="@string/nav_notif_reg"></activity>
         <activity
-            android:name=".MyLocationActivity"
+            android:name=".activities.MyLocationActivity"
             android:label="@string/nav_mylocation" />
 
         <activity
-            android:name=".GeoFenceActivity"
+            android:name=".activities.GeoFenceActivity"
             android:label="@string/nav_geofence">
 
             <intent-filter>
@@ -68,7 +68,7 @@
 
         </activity>
 
-        <service android:name=".GeofenceTransitionsIntentService" />
+        <service android:name=".libs.geofencing.GeofenceTransitionsIntentService" />
     </application>
 
 </manifest>

@@ -1,4 +1,4 @@
-package se.winterei.rtraffic;
+package se.winterei.rtraffic.activities;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

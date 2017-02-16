@@ -1,4 +1,4 @@
-package se.winterei.rtraffic;
+package se.winterei.rtraffic.activities;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -23,6 +23,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 
 import io.doorbell.android.Doorbell;
 import io.doorbell.android.callbacks.OnFeedbackSentCallback;
+import se.winterei.rtraffic.R;
+import se.winterei.rtraffic.RTraffic;
 
 
 public abstract class BaseActivity extends AppCompatActivity
@@ -158,13 +160,13 @@ public abstract class BaseActivity extends AppCompatActivity
                 tmp = new Intent(this, SettingsActivity.class);
                 break;
             case R.id.action_notif_reg:
-                tmp = new Intent(this, PointsOfInterest.class);
+                tmp = new Intent(this, PointsOfInterestActivity.class);
                 break;
             case R.id.action_help:
                 tmp = new Intent(this, HelpActivity.class);
                 break;
             case R.id.action_exclude_regions:
-                tmp = new Intent(this, ExcludedRegions.class);
+                tmp = new Intent(this, ExcludedRegionsActivity.class);
                 break;
             case R.id.action_mylocation:
                 tmp = new Intent(this, MyLocationActivity.class);

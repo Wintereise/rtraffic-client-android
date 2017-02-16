@@ -1,4 +1,4 @@
-package se.winterei.rtraffic;
+package se.winterei.rtraffic.libs.geofencing;
 
 /**
  * Created by pinku on 2/12/17.
