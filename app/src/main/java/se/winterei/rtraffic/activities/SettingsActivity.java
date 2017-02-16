@@ -23,6 +23,7 @@ import android.view.MenuItem;
 import java.util.List;
 
 import se.winterei.rtraffic.R;
+import se.winterei.rtraffic.libs.settings.AppCompatPreferenceActivity;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On

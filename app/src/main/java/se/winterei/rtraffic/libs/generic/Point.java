@@ -8,20 +8,22 @@ import android.support.annotation.Nullable;
 
 public class Point
 {
-    public float longitude, latitude;
+    public double longitude, latitude;
     public String title, info;
+
+    public state condition;
+
     public enum state
     {
         CONGESTED, SLOW_BUT_MOVING, UNCONGESTED
     }
-    public state state;
 
-    public Point (float longitude, float lat, String title, @Nullable String info, @Nullable state s)
+    public Point (double lat, double longitude, String title, @Nullable String info, @Nullable state s)
     {
         this.longitude = longitude;
         this.latitude = lat;
         this.title = title;
         this.info = info;
-        this.state = s;
+        this.condition = s;
     }
 }
