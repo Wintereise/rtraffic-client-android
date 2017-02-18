@@ -20,21 +20,27 @@ public class MapContainer
     private GoogleMap map;
     private List<Marker> markerList;
     private List<Polyline> polylineList;
-    private HashMap<Polyline, Integer> polylineStateMap = new HashMap<>();
-    private List<MapChangeListener> mapChangeListenerList = new ArrayList<>();
+    private HashMap<Polyline, Integer> polylineStateMap;
+    private List<MapChangeListener> mapChangeListenerList;
+    private enum type
+    {
+        MARKER, POLYLINE
+    }
 
     public MapContainer (GoogleMap map)
     {
         this.map = map;
         markerList = new ArrayList<>();
         polylineList = new ArrayList<>();
+        polylineStateMap = new HashMap<>();
+        mapChangeListenerList = new ArrayList<>();
     }
 
     public Marker addMarker (MarkerOptions markerOptions)
     {
         Marker tmp = map.addMarker(markerOptions);
         markerList.add(tmp);
-        notifyListeners("marker", tmp);
+        notifyListeners(type.MARKER, tmp);
         return tmp;
     }
 
@@ -42,7 +48,7 @@ public class MapContainer
     {
         Polyline tmp = map.addPolyline(polylineOptions);
         polylineList.add(tmp);
-        notifyListeners("polyline", tmp);
+        notifyListeners(type.POLYLINE, tmp);
         return tmp;
     }
 
@@ -51,7 +57,7 @@ public class MapContainer
         Polyline tmp = map.addPolyline(polylineOptions);
         polylineList.add(tmp);
         polylineStateMap.put(tmp, state);
-        notifyListeners("polyline", tmp);
+        notifyListeners(type.POLYLINE, tmp);
         return tmp;
     }
 
@@ -88,16 +94,16 @@ public class MapContainer
         return map;
     }
 
-    private void notifyListeners (String type, Object o)
+    private void notifyListeners (type type, Object o)
     {
         for (MapChangeListener listener : mapChangeListenerList)
         {
             switch (type)
             {
-                case "marker":
+                case MARKER:
                     listener.onMarkerAdded((Marker) o);
                     break;
-                case "polyline":
+                case POLYLINE:
                     listener.onPolylineAdded((Polyline) o);
                     break;
             }
