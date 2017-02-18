@@ -1,12 +1,14 @@
 package se.winterei.rtraffic.activities;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,20 +24,30 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.maps.android.PolyUtil;
 
-import java.util.ArrayList;
+
+import java.util.HashMap;
 import java.util.List;
 
 import se.winterei.rtraffic.R;
 import se.winterei.rtraffic.RTraffic;
 import se.winterei.rtraffic.libs.generic.Point;
 import se.winterei.rtraffic.libs.generic.PointDataStore;
+import se.winterei.rtraffic.libs.generic.Utility;
+import se.winterei.rtraffic.libs.map.MapChangeListener;
+import se.winterei.rtraffic.libs.map.MapContainer;
+
+import static se.winterei.rtraffic.libs.generic.Utility.CONGESTED;
+import static se.winterei.rtraffic.libs.generic.Utility.SLOW_BUT_MOVING;
+import static se.winterei.rtraffic.libs.generic.Utility.UNCONGESTED;
 
 
 public class MainActivity extends BaseActivity
         implements OnMapReadyCallback, View.OnClickListener, LocationListener
 {
-    private GoogleMap mMap;
+    private MapContainer mapContainer;
     private RTraffic appContext;
     private MainActivity instance = this;
     private LocationManager locationManager;
@@ -44,7 +56,6 @@ public class MainActivity extends BaseActivity
     private SupportMapFragment fragment;
     private Snackbar snackbar;
     private List<Point> pointList;
-    private List<Marker> markerList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -57,9 +68,11 @@ public class MainActivity extends BaseActivity
         setupFloatingActionButton();
 
         pointList = new PointDataStore().getPoints();
-        markerList = new ArrayList<>();
+
 
         appContext = (RTraffic) getApplicationContext();
+
+        appContext.put("MainMapPointList", pointList);
 
         fragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -135,6 +148,48 @@ public class MainActivity extends BaseActivity
         return true;
     }
 
+    public void refreshMarkerStates ()
+    {
+        int markerType;
+        for (Marker marker : mapContainer.getMarkerList())
+        {
+            markerType = -1;
+            HashMap<Polyline, Integer> stateMap = mapContainer.getPolylineStateMap();
+            for (Polyline polyline : mapContainer.getPolylineList())
+            {
+                if(PolyUtil.isLocationOnPath(marker.getPosition(), polyline.getPoints(), true, Utility.polylineMatchTolerance))
+                {
+                    final int state;
+                    if(stateMap.containsKey(polyline))
+                        state = stateMap.get(polyline);
+                    else
+                        state = -1;
+
+                    switch (state)
+                    {
+                        case CONGESTED:
+                            markerType = R.drawable.ic_traffic_black_red;
+                            break;
+                        case SLOW_BUT_MOVING:
+                            markerType = R.drawable.ic_traffic_black_yellow;
+                            break;
+                        case UNCONGESTED:
+                            markerType = R.drawable.ic_traffic_black_green;
+                            break;
+                        default:
+                            Log.d("Marker Update", "Unrecognized state found, this polyline does not likely have state information associated with it.");
+                    }
+                    if (markerType != -1)
+                    {
+                        marker.setIcon(BitmapDescriptorFactory.fromResource(markerType));
+                    }
+
+                }
+            }
+        }
+    }
+
+
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -144,45 +199,46 @@ public class MainActivity extends BaseActivity
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      */
+
     @Override
     public void onMapReady(GoogleMap googleMap)
     {
-        mMap = googleMap;
-        appContext.put("GMap", mMap);
-        int markerType = 0;
+        mapContainer = new MapContainer(googleMap);
 
-        // Ghetto, shameful marker implementation to get by for now.
+        appContext.put("MainMapContainer", mapContainer);
+
         if (pointList.size() > 0)
         {
             for (Point point : pointList)
             {
                 MarkerOptions markerOptions = new MarkerOptions()
                         .position(new LatLng(point.latitude, point.longitude))
-                        .title(point.title);
-                switch (point.condition)
-                {
-                    case CONGESTED:
-                        markerType = R.drawable.ic_traffic_black_red;
-                        break;
-                    case SLOW_BUT_MOVING:
-                        markerType = R.drawable.ic_traffic_black_yellow;
-                        break;
-                    case UNCONGESTED:
-                        markerType = R.drawable.ic_traffic_black_green;
-                        break;
-                    default:
-                        markerType = R.drawable.ic_traffic_black_18dp;
-                }
-                markerOptions.icon(BitmapDescriptorFactory.fromResource(markerType));
-                markerList.add(mMap.addMarker(markerOptions));
+                        .title(point.title)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_traffic_black_grey));
 
+                mapContainer.addMarker(markerOptions);
             }
         }
 
         snackbar = showSnackbar(fragment.getView(), R.string.loading_main, Snackbar.LENGTH_INDEFINITE);
 
         if (checkGPSPermissions())
-           mMap.setMyLocationEnabled(true);
+           mapContainer.getMap().setMyLocationEnabled(true);
+
+        mapContainer.registerListener(new MapChangeListener()
+        {
+            @Override
+            public void onPolylineAdded(Polyline polylineT)
+            {
+                refreshMarkerStates();
+            }
+
+            @Override
+            public void onMarkerAdded(Marker marker)
+            {
+
+            }
+        });
     }
 
     @Override
@@ -201,7 +257,8 @@ public class MainActivity extends BaseActivity
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 12);
         dismissSnackbar(snackbar);
-        mMap.animateCamera(cameraUpdate);
+        mapContainer.getMap()
+                .animateCamera(cameraUpdate);
         locationManager.removeUpdates(this);
     }
 
@@ -214,4 +271,19 @@ public class MainActivity extends BaseActivity
     @Override
     public void onProviderDisabled(String provider) { }
 
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.action_refresh:
+
+                return true;
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }

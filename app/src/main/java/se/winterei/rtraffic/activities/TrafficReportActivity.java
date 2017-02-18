@@ -33,6 +33,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -44,11 +45,13 @@ import java.util.Random;
 import se.winterei.rtraffic.R;
 import se.winterei.rtraffic.RTraffic;
 import se.winterei.rtraffic.libs.generic.Utility;
+import se.winterei.rtraffic.libs.map.MapContainer;
 
 public class TrafficReportActivity extends BaseActivity
         implements OnMapReadyCallback, View.OnClickListener, DirectionCallback, LocationListener, GoogleMap.OnPolylineClickListener
 {
-    private GoogleMap mMap, mainMap;
+    private GoogleMap mMap;
+    private MapContainer mapContainer, mainMap;
     private RTraffic appContext;
     private TrafficReportActivity instance = this;
     private ArrayList<LatLng> markerPoints = new ArrayList<>();
@@ -80,7 +83,8 @@ public class TrafficReportActivity extends BaseActivity
         setupNavigationView();
 
         appContext = (RTraffic) getApplicationContext();
-        mainMap = (GoogleMap) appContext.get("GMap");
+
+        mainMap = (MapContainer) appContext.get("MainMapContainer");
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         fragment = (SupportMapFragment) getSupportFragmentManager()
@@ -140,20 +144,28 @@ public class TrafficReportActivity extends BaseActivity
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which)
                     {
-                        Polyline polyline = mainMap.addPolyline(polylineOptionsList.get(polyLineIndex));
+                        int color = -1, state = -1;
                         switch (congestionChoiceID)
                         {
                             case R.id.fullyCongested:
-                                polyline.setColor(Color.RED);
+                                color = Color.RED;
+                                state = Utility.CONGESTED;
                                 break;
                             case R.id.moderatelyCongested:
-                                polyline.setColor(Color.YELLOW);
+                                color = Color.YELLOW;
+                                state = Utility.SLOW_BUT_MOVING;
                                 break;
                             case R.id.notCongested:
-                                polyline.setColor(Color.GREEN);
+                                color = Color.GREEN;
+                                state = Utility.UNCONGESTED;
                                 break;
                             default:
                                 showSnackbar(fragment.getView(), R.string.something_went_wrong, Snackbar.LENGTH_SHORT);
+                        }
+                        if (color != -1 && state != -1)
+                        {
+                            Polyline polyline = mainMap.addPolyline(polylineOptionsList.get(polyLineIndex), state);
+                            polyline.setColor(color);
                         }
                         showToast(R.string.traffic_report_thank_you, Toast.LENGTH_SHORT);
                         finish();
