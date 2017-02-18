@@ -33,7 +33,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -166,8 +165,9 @@ public class TrafficReportActivity extends BaseActivity
                         {
                             Polyline polyline = mainMap.addPolyline(polylineOptionsList.get(polyLineIndex), state);
                             polyline.setColor(color);
+                            showToast(R.string.traffic_report_thank_you, Toast.LENGTH_SHORT);
                         }
-                        showToast(R.string.traffic_report_thank_you, Toast.LENGTH_SHORT);
+
                         finish();
                     }
                 }).build();

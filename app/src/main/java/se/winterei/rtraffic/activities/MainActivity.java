@@ -207,18 +207,7 @@ public class MainActivity extends BaseActivity
 
         appContext.put("MainMapContainer", mapContainer);
 
-        if (pointList.size() > 0)
-        {
-            for (Point point : pointList)
-            {
-                MarkerOptions markerOptions = new MarkerOptions()
-                        .position(new LatLng(point.latitude, point.longitude))
-                        .title(point.title)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_traffic_black_grey));
-
-                mapContainer.addMarker(markerOptions);
-            }
-        }
+        mapContainer.addPoints(pointList);
 
         snackbar = showSnackbar(fragment.getView(), R.string.loading_main, Snackbar.LENGTH_INDEFINITE);
 

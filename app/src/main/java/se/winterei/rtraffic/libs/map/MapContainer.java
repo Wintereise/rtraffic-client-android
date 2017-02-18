@@ -57,28 +57,13 @@ public class MapContainer
 
     public void addPoints (List<Point> pointList)
     {
-        int markerType = 0;
-
         for (Point point : pointList)
         {
             MarkerOptions markerOptions = new MarkerOptions()
                     .position(new LatLng(point.latitude, point.longitude))
-                    .title(point.title);
-            switch (point.condition)
-            {
-                case CONGESTED:
-                    markerType = R.drawable.ic_traffic_black_red;
-                    break;
-                case SLOW_BUT_MOVING:
-                    markerType = R.drawable.ic_traffic_black_yellow;
-                    break;
-                case UNCONGESTED:
-                    markerType = R.drawable.ic_traffic_black_green;
-                    break;
-                default:
-                    markerType = R.drawable.ic_traffic_black_18dp;
-            }
-            markerOptions.icon(BitmapDescriptorFactory.fromResource(markerType));
+                    .title(point.title)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_traffic_black_gray));
+
             addMarker(markerOptions);
         }
     }
