@@ -34,6 +34,8 @@
 
     <string name="feedback_thank_you">Thank you for your feedback!</string>
 
+    <string name="search_hint">Search for Locations</string>
+
     <!-- Sign-in status messages for G-sign in-->
 
     <string name="title_text">Realtime Traffic Management</string>

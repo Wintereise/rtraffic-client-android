@@ -10,20 +10,13 @@ public class Point
 {
     public double longitude, latitude;
     public String title, info;
+    public int id;
 
-    public state condition;
-
-    public enum state
-    {
-        CONGESTED, SLOW_BUT_MOVING, UNCONGESTED
-    }
-
-    public Point (double lat, double longitude, String title, @Nullable String info, @Nullable state s)
+    public Point (double lat, double longitude, String title, @Nullable String info)
     {
         this.longitude = longitude;
         this.latitude = lat;
         this.title = title;
         this.info = info;
-        this.condition = s;
     }
 }

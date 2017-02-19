@@ -1,7 +1,7 @@
 package se.winterei.rtraffic.activities;
 
 import android.content.Intent;
-import android.graphics.Color;
+import android.database.MatrixCursor;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -23,13 +23,14 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.maps.android.PolyUtil;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import se.winterei.rtraffic.R;
 import se.winterei.rtraffic.RTraffic;
@@ -38,6 +39,7 @@ import se.winterei.rtraffic.libs.generic.PointDataStore;
 import se.winterei.rtraffic.libs.generic.Utility;
 import se.winterei.rtraffic.libs.map.MapChangeListener;
 import se.winterei.rtraffic.libs.map.MapContainer;
+import se.winterei.rtraffic.libs.search.SearchFeedResultsAdapter;
 
 import static se.winterei.rtraffic.libs.generic.Utility.CONGESTED;
 import static se.winterei.rtraffic.libs.generic.Utility.SLOW_BUT_MOVING;
@@ -56,6 +58,8 @@ public class MainActivity extends BaseActivity
     private SupportMapFragment fragment;
     private Snackbar snackbar;
     private List<Point> pointList;
+    private SearchFeedResultsAdapter searchFeedResultsAdapter;
+    private final String[] columns = new String[]{"_id", "title"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -118,24 +122,85 @@ public class MainActivity extends BaseActivity
     {
         MenuItem myActionMenuItem = menu.findItem(R.id.action_search);
         final SearchView searchView = (SearchView) myActionMenuItem.getActionView();
-        searchView.setOnQueryTextListener
-                (
-                        new SearchView.OnQueryTextListener ()
-                        {
-                            @Override
-                            public boolean onQueryTextSubmit (String query)
-                            {
-                                return false;
-                            }
 
-                            @Override
-                            public boolean onQueryTextChange (String newText)
-                            {
-                                //map filtering logic along with Google Maps API goes here
-                                return true;
-                            }
-                        }
-                );
+        searchView.setOnQueryTextListener
+        (
+            new SearchView.OnQueryTextListener ()
+            {
+                @Override
+                public boolean onQueryTextSubmit (String query)
+                {
+                    return false;
+                }
+
+                @Override
+                public boolean onQueryTextChange (String s)
+                {
+                    //if( ! searchView.isIconified())
+                    //{
+                   //     searchView.setIconified(true);
+                    //}
+                    if (s.length() >= 3)
+                    {
+                        filterMarkers(s);
+                    }
+                    return true;
+                }
+            }
+        );
+
+        searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener()
+        {
+            @Override
+            public boolean onSuggestionSelect(int position) {
+                return false;
+            }
+
+            @Override
+            public boolean onSuggestionClick(int position) {
+                return false;
+            }
+        });
+
+        searchFeedResultsAdapter = new SearchFeedResultsAdapter (instance, R.layout.search_suggestions, null, columns, null, -1000);
+
+        searchView.setSuggestionsAdapter(searchFeedResultsAdapter);
+    }
+
+    private void filterMarkers (String searchText)
+    {
+        List<Marker> results;
+        searchText = searchText.toLowerCase(Locale.getDefault());
+
+        if (searchText.length() == 0 || searchText == "")
+        {
+            results = mapContainer.getMarkerList();
+        }
+        else
+        {
+            results = new ArrayList<>();
+            for (Marker marker : mapContainer.getMarkerList())
+            {
+                if(marker.getTitle().toLowerCase(Locale.getDefault()).contains(searchText))
+                {
+                    results.add(marker);
+                }
+            }
+        }
+
+        if (results.size() > 0)
+        {
+            MatrixCursor matrixCursor = new MatrixCursor(columns);
+            for (Marker marker : results)
+            {
+                String[] tmp = new String[2];
+                tmp[0] = Integer.toString(0);
+                tmp[1] = marker.getTitle();
+                matrixCursor.addRow(tmp);
+            }
+            searchFeedResultsAdapter.changeCursor(matrixCursor);
+        }
+
     }
 
     @Override
