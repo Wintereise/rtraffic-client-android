@@ -1,6 +1,7 @@
 package se.winterei.rtraffic.activities;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.location.Location;
 import android.location.LocationListener;
@@ -59,7 +60,8 @@ public class MainActivity extends BaseActivity
     private Snackbar snackbar;
     private List<Point> pointList;
     private SearchFeedResultsAdapter searchFeedResultsAdapter;
-    private final String[] columns = new String[]{"_id", "title"};
+    private final String[] columns = new String[]{"_id", "title", "position"};
+    private final HashMap<Integer, Marker> searchPositionMap = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -72,7 +74,6 @@ public class MainActivity extends BaseActivity
         setupFloatingActionButton();
 
         pointList = new PointDataStore().getPoints();
-
 
         appContext = (RTraffic) getApplicationContext();
 
@@ -130,19 +131,20 @@ public class MainActivity extends BaseActivity
                 @Override
                 public boolean onQueryTextSubmit (String query)
                 {
-                    return false;
+                    filterMarkers(query);
+                    return true;
                 }
 
                 @Override
-                public boolean onQueryTextChange (String s)
+                public boolean onQueryTextChange (String query)
                 {
                     //if( ! searchView.isIconified())
                     //{
                    //     searchView.setIconified(true);
                     //}
-                    if (s.length() >= 3)
+                    if (query.length() >= 3)
                     {
-                        filterMarkers(s);
+                        filterMarkers(query);
                     }
                     return true;
                 }
@@ -152,19 +154,40 @@ public class MainActivity extends BaseActivity
         searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener()
         {
             @Override
-            public boolean onSuggestionSelect(int position) {
-                return false;
+            public boolean onSuggestionSelect(int position)
+            {
+                focusMarker(searchView, position);
+                return true;
             }
 
             @Override
-            public boolean onSuggestionClick(int position) {
-                return false;
+            public boolean onSuggestionClick(int position)
+            {
+                focusMarker(searchView, position);
+                return true;
             }
         });
 
         searchFeedResultsAdapter = new SearchFeedResultsAdapter (instance, R.layout.search_suggestions, null, columns, null, -1000);
 
         searchView.setSuggestionsAdapter(searchFeedResultsAdapter);
+    }
+
+    private void focusMarker (SearchView searchView, int position)
+    {
+        Cursor cursor = (Cursor) searchView.getSuggestionsAdapter().getItem(position);
+        int index = Integer.parseInt(cursor.getString(2));
+
+        Marker marker = searchPositionMap.get(index);
+        if(marker != null)
+        {
+            mapContainer.getMap()
+                    .animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
+            marker.showInfoWindow();
+            searchView.setQuery(marker.getTitle(), false);
+        }
+
+        searchView.clearFocus();
     }
 
     private void filterMarkers (String searchText)
@@ -191,12 +214,14 @@ public class MainActivity extends BaseActivity
         if (results.size() > 0)
         {
             MatrixCursor matrixCursor = new MatrixCursor(columns);
+            searchPositionMap.clear();
+            int index = 0;
             for (Marker marker : results)
             {
-                String[] tmp = new String[2];
-                tmp[0] = Integer.toString(0);
-                tmp[1] = marker.getTitle();
+                String[] tmp = new String[]{ Integer.toString(0), marker.getTitle(), Integer.toString(index) };
+                searchPositionMap.put(index, marker);
                 matrixCursor.addRow(tmp);
+                index++;
             }
             searchFeedResultsAdapter.changeCursor(matrixCursor);
         }

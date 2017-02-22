@@ -9,16 +9,16 @@
     <ImageView
         android:id="@+id/search_icon"
         android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_height="32dp"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:layout_alignParentStart="true" />
     <TextView
         android:id="@+id/search_location_name"
         android:layout_width="wrap_content"
-        android:layout_height="18dp"
+        android:layout_height="32dp"
         android:paddingStart="5dp"
         android:layout_toEndOf="@id/search_icon"
-        android:paddingTop="0dp"
-        android:paddingBottom="2dp" />
+        android:paddingTop="5.25dp"
+        android:paddingBottom="1dp" />
 </RelativeLayout>

@@ -290,9 +290,9 @@ public class TrafficReportActivity extends BaseActivity
 
             List<Route> routes = direction.getRouteList();
 
-            showToast(getString(R.string.traffic_report_multipath_chooser, routes.size()), Toast.LENGTH_SHORT);
+            int size = routes.size();
 
-            for (int i = 0; i < routes.size(); i++)
+            for (int i = 0; i < size; i++)
             {
                 Route route = routes.get(i);
                 ArrayList<LatLng> directionPositionList = route.getLegList().get(0).getDirectionPoint();
@@ -302,6 +302,17 @@ public class TrafficReportActivity extends BaseActivity
                 polylineList.add(polyline);
                 polylineOptionsList.add(polylineOptions);
             }
+
+            if (size == 1)
+            {
+                showToast(R.string.traffic_report_singlepath, Toast.LENGTH_SHORT);
+                onPolylineClick(polylineList.get(0));
+            }
+            else
+            {
+                showToast(getString(R.string.traffic_report_multipath_chooser, routes.size()), Toast.LENGTH_SHORT);
+            }
+
         }
         else
             showSnackbar(fragment.getView(), R.string.something_went_wrong, Snackbar.LENGTH_SHORT);
@@ -320,7 +331,7 @@ public class TrafficReportActivity extends BaseActivity
         polyline.setWidth(Utility.dpToPx(this, 5));
         if(showPolyLineHelp)
         {
-            showToast(R.string.traffic_report_polyline_select, Toast.LENGTH_LONG);
+            showToast(R.string.traffic_report_polyline_select, Toast.LENGTH_SHORT);
             showPolyLineHelp = false;
         }
         snackbar = Snackbar.make(fragment.getView(), R.string.traffic_report_snackbar_confirm_report, Snackbar.LENGTH_INDEFINITE);

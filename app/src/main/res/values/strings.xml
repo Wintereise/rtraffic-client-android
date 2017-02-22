@@ -11,7 +11,8 @@
     <string name="exit_on_back">Press the back button once again to close the application.</string>
     <string name="loading_main">Getting map and GPS data</string>
     <string name="something_went_wrong">Something went wrong, please try again later.</string>
-    <string name="traffic_report_multipath_chooser">Found %1$d paths, please select the correct path by tapping on it.</string>
+    <string name="traffic_report_multipath_chooser">Found %1$d path(s), please select the correct path by tapping on it.</string>
+    <string name="traffic_report_singlepath">Only found one path, auto selected.</string>
     <string name="traffic_report_initial_instructions">Please tap and hold at the location where you believe the traffic congestion begins.</string>
     <string name="traffic_report_second_instruction">Now tap and hold the location where you believe the traffic congestion ends.</string>
     <string name="traffic_report_polyline_select">If you\'re satisfied with your selection, please confirm below. If not, you can choose another path, or start anew via the Clear button.</string>

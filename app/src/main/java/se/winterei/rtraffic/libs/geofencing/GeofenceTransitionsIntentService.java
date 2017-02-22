@@ -78,6 +78,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private String getGeofenceTransitionDetails(
             Context context,
             int geofenceTransition,
