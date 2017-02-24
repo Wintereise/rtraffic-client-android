@@ -4,7 +4,7 @@
 
     <string name="edit_message">Enter a message</string>
     <string name="button_send">Send</string>
-    <string name="action_refresh">Reload</string>
+    <string name="action_refresh">Refresh</string>
     <string name="action_search">Search</string>
     <string name="title_activity_maps">Map</string>
     <string name="permission_location_err">We seem to be missing the permissions that allow us to access location.</string>

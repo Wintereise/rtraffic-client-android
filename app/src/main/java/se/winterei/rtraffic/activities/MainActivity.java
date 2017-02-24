@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.Locale;
 
 import se.winterei.rtraffic.R;
-import se.winterei.rtraffic.RTraffic;
 import se.winterei.rtraffic.libs.generic.Point;
 import se.winterei.rtraffic.libs.generic.PointDataStore;
 import se.winterei.rtraffic.libs.generic.Utility;
@@ -51,7 +50,6 @@ public class MainActivity extends BaseActivity
         implements OnMapReadyCallback, View.OnClickListener, LocationListener
 {
     private MapContainer mapContainer;
-    private RTraffic appContext;
     private MainActivity instance = this;
     private LocationManager locationManager;
     private static final long MIN_TIME = 400;
@@ -74,8 +72,6 @@ public class MainActivity extends BaseActivity
         setupFloatingActionButton();
 
         pointList = new PointDataStore().getPoints();
-
-        appContext = (RTraffic) getApplicationContext();
 
         appContext.put("MainMapPointList", pointList);
 
@@ -307,7 +303,7 @@ public class MainActivity extends BaseActivity
         mapContainer.registerListener(new MapChangeListener()
         {
             @Override
-            public void onPolylineAdded(Polyline polylineT)
+            public void onPolylineAdded(Polyline polyline)
             {
                 refreshMarkerStates();
             }

@@ -14,6 +14,6 @@
         android:icon="@drawable/ic_autorenew_white_48dp"
         android:orderInCategory="102"
         android:title="@string/action_refresh"
-        app:showAsAction="always"/>
+        app:showAsAction="never"/>
 
 </menu>

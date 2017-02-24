@@ -41,8 +41,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import se.winterei.rtraffic.R;
 import se.winterei.rtraffic.RTraffic;
+import se.winterei.rtraffic.libs.generic.Report;
 import se.winterei.rtraffic.libs.generic.Utility;
 import se.winterei.rtraffic.libs.map.MapContainer;
 
@@ -165,10 +169,25 @@ public class TrafficReportActivity extends BaseActivity
                         {
                             Polyline polyline = mainMap.addPolyline(polylineOptionsList.get(polyLineIndex), state);
                             polyline.setColor(color);
-                            showToast(R.string.traffic_report_thank_you, Toast.LENGTH_SHORT);
+
+                            Call<Report> call = api.postReport(new Report (-1, state, commentInput.toString(), checkBoxInput.isChecked(), polyline.getPoints()));
+                            call.enqueue(new Callback<Report>() {
+                                @Override
+                                public void onResponse(Call<Report> call, Response<Report> response)
+                                {
+                                    showToast(R.string.traffic_report_thank_you, Toast.LENGTH_SHORT);
+                                    finish();
+                                }
+
+                                @Override
+                                public void onFailure(Call<Report> call, Throwable t)
+                                {
+                                    showToast(R.string.something_went_wrong, Toast.LENGTH_SHORT);
+                                }
+                            });
                         }
 
-                        finish();
+
                     }
                 }).build();
 

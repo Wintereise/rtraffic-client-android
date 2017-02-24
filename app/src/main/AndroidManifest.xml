@@ -51,24 +51,23 @@
             android:label="@string/nav_exclude_regions" />
         <activity
             android:name=".activities.PointsOfInterestActivity"
-            android:label="@string/nav_notif_reg"></activity>
+            android:label="@string/nav_notif_reg" />
         <activity
             android:name=".activities.MyLocationActivity"
             android:label="@string/nav_mylocation" />
-
         <activity
             android:name=".activities.GeoFenceActivity"
             android:label="@string/nav_geofence">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
 
         <service android:name=".libs.geofencing.GeofenceTransitionsIntentService" />
+
+        <activity android:name=".activities.APITest"></activity>
     </application>
 
 </manifest>

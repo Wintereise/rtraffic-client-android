@@ -25,6 +25,8 @@ import io.doorbell.android.Doorbell;
 import io.doorbell.android.callbacks.OnFeedbackSentCallback;
 import se.winterei.rtraffic.R;
 import se.winterei.rtraffic.RTraffic;
+import se.winterei.rtraffic.libs.api.APIClient;
+import se.winterei.rtraffic.libs.api.APIInterface;
 
 
 public abstract class BaseActivity extends AppCompatActivity
@@ -37,8 +39,10 @@ public abstract class BaseActivity extends AppCompatActivity
     NavigationView navigationView;
     Toolbar myToolbar;
     Doorbell doorbell;
+    public APIInterface api = APIClient.get()
+            .create(APIInterface.class);
 
-    private RTraffic appContext;
+    public RTraffic appContext;
 
 
     public final void setupToolbar (@Nullable View view)
@@ -176,6 +180,9 @@ public abstract class BaseActivity extends AppCompatActivity
                 break;
             case R.id.action_geofence:
                 tmp = new Intent(this, GeoFenceActivity.class);
+                break;
+            case R.id.action_apitest:
+                tmp = new Intent(this, APITest.class);
                 break;
         }
         if (tmp != null)
