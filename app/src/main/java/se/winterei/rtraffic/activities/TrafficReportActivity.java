@@ -54,6 +54,7 @@ import se.winterei.rtraffic.libs.map.MapContainer;
 public class TrafficReportActivity extends BaseActivity
         implements OnMapReadyCallback, View.OnClickListener, DirectionCallback, LocationListener, GoogleMap.OnPolylineClickListener
 {
+    private final String TAG = TrafficReportActivity.class.getSimpleName();
     private GoogleMap mMap;
     private MapContainer mapContainer, mainMap;
     private RTraffic appContext;
@@ -338,7 +339,11 @@ public class TrafficReportActivity extends BaseActivity
 
         }
         else
+        {
+            Log.d(TAG, "onDirectionSuccess: " + direction.getErrorMessage());
             showSnackbar(fragment.getView(), R.string.something_went_wrong, Snackbar.LENGTH_SHORT);
+        }
+
     }
 
     @Override

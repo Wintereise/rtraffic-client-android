@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="google_directions_api">AIzaSyCplu6VxagTgNeMkxNjo29Wq9W7XAreWbY</string>
-    <string name="google_roads_api">AIzaSyCCXEI2MrnXxFCW3CIiSI7Im5vetTR5_q8</string>
+    <string name="google_directions_api">AIzaSyBwoPck9kH7nVOjFIexyK6Ip0VKk3hg9SI</string>
+    <string name="google_roads_api">AIzaSyAecTuYcVssbb5da4x51U9mQhttLtj3dNw</string>
     <string name="doorbell_app_id">5708</string>
     <string name="doorbell_api">864KR5WxLGZt07j1niNuUJxFYslgqLbfH1wrC4MZxQewVQcMDs5YeHp3xmvyy6yS</string>
 </resources>

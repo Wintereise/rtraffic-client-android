@@ -8,6 +8,7 @@
     <string name="action_search">Search</string>
     <string name="title_activity_maps">Map</string>
     <string name="permission_location_err">We seem to be missing the permissions that allow us to access location.</string>
+    <string name="permission_location_fatal">rTraffic cannot operate without location access.</string>
     <string name="exit_on_back">Press the back button once again to close the application.</string>
     <string name="loading_main">Getting map and GPS data</string>
     <string name="something_went_wrong">Something went wrong, please try again later.</string>

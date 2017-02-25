@@ -3,6 +3,14 @@ apply plugin: 'com.android.application'
 
 
 android {
+    signingConfigs {
+        rtrkey {
+            keyAlias 'signing-key'
+            keyPassword 'HerpDerp123'
+            storeFile file('C:/Users/reise/rtraffic-signing-key.jks')
+            storePassword 'HerpDerp123'
+        }
+    }
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
     defaultConfig {
@@ -13,14 +21,13 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
-
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.rtrkey
         }
     }
-
     productFlavors {
         development {
             minSdkVersion 21

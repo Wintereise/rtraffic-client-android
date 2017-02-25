@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -13,6 +14,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,6 +35,8 @@ import se.winterei.rtraffic.libs.api.APIInterface;
 public abstract class BaseActivity extends AppCompatActivity
     implements NavigationView.OnNavigationItemSelectedListener
 {
+    private final String bTAG  = BaseActivity.class.getSimpleName();
+
     private int backButtonCount = 0;
     public String userName = "Signed out", userEmail = "test@example.com";
 
@@ -40,6 +44,7 @@ public abstract class BaseActivity extends AppCompatActivity
     NavigationView navigationView;
     Toolbar myToolbar;
     Doorbell doorbell;
+
     public APIInterface api = APIClient.get()
             .create(APIInterface.class);
 
@@ -205,7 +210,8 @@ public abstract class BaseActivity extends AppCompatActivity
 
     public boolean checkGPSPermissions ()
     {
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -215,10 +221,28 @@ public abstract class BaseActivity extends AppCompatActivity
             // for ActivityCompat#requestPermissions for more details.
             showToast(R.string.permission_location_err, Toast.LENGTH_SHORT);
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, 2);
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult (int requestCode, @NonNull String permissions[], @NonNull int[] grantResults)
+    {
+        if(grantResults.length > 0)
+        {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            {
+                finish();
+                startActivity(new Intent(this, MainActivity.class));
+            }
+
+            else
+            {
+                showToast(R.string.permission_location_fatal, Toast.LENGTH_LONG);
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     public void genericFixToolbar (Menu menu)
