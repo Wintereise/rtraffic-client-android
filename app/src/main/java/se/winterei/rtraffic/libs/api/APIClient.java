@@ -2,6 +2,7 @@ package se.winterei.rtraffic.libs.api;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.moshi.MoshiConverterFactory;
+import se.winterei.rtraffic.BuildConfig;
 
 /**
  * Created by reise on 2/24/2017.
@@ -9,7 +10,8 @@ import retrofit2.converter.moshi.MoshiConverterFactory;
 
 public class APIClient
 {
-    private static final String BASE_URL = "http://192.168.1.150/api/";
+    private static final String BASE_URL = BuildConfig.API_ENDPOINT;
+
     private static Retrofit retrofit = null;
 
     public static Retrofit get ()

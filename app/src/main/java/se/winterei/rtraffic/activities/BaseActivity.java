@@ -129,15 +129,6 @@ public abstract class BaseActivity extends AppCompatActivity
     { //for the ActionBar
         switch (item.getItemId())
         {
-            case R.id.action_search:
-                // User chose the "SettingsActivity" item, show the app settings UI...
-                return true;
-
-            case R.id.action_refresh:
-                // User chose the "Favorite" action, mark the current item
-                // as a favorite...
-                return true;
-
             case android.R.id.home:
                 if (drawerLayout != null)
                 {
