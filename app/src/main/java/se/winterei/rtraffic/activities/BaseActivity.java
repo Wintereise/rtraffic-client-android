@@ -128,7 +128,7 @@ public abstract class BaseActivity extends AppCompatActivity
         switch (item.getItemId())
         {
             case R.id.action_search:
-                // User chose the "Settings" item, show the app settings UI...
+                // User chose the "SettingsActivity" item, show the app settings UI...
                 return true;
 
             case R.id.action_refresh:

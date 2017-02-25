@@ -25,7 +25,8 @@ import se.winterei.rtraffic.RTraffic;
 public class GSignInActivity extends AppCompatActivity implements
         View.OnClickListener, GoogleApiClient.OnConnectionFailedListener
 {
-    private static final String TAG = "SignInActivity";
+    private static final String TAG = GSignInActivity.class.getSimpleName();
+
     private static final int RC_SIGN_IN = 9001;
 
     private GoogleApiClient mGoogleApiClient;

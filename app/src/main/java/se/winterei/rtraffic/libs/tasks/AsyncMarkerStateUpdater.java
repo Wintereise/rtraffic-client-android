@@ -27,10 +27,10 @@ import static se.winterei.rtraffic.libs.generic.Utility.UNCONGESTED;
 
 public class AsyncMarkerStateUpdater extends AsyncTask<Void, Void, Void>
 {
-    private BaseActivity instance;
-    private MapContainer mapContainer;
-    private HashMap<Marker, LatLng> markerPositionMap;
-    private HashMap<Polyline, List<LatLng>> polylinePointsMap;
+    private final BaseActivity instance;
+    private final MapContainer mapContainer;
+    private final HashMap<Marker, LatLng> markerPositionMap;
+    private final HashMap<Polyline, List<LatLng>> polylinePointsMap;
 
     private final String TAG = AsyncMarkerStateUpdater.class.getSimpleName();
 
@@ -66,7 +66,7 @@ public class AsyncMarkerStateUpdater extends AsyncTask<Void, Void, Void>
         for (final Marker marker : markerList)
         {
             HashMap<Polyline, Integer> stateMap = mapContainer.getPolylineStateMap();
-            for (Polyline polyline : polylineList)
+            for (final Polyline polyline : polylineList)
             {
                 if(PolyUtil.isLocationOnPath(markerPositionMap.get(marker), polylinePointsMap.get(polyline), true, Utility.polylineMatchTolerance))
                 {
@@ -85,7 +85,7 @@ public class AsyncMarkerStateUpdater extends AsyncTask<Void, Void, Void>
                             markerType = R.drawable.ic_traffic_black_green;
                             break;
                         default:
-                            Log.d("Marker Update", "Unrecognized state found, this polyline does not likely have state information associated with it.");
+                            Log.d(TAG, "doInBackground: Unrecognized state found, this polyline does not likely have state information associated with it.");
                             continue;
                     }
                     instance.runOnUiThread(new Runnable()
