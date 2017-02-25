@@ -22,6 +22,7 @@ public class MapContainer
     private List<Polyline> polylineList;
     private HashMap<Polyline, Integer> polylineStateMap;
     private List<MapChangeListener> mapChangeListenerList;
+    private boolean notificationEnabled = true;
     private enum type
     {
         MARKER, POLYLINE
@@ -94,8 +95,20 @@ public class MapContainer
         return map;
     }
 
+    public void enableObservers ()
+    {
+        this.notificationEnabled = true;
+    }
+
+    public void disableObservers ()
+    {
+        this.notificationEnabled = false;
+    }
+
     private void notifyListeners (type type, Object o)
     {
+        if(!notificationEnabled)
+            return;
         for (MapChangeListener listener : mapChangeListenerList)
         {
             switch (type)

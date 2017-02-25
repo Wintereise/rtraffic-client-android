@@ -1,8 +1,10 @@
 package se.winterei.rtraffic.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.MatrixCursor;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -14,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.akexorcist.googledirection.util.DirectionConverter;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.android.gms.maps.CameraUpdate;
@@ -21,34 +24,34 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.Polyline;
-import com.google.maps.android.PolyUtil;
-
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import se.winterei.rtraffic.R;
 import se.winterei.rtraffic.libs.generic.Point;
 import se.winterei.rtraffic.libs.generic.PointDataStore;
+import se.winterei.rtraffic.libs.generic.Report;
 import se.winterei.rtraffic.libs.generic.Utility;
 import se.winterei.rtraffic.libs.map.MapChangeListener;
 import se.winterei.rtraffic.libs.map.MapContainer;
 import se.winterei.rtraffic.libs.search.SearchFeedResultsAdapter;
-
-import static se.winterei.rtraffic.libs.generic.Utility.CONGESTED;
-import static se.winterei.rtraffic.libs.generic.Utility.SLOW_BUT_MOVING;
-import static se.winterei.rtraffic.libs.generic.Utility.UNCONGESTED;
-
+import se.winterei.rtraffic.libs.tasks.AsyncMarkerStateUpdater;
 
 public class MainActivity extends BaseActivity
         implements OnMapReadyCallback, View.OnClickListener, LocationListener
 {
+    private static final String TAG = MainActivity.class.getSimpleName();
+
     private MapContainer mapContainer;
     private MainActivity instance = this;
     private LocationManager locationManager;
@@ -59,6 +62,8 @@ public class MainActivity extends BaseActivity
     private List<Point> pointList;
     private SearchFeedResultsAdapter searchFeedResultsAdapter;
     private final String[] columns = new String[]{"_id", "title", "position"};
+
+    @SuppressLint("UseSparseArrays")
     private final HashMap<Integer, Marker> searchPositionMap = new HashMap<>();
 
     @Override
@@ -134,10 +139,6 @@ public class MainActivity extends BaseActivity
                 @Override
                 public boolean onQueryTextChange (String query)
                 {
-                    //if( ! searchView.isIconified())
-                    //{
-                   //     searchView.setIconified(true);
-                    //}
                     if (query.length() >= 3)
                     {
                         filterMarkers(query);
@@ -191,7 +192,7 @@ public class MainActivity extends BaseActivity
         List<Marker> results;
         searchText = searchText.toLowerCase(Locale.getDefault());
 
-        if (searchText.length() == 0 || searchText == "")
+        if (searchText.isEmpty())
         {
             results = mapContainer.getMarkerList();
         }
@@ -234,45 +235,11 @@ public class MainActivity extends BaseActivity
         return true;
     }
 
+    //FAR TOO COMPUTATIONALLY HEAVY EVEN WITH ASYNC MODE DUE TO markers and polylines being UI objects which cannot be shoved background
+    //TODO: FIX ^
     public void refreshMarkerStates ()
     {
-        int markerType;
-        for (Marker marker : mapContainer.getMarkerList())
-        {
-            markerType = -1;
-            HashMap<Polyline, Integer> stateMap = mapContainer.getPolylineStateMap();
-            for (Polyline polyline : mapContainer.getPolylineList())
-            {
-                if(PolyUtil.isLocationOnPath(marker.getPosition(), polyline.getPoints(), true, Utility.polylineMatchTolerance))
-                {
-                    final int state;
-                    if(stateMap.containsKey(polyline))
-                        state = stateMap.get(polyline);
-                    else
-                        state = -1;
-
-                    switch (state)
-                    {
-                        case CONGESTED:
-                            markerType = R.drawable.ic_traffic_black_red;
-                            break;
-                        case SLOW_BUT_MOVING:
-                            markerType = R.drawable.ic_traffic_black_yellow;
-                            break;
-                        case UNCONGESTED:
-                            markerType = R.drawable.ic_traffic_black_green;
-                            break;
-                        default:
-                            Log.d("Marker Update", "Unrecognized state found, this polyline does not likely have state information associated with it.");
-                    }
-                    if (markerType != -1)
-                    {
-                        marker.setIcon(BitmapDescriptorFactory.fromResource(markerType));
-                    }
-
-                }
-            }
-        }
+        new AsyncMarkerStateUpdater(instance, mapContainer).execute();
     }
 
 
@@ -311,9 +278,58 @@ public class MainActivity extends BaseActivity
             @Override
             public void onMarkerAdded(Marker marker)
             {
-
+                refreshMarkerStates();
             }
         });
+
+        fetchReports();
+    }
+
+    private void fetchReports ()
+    {
+        Call<List<Report>> call = api.getReports();
+        call.enqueue(new Callback<List<Report>>()
+        {
+            @Override
+            public void onResponse(Call<List<Report>> call, Response<List<Report>> response)
+            {
+                parseReportsAndUpdateMap(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<List<Report>> call, Throwable t)
+            {
+                Log.d(TAG, "Retrofit onFailure: " + t.toString());
+            }
+        });
+    }
+
+    private void parseReportsAndUpdateMap (List<Report> reports)
+    {
+        mapContainer.disableObservers();
+        for (Report report : reports)
+        {
+            int color;
+            switch (report.severity)
+            {
+                case Utility.CONGESTED:
+                    color = Color.RED;
+                    break;
+                case Utility.SLOW_BUT_MOVING:
+                    color = Color.YELLOW;
+                    break;
+                case Utility.UNCONGESTED:
+                    color = Color.GREEN;
+                    break;
+                default:
+                    continue;
+            }
+
+            PolylineOptions tmp = DirectionConverter.createPolyline(this, (ArrayList<LatLng>) report.polypoints, 5, color);
+            mapContainer.addPolyline(tmp, report.severity);
+        }
+        mapContainer.enableObservers();
+        refreshMarkerStates();
     }
 
     @Override
@@ -353,7 +369,7 @@ public class MainActivity extends BaseActivity
         switch (item.getItemId())
         {
             case R.id.action_refresh:
-
+                fetchReports();
                 return true;
             default:
                 // If we got here, the user's action was not recognized.

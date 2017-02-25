@@ -1,5 +1,6 @@
 package se.winterei.rtraffic.activities;
 
+import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
@@ -73,6 +74,7 @@ public class TrafficReportActivity extends BaseActivity
     private int congestionChoiceID;
     private EditText commentInput;
     private CheckBox checkBoxInput;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -169,12 +171,14 @@ public class TrafficReportActivity extends BaseActivity
                         {
                             Polyline polyline = mainMap.addPolyline(polylineOptionsList.get(polyLineIndex), state);
                             polyline.setColor(color);
+                            progressDialog = ProgressDialog.show(instance, "", getString(R.string.loading), true);
 
-                            Call<Report> call = api.postReport(new Report (-1, state, commentInput.toString(), checkBoxInput.isChecked(), polyline.getPoints()));
+                            Call<Report> call = api.postReport(new Report (-1, state, commentInput.getText().toString(), checkBoxInput.isChecked(), polyline.getPoints()));
                             call.enqueue(new Callback<Report>() {
                                 @Override
                                 public void onResponse(Call<Report> call, Response<Report> response)
                                 {
+                                    progressDialog.dismiss();
                                     showToast(R.string.traffic_report_thank_you, Toast.LENGTH_SHORT);
                                     finish();
                                 }

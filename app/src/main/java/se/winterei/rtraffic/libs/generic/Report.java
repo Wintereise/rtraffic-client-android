@@ -15,7 +15,7 @@ public class Report
     public final boolean anonymous;
     public final String comment;
     public final int severity, id;
-    public final List<LatLng> polylineList;
+    public final List<LatLng> polypoints;
 
     public Report (@Nullable int id, int severity, String comment, boolean anonymous, List<LatLng> polylineList)
     {
@@ -23,7 +23,7 @@ public class Report
         this.severity = severity;
         this.comment = comment;
         this.anonymous = anonymous;
-        this.polylineList = polylineList;
+        this.polypoints = polylineList;
     }
 
 }

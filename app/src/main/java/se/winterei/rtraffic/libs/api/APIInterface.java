@@ -25,7 +25,7 @@ public interface APIInterface
     @GET("v1/point/{lat}/{lng}")
     Call<List<Point>> getPoints (@Path("lat") Double lat, @Path("lng") Double lng);
 
-    @GET("v1/reports")
+    @GET("v1/reports/all")
     Call<List<Report>> getReports ();
 
     @GET("v1/reports/{id}")

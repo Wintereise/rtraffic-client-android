@@ -38,8 +38,6 @@ public class APITest extends BaseActivity {
 
         Report report = new Report(-1, Utility.CONGESTED, "Herpa la derpa", true, latLngList);
 
-
-
         Call<Report> call = apiInterface.postReport(report);
         call.enqueue(new Callback<Report>() {
             @Override
