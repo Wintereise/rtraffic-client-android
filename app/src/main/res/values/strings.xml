@@ -126,52 +126,31 @@
     </string-array>
 
     <!-- Example settings for Data & Sync -->
-    <string name="pref_header_data_sync">Data &amp; sync</string>
 
-    <string name="pref_title_sync_frequency">Sync frequency</string>
+    <string name="pref_title_sync_frequency">Cloud Sync Interval</string>
+    <string name="pref_summary_sync_frequency">Synchronizes %s</string>
     <string-array name="pref_sync_frequency_titles">
-        <item>15 minutes</item>
-        <item>30 minutes</item>
-        <item>1 hour</item>
-        <item>3 hours</item>
-        <item>6 hours</item>
+        <item>Every 5 minutes</item>
+        <item>Every 15 minutes</item>
+        <item>Every 30 minutes</item>
+        <item>Every 1 hour</item>
+        <item>Every 3 hours</item>
         <item>Never</item>
     </string-array>
 
+    <string name="pref_sync_frequency_default_value">5</string>
     <string-array name="pref_sync_frequency_values">
+        <item>5</item>
         <item>15</item>
         <item>30</item>
         <item>60</item>
         <item>180</item>
-        <item>360</item>
         <item>-1</item>
     </string-array>
 
-    <string-array name="list_preference_entries">
-        <item>Entry 1</item>
-        <item>Entry 2</item>
-        <item>Entry 3</item>
-    </string-array>
+    <string name="pref_notif_enable">Enable Notifications</string>
+    <string name="pref_notif_enable_summary">Controls whether the app shows notifications or not</string>
 
-    <string-array name="list_preference_entry_values">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-    </string-array>
-
-    <string-array name="multi_select_list_preference_default_value" />
-
-    <string name="pref_title_system_sync_settings">System sync settings</string>
-
-    <!-- Example settings for Notifications -->
-    <string name="pref_header_notifications">Notifications</string>
-
-    <string name="pref_title_new_message_notifications">New message notifications</string>
-
-    <string name="pref_title_ringtone">Ringtone</string>
-    <string name="pref_ringtone_silent">Silent</string>
-
-    <string name="pref_title_vibrate">Vibrate</string>
     <string name="nav_mylocation">My Location</string>
 
     <!--GeoFence string values START-->

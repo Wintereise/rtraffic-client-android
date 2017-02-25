@@ -3,6 +3,7 @@ package se.winterei.rtraffic.activities;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -104,6 +105,7 @@ public abstract class BaseActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         appContext = (RTraffic) getApplicationContext();
         redirectOnAuthFailure();
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
     }
 
     @Override
