@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "800072281116",
+    "project_id": "rtraffic-android"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:800072281116:android:d594b1b15e6a6bbb",
+        "android_client_info": {
+          "package_name": "se.winterei.rtraffic"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "800072281116-nks7p2smkh61go1781qc4trbu5abut4e.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "800072281116-vqkip25pjavne9sv8utcgfd1tgsabm8d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "se.winterei.rtraffic",
+            "certificate_hash": "ebaa259d6e3d4e443881c2771b711ce7f4e89234"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBo9Lv6elbBlJ0T-xolMQ7Va_8Ca-Wpieg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
