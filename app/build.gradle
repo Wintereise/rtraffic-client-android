@@ -7,7 +7,7 @@ android {
         rtrkey {
             keyAlias 'signing-key'
             keyPassword 'HerpDerp123'
-            storeFile file('C:/Users/reise/rtraffic-signing-key.jks')
+            storeFile file('rtraffic-signing-key.jks')
             storePassword 'HerpDerp123'
         }
     }
