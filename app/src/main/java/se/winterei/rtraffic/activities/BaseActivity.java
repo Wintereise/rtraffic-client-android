@@ -36,6 +36,7 @@ public abstract class BaseActivity extends AppCompatActivity
     implements NavigationView.OnNavigationItemSelectedListener
 {
     private final String bTAG  = BaseActivity.class.getSimpleName();
+    private Toast bToast;
 
     private int backButtonCount = 0;
     public String userName = "Signed out", userEmail = "test@example.com";
@@ -219,7 +220,7 @@ public abstract class BaseActivity extends AppCompatActivity
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
-            showToast(R.string.permission_location_err, Toast.LENGTH_SHORT);
+            bToast = showToast(R.string.permission_location_err, Toast.LENGTH_SHORT);
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             return false;
         }
@@ -233,6 +234,8 @@ public abstract class BaseActivity extends AppCompatActivity
         {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
             {
+                if (bToast != null)
+                    bToast.cancel();
                 finish();
                 startActivity(new Intent(this, MainActivity.class));
             }

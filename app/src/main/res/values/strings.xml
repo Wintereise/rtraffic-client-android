@@ -23,6 +23,7 @@
     <string name="submit">Submit</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
+    <string name="toggle_OFF">Off</string>
     <string name="traffic_report_toast_clear_markers">Markers and pathways have been cleared.</string>
     <string name="traffic_report_snackbar_confirm_report">Ready to submit report</string>
     <string name="traffic_report_dialog_compose_report">Compose Report</string>
