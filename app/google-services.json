@@ -13,16 +13,16 @@
       },
       "oauth_client": [
         {
-          "client_id": "800072281116-nks7p2smkh61go1781qc4trbu5abut4e.apps.googleusercontent.com",
-          "client_type": 3
-        },
-        {
-          "client_id": "800072281116-vqkip25pjavne9sv8utcgfd1tgsabm8d.apps.googleusercontent.com",
+          "client_id": "800072281116-l1d0cmjfqdsvnjsm9cnkgr6logc94r9m.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "se.winterei.rtraffic",
             "certificate_hash": "ebaa259d6e3d4e443881c2771b711ce7f4e89234"
           }
+        },
+        {
+          "client_id": "800072281116-38hbrg2363rih399cqn0i5ge866pv2vt.apps.googleusercontent.com",
+          "client_type": 3
         }
       ],
       "api_key": [
@@ -32,7 +32,10 @@
       ],
       "services": {
         "analytics_service": {
-          "status": 1
+          "status": 2,
+          "analytics_property": {
+            "tracking_id": "UA-92930172-1"
+          }
         },
         "appinvite_service": {
           "status": 1,

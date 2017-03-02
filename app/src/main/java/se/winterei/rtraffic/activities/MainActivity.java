@@ -55,8 +55,6 @@ public class MainActivity extends BaseActivity
     private MapContainer mapContainer;
     private MainActivity instance = this;
     private LocationManager locationManager;
-    private static final long MIN_TIME = 400;
-    private static final float MIN_DISTANCE = 1000;
     private SupportMapFragment fragment;
     private Snackbar snackbar;
     private List<Point> pointList;
@@ -89,7 +87,7 @@ public class MainActivity extends BaseActivity
         if(checkGPSPermissions())
         {
             locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME, MIN_DISTANCE, this); //You can also use LocationManager.GPS_PROVIDER and LocationManager.PASSIVE_PROVIDER
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, Utility.LOCATION_LOCK_MIN_TIME, Utility.LOCATION_LOCK_MIN_TIME, this); //You can also use LocationManager.GPS_PROVIDER and LocationManager.PASSIVE_PROVIDER
         }
 
     }
