@@ -6,6 +6,9 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.view.Menu;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
 
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -30,6 +33,7 @@ public class ExcludedRegionsActivity extends BaseActivity
     private SupportMapFragment fragment;
     private LocationManager locationManager;
     private Snackbar snackbar;
+    private ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -51,6 +55,15 @@ public class ExcludedRegionsActivity extends BaseActivity
             locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, Utility.LOCATION_LOCK_MIN_TIME, Utility.LOCATION_LOCK_MIN_DISTANCE, this); //You can also use LocationManager.GPS_PROVIDER and LocationManager.PASSIVE_PROVIDER
         }
+
+        listView = (ListView) findViewById(R.id.ExcludedRegionsListView);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
+
+            }
+        });
     }
 
     @Override

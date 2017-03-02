@@ -54,7 +54,7 @@ public class PointsOfInterestActivity extends BaseActivity
             public void onItemClick(AdapterView<?> lv, View item, int position, long id)
             {
                 final ListView lView = (ListView) lv;
-                final SimpleAdapter adapter =(SimpleAdapter) lView.getAdapter();
+                final SimpleAdapter adapter = (SimpleAdapter) lView.getAdapter();
                 final HashMap<String,Object> hm = (HashMap) adapter.getItem(position);
 
                 //The clicked Item in the ListView
@@ -108,9 +108,9 @@ public class PointsOfInterestActivity extends BaseActivity
 
         // Instantiating an adapter to store each items
         // R.layout.listview_layout defines the layout of each item
-        final SimpleAdapter adapter = new SimpleAdapter(getBaseContext(), aList, R.layout.activity_points_of_interest_listview, from, to);
+        final SimpleAdapter adapter = new SimpleAdapter(getBaseContext(), aList, R.layout.points_listview, from, to);
 
-        //ArrayAdapter adapter = new ArrayAdapter<String>(this,R.layout.activity_points_of_interest_listview,R.id.excludedListViewLabel, mobileArray);
+        //ArrayAdapter adapter = new ArrayAdapter<String>(this,R.layout.points_listview,R.id.excludedListViewLabel, mobileArray);
         listView = (ListView) findViewById(R.id.PointsOfInterestRegionsListView);
         listView.setOnItemClickListener(itemClickListener);
         listView.setAdapter(adapter);
