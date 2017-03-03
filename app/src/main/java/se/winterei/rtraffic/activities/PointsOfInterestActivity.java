@@ -2,14 +2,8 @@ package se.winterei.rtraffic.activities;
 
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.Toast;
-import android.widget.ToggleButton;
-import android.widget.AdapterView.OnItemClickListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,41 +43,6 @@ public class PointsOfInterestActivity extends BaseActivity
             Arrays.fill(toggleSwitchStates, Boolean.FALSE);
         }
 
-        OnItemClickListener itemClickListener = new OnItemClickListener()
-        {
-            public void onItemClick(AdapterView<?> lv, View item, int position, long id)
-            {
-                final ListView lView = (ListView) lv;
-                final SimpleAdapter adapter = (SimpleAdapter) lView.getAdapter();
-                final HashMap<String,Object> hm = (HashMap) adapter.getItem(position);
-
-                //The clicked Item in the ListView
-                //TextView rLayout = (TextView)item;
-                final LinearLayout rLayout = (LinearLayout) item;
-
-                //Getting the toggle button corresponding to the clicked item
-                final ToggleButton tgl = (ToggleButton) rLayout.getChildAt(1);
-
-                String strStatus;
-
-                if (tgl.isChecked())
-                {
-                    tgl.setChecked(false);
-                    strStatus = "Off";
-                    toggleSwitchStates[position] = false;
-                }
-                else
-                {
-                    tgl.setChecked(true);
-                    strStatus = "On";
-                    toggleSwitchStates[position] = true;
-                }
-                if (toast != null)
-                    toast.cancel();
-                toast = showToast(hm.get("txt") + ": " + strStatus, Toast.LENGTH_SHORT);
-            }
-        };
-
         for (final Point point : pointList)
         {
             mobileArray.add(point.title);
@@ -107,12 +66,8 @@ public class PointsOfInterestActivity extends BaseActivity
         final int[] to = { R.id.excludedListViewLabel, R.id.listViewTextViewToggleButton };
 
         // Instantiating an adapter to store each items
-        // R.layout.listview_layout defines the layout of each item
-        final SimpleAdapter adapter = new SimpleAdapter(getBaseContext(), aList, R.layout.points_listview, from, to);
-
-        //ArrayAdapter adapter = new ArrayAdapter<String>(this,R.layout.points_listview,R.id.excludedListViewLabel, mobileArray);
+        final SimpleListViewAdapter adapter = new SimpleListViewAdapter(getBaseContext(),aList);
         listView = (ListView) findViewById(R.id.PointsOfInterestRegionsListView);
-        listView.setOnItemClickListener(itemClickListener);
         listView.setAdapter(adapter);
 
         setupToolbar(null);
