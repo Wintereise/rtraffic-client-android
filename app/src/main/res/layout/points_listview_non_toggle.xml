@@ -1,0 +1,28 @@
+<!--  Single List Item Design -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/excludedListViewLabelNoToggle"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.80"
+        android:padding="10dp"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/listViewTextViewButtonNoToggle"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight=".30"
+        android:focusable="false"
+        android:text="@string/delete"
+        android:background="@color/blue_grey_500"
+        android:layout_gravity="end"
+        android:button="@android:color/transparent" />
+
+</LinearLayout>

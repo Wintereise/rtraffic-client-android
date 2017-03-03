@@ -29,6 +29,18 @@
             android:layout_height="0dp"
             android:layout_weight="1"/>
 
+        <TextView
+            android:id="@+id/empty_textview"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.065"
+            android:text="@string/excluded_regions_listview_no_results"
+            android:paddingTop="6.85dp"
+            android:textAlignment="center"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:visibility="gone" />
+
         <fragment xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/map"
