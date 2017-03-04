@@ -181,14 +181,8 @@ public abstract class BaseActivity extends AppCompatActivity
             case R.id.action_exclude_regions:
                 tmp = new Intent(this, ExcludedRegionsActivity.class);
                 break;
-            case R.id.action_mylocation:
-                tmp = new Intent(this, MyLocationActivity.class);
-                break;
             case R.id.action_feedback:
                 showDoorbell();
-                break;
-            case R.id.action_geofence:
-                tmp = new Intent(this, GeoFenceActivity.class);
                 break;
         }
         if (tmp != null)

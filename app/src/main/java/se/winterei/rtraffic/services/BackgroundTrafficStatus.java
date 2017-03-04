@@ -78,7 +78,9 @@ public class BackgroundTrafficStatus extends IntentService
 
         Intent tIntent = new Intent(this, TrafficReportActivity.class);
         PendingIntent pIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), tIntent, 0);
-        android.support.v4.app.NotificationCompat.Action affirmative_action = new NotificationCompat.Action.Builder(R.drawable.ic_done_black_24dp, getString(R.string.service_notif_affirmative_answer), pIntent).build();
+        android.support.v4.app.NotificationCompat.Action affirmative_action = new NotificationCompat.Action.Builder(R.drawable.ic_done_black_24dp,
+                getString(R.string.service_notif_affirmative_answer), pIntent)
+                .build();
 
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         final StringBuilder sb = new StringBuilder();
