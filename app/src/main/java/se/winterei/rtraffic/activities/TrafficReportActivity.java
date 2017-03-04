@@ -78,6 +78,7 @@ public class TrafficReportActivity extends BaseActivity
     private ProgressDialog progressDialog;
 
     @Override
+    @SuppressWarnings({"MissingPermission"})
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -229,6 +230,7 @@ public class TrafficReportActivity extends BaseActivity
      * installed Google Play services and returned to the app.
      */
     @Override
+    @SuppressWarnings({"MissingPermission"})
     public void onMapReady(GoogleMap googleMap)
     {
         mMap = googleMap;

@@ -1,8 +1,13 @@
 package se.winterei.rtraffic.activities;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -30,6 +35,8 @@ import se.winterei.rtraffic.R;
 import se.winterei.rtraffic.RTraffic;
 import se.winterei.rtraffic.libs.api.APIClient;
 import se.winterei.rtraffic.libs.api.APIInterface;
+import se.winterei.rtraffic.libs.generic.Utility;
+import se.winterei.rtraffic.services.PeriodicRunner;
 
 
 public abstract class BaseActivity extends AppCompatActivity
@@ -37,19 +44,21 @@ public abstract class BaseActivity extends AppCompatActivity
 {
     private final String bTAG  = BaseActivity.class.getSimpleName();
     private Toast bToast;
+    private boolean alarmState = false;
 
     private int backButtonCount = 0;
     public String userName = "Signed out", userEmail = "test@example.com";
 
-    DrawerLayout drawerLayout;
-    NavigationView navigationView;
-    Toolbar myToolbar;
-    Doorbell doorbell;
+    public DrawerLayout drawerLayout;
+    public NavigationView navigationView;
+    public Toolbar myToolbar;
+    public Doorbell doorbell;
 
     public APIInterface api = APIClient.get()
             .create(APIInterface.class);
 
     public RTraffic appContext;
+    public SharedPreferences preferences;
 
 
     public final void setupToolbar (@Nullable View view)
@@ -112,6 +121,7 @@ public abstract class BaseActivity extends AppCompatActivity
         appContext = (RTraffic) getApplicationContext();
         redirectOnAuthFailure();
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
     }
 
     @Override
@@ -179,9 +189,6 @@ public abstract class BaseActivity extends AppCompatActivity
                 break;
             case R.id.action_geofence:
                 tmp = new Intent(this, GeoFenceActivity.class);
-                break;
-            case R.id.action_apitest:
-                tmp = new Intent(this, APITest.class);
                 break;
         }
         if (tmp != null)
@@ -314,6 +321,35 @@ public abstract class BaseActivity extends AppCompatActivity
             }
         });
         doorbell.show();
+    }
+
+    public void scheduleAlarm ()
+    {
+        if(alarmState)
+            return;
+        alarmState = true;
+        Intent intent = new Intent(getApplicationContext(), PeriodicRunner.class);
+        final PendingIntent pendingIntent = PendingIntent.getBroadcast(this, PeriodicRunner.REQUEST_CODE,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager)  getSystemService(Context.ALARM_SERVICE);
+        alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), Utility.BROADCAST_ALARM_FREQ, pendingIntent);
+        alarmState = true;
+    }
+
+    public void cancelAlarm ()
+    {
+        if(!alarmState)
+            return;
+        Intent intent = new Intent(getApplicationContext(), PeriodicRunner.class);
+        final PendingIntent pendingIntent = PendingIntent.getBroadcast(this, PeriodicRunner.REQUEST_CODE,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        if(pendingIntent != null)
+        {
+            alarmManager.cancel(pendingIntent);
+            alarmState = false;
+        }
+
     }
 
 

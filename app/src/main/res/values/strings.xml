@@ -43,6 +43,11 @@
     <string name="excluded_regions_listview_no_results">You haven\'t registered excluded regions yet.</string>
     <string name="excluded_regions_successful_deletion">The entry has been successfully removed.</string>
 
+    <string name="service_notif_main_header">Contribute Traffic Data</string>
+    <string name="service_notif_main_body">Stuck in %s?</string>
+    <string name="service_notif_affirmative_answer">Submit Report</string>
+    <string name="service_notif_negative_answer">Cancel</string>
+
     <string name="feedback_thank_you">Thank you for your feedback!</string>
 
     <string name="search_hint">Search for Locations</string>
@@ -159,7 +164,9 @@
     </string-array>
 
     <string name="pref_notif_enable">Enable Notifications</string>
-    <string name="pref_notif_enable_summary">Controls whether the app shows notifications</string>
+    <string name="pref_background_service_enable">Enable Background Service</string>
+    <string name="pref_background_service_summary">Controls whether the app asks you to contribute data</string>
+    <string name="pref_notif_enable_summary">Controls whether the app shows real-time notifications</string>
 
     <string name="nav_mylocation">My Location</string>
 

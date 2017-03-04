@@ -65,6 +65,7 @@ public class MainActivity extends BaseActivity
     private final HashMap<Integer, Marker> searchPositionMap = new HashMap<>();
 
     @Override
+    @SuppressWarnings({"MissingPermission"})
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -87,12 +88,12 @@ public class MainActivity extends BaseActivity
         if(checkGPSPermissions())
         {
             locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, Utility.LOCATION_LOCK_MIN_TIME, Utility.LOCATION_LOCK_MIN_TIME, this); //You can also use LocationManager.GPS_PROVIDER and LocationManager.PASSIVE_PROVIDER
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, Utility.LOCATION_LOCK_MIN_TIME, Utility.LOCATION_LOCK_MIN_DISTANCE, this); //You can also use LocationManager.GPS_PROVIDER and LocationManager.PASSIVE_PROVIDER
+            scheduleAlarm(); //The intentservice is heavily reliant on location services, triggering without it makes no sense
         }
-
     }
 
-    private final void setupFloatingActionButton ()
+    private void setupFloatingActionButton ()
     {
         final FloatingActionButton action_report_info = (FloatingActionButton) findViewById(R.id.action_report_info);
         final FloatingActionButton action_report_traffic = (FloatingActionButton) findViewById(R.id.action_report_traffic);
@@ -252,6 +253,7 @@ public class MainActivity extends BaseActivity
      */
 
     @Override
+    @SuppressWarnings({"MissingPermission"})
     public void onMapReady(GoogleMap googleMap)
     {
         mapContainer = new MapContainer(googleMap);

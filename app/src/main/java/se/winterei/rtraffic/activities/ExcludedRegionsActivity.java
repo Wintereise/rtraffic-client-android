@@ -67,6 +67,7 @@ public class ExcludedRegionsActivity extends BaseActivity
 
 
     @Override
+    @SuppressWarnings({"MissingPermission"})
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -224,6 +225,7 @@ public class ExcludedRegionsActivity extends BaseActivity
     }
 
     @Override
+    @SuppressWarnings({"MissingPermission"})
     public void onMapReady(GoogleMap googleMap)
     {
         mapContainer = new MapContainer(googleMap);
