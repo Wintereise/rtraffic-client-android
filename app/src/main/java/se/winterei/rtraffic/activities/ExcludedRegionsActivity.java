@@ -1,5 +1,6 @@
 package se.winterei.rtraffic.activities;
 
+import android.app.ProgressDialog;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -8,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.text.InputType;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -35,9 +37,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import se.winterei.rtraffic.R;
-import se.winterei.rtraffic.libs.generic.Point;
-import se.winterei.rtraffic.libs.generic.PointDataStore;
+import se.winterei.rtraffic.libs.api.GenericAPIResponse;
+import se.winterei.rtraffic.libs.generic.ExcludedRegion;
 import se.winterei.rtraffic.libs.generic.Utility;
 import se.winterei.rtraffic.libs.map.MapChangeListener;
 import se.winterei.rtraffic.libs.map.MapContainer;
@@ -54,8 +59,11 @@ public class ExcludedRegionsActivity extends BaseActivity
     private ListView listView;
     private SimpleAdapter simpleAdapter;
     private ExcludedRegionsActivity instance = this;
-    private List<Point> dataset;
+    private List<ExcludedRegion> dataset;
     private List<Map<String, Object>> mapArrayList;
+    private ProgressDialog progressDialog;
+    private SparseArray<Map<String, Object>> listViewIndexMap;
+    private SparseArray<Marker> markerMap;
 
 
     @Override
@@ -66,6 +74,8 @@ public class ExcludedRegionsActivity extends BaseActivity
 
         dataset = new ArrayList<>();
         mapArrayList = new ArrayList<>();
+        listViewIndexMap = new SparseArray<>();
+        markerMap = new SparseArray<>();
 
         fragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -87,7 +97,7 @@ public class ExcludedRegionsActivity extends BaseActivity
 
         listView.setEmptyView(findViewById(R.id.empty_textview));
 
-        for (Point point : dataset)
+        for (ExcludedRegion point : dataset)
         {
             final Map<String, Object> map = new HashMap<>();
             map.put("title", point.title);
@@ -118,10 +128,47 @@ public class ExcludedRegionsActivity extends BaseActivity
                     @Override
                     public void onClick(View v)
                     {
-                        showToast((String) v.getTag(), Toast.LENGTH_SHORT);
+                        progressDialog = ProgressDialog.show(instance, "", getString(R.string.loading), true);
+                        progressDialog.show();
+
+                        final int id = Integer.parseInt((String) v.getTag());
+                        final Map<String, Object> row = listViewIndexMap.get(id);
+                        final Marker bMarker = markerMap.get(id);
+                        if(row != null)
+                        {
+                            mapArrayList.remove(row);
+                        }
+                        if(bMarker != null)
+                        {
+                            bMarker.remove();
+                        }
+                        if(id == -1)
+                        {
+                            progressDialog.hide();
+                            simpleAdapter.notifyDataSetChanged();
+                            return;
+                        }
+
+                        Call<GenericAPIResponse> call = api.deleteExcludedRegion(id);
+                        call.enqueue(new Callback<GenericAPIResponse>()
+                        {
+                            @Override
+                            public void onResponse(Call<GenericAPIResponse> call, Response<GenericAPIResponse> response)
+                            {
+                                progressDialog.hide();
+                                simpleAdapter.notifyDataSetChanged();
+                                showToast(R.string.excluded_regions_successful_deletion, Toast.LENGTH_SHORT);
+                            }
+
+                            @Override
+                            public void onFailure(Call<GenericAPIResponse> call, Throwable t)
+                            {
+                                progressDialog.hide();
+                                showToast(R.string.something_went_wrong, Toast.LENGTH_SHORT);
+                            }
+                        });
                     }
                 });
-
                 return convertView;
             }
         };
@@ -131,6 +178,49 @@ public class ExcludedRegionsActivity extends BaseActivity
 
         setupToolbar(null);
         setupNavigationView();
+    }
+
+    private void fetchAndUpdateExclusions ()
+    {
+        Call<List<ExcludedRegion>> call = api.getExcludedRegions();
+        call.enqueue(new Callback<List<ExcludedRegion>>()
+        {
+            @Override
+            public void onResponse(Call<List<ExcludedRegion>> call, Response<List<ExcludedRegion>> response)
+            {
+                List<ExcludedRegion> regions = response.body();
+                if(regions == null || regions.size() == 0)
+                {
+                    Log.d(TAG, "onResponse: empty dataset found or list was null.");
+                    return;
+                }
+
+                mapArrayList.clear();
+                mapContainer.clear();
+                listViewIndexMap.clear();
+                markerMap.clear();
+
+                dataset = regions;
+                simpleAdapter.notifyDataSetChanged();
+                for (ExcludedRegion region : regions)
+                {
+                    final Map<String, Object> map = new HashMap<>();
+                    map.put("title", region.title);
+                    map.put("id", String.valueOf(region.id));
+                    Marker marker = mapContainer.addMarker(new MarkerOptions().position(region.location).title(region.title));
+                    markerMap.append(region.id, marker);
+                    listViewIndexMap.append(region.id, map);
+                    mapArrayList.add(map);
+                }
+                simpleAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<List<ExcludedRegion>> call, Throwable t)
+            {
+                Log.d(TAG, "onFailure: " + t.toString());
+            }
+        });
     }
 
     @Override
@@ -163,8 +253,6 @@ public class ExcludedRegionsActivity extends BaseActivity
             @Override
             public void onMapLongClick(final LatLng latLng)
             {
-                mapContainer.clear();
-                final Marker marker = mapContainer.addMarker(new MarkerOptions().position(latLng));
                 final MaterialDialog dialog = new MaterialDialog.Builder(instance)
                         .title(R.string.excluded_regions_dialog_title)
                         .inputRange(3, 30)
@@ -181,22 +269,64 @@ public class ExcludedRegionsActivity extends BaseActivity
                         .onPositive(new MaterialDialog.SingleButtonCallback()
                         {
                             @Override
-                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which)
+                            public void onClick(@NonNull final MaterialDialog dialog, @NonNull DialogAction which)
                             {
-                                Point point = new Point(latLng.latitude, latLng.longitude, dialog.getInputEditText().getText().toString(), "");
-                                final Map<String, Object> map = new HashMap<>();
-                                dataset.add(point);
-                                marker.setTitle(point.title);
-                                map.put("title", point.title);
-                                map.put("id", String.valueOf(point.id));
-                                mapArrayList.add(map);
-                                simpleAdapter.notifyDataSetChanged();
+
+
+                                progressDialog = ProgressDialog.show(instance, "", getString(R.string.loading), true);
+                                progressDialog.show();
+
+                                final ExcludedRegion point = new ExcludedRegion();
+                                point.title = dialog.getInputEditText().getText().toString();
+                                point.location = latLng;
+
+                                Call<GenericAPIResponse> call = api.postExcludedRegion(point);
+                                call.enqueue(new Callback<GenericAPIResponse>() {
+                                    @Override
+                                    public void onResponse(Call<GenericAPIResponse> call, Response<GenericAPIResponse> response)
+                                    {
+                                        progressDialog.dismiss();
+                                        if(response.body() != null && response.body().status == 200)
+                                        {
+                                            final Marker marker = mapContainer.addMarker(new MarkerOptions().position(latLng));
+                                            point.id =  response.body().data.id;
+                                            final Map<String, Object> map = new HashMap<>();
+                                            dataset.add(point);
+
+                                            marker.setTitle(point.title);
+
+                                            map.put("title", point.title);
+                                            map.put("id", String.valueOf(point.id));
+
+                                            mapArrayList.add(map);
+                                            listViewIndexMap.append(point.id, map);
+                                            markerMap.append(point.id, marker);
+
+                                            simpleAdapter.notifyDataSetChanged();
+                                            showToast(R.string.entry_submit, Toast.LENGTH_SHORT);
+                                        }
+                                        else
+                                        {
+                                            showToast(R.string.something_went_wrong, Toast.LENGTH_SHORT);
+                                            Log.d(TAG, "onResponse: PARSE_FAILURE: " + response.message());
+                                        }
+
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<GenericAPIResponse> call, Throwable t)
+                                    {
+                                        progressDialog.dismiss();
+                                        Log.d(TAG, "onFailure: " + t.getMessage());
+                                        showToast(R.string.something_went_wrong, Toast.LENGTH_SHORT);
+                                    }
+                                });
                             }
                         })
                         .show();
             }
         });
-
+        fetchAndUpdateExclusions();
     }
 
     @Override

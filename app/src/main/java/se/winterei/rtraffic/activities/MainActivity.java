@@ -304,6 +304,8 @@ public class MainActivity extends BaseActivity
 
     private void parseReportsAndUpdateMap (List<Report> reports)
     {
+        if(reports == null)
+            return;
         mapContainer.disableObservers();
         for (Report report : reports)
         {

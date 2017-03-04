@@ -26,6 +26,7 @@
     <string name="delete">Delete</string>
     <string name="toggle_OFF">Off</string>
     <string name="no_results">No entries were found.</string>
+    <string name="entry_submit">Your entry has been submitted.</string>
     <string name="traffic_report_toast_clear_markers">Markers and pathways have been cleared.</string>
     <string name="traffic_report_snackbar_confirm_report">Ready to submit report</string>
     <string name="traffic_report_dialog_compose_report">Compose Report</string>
@@ -40,6 +41,7 @@
     <string name="excluded_regions_dialog_title">Add Region</string>
     <string name="excluded_regions_dialog_lint">Enter a name</string>
     <string name="excluded_regions_listview_no_results">You haven\'t registered excluded regions yet.</string>
+    <string name="excluded_regions_successful_deletion">The entry has been successfully removed.</string>
 
     <string name="feedback_thank_you">Thank you for your feedback!</string>
 
