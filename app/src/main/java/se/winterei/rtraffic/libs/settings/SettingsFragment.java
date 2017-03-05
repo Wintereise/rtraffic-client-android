@@ -2,6 +2,7 @@ package se.winterei.rtraffic.libs.settings;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
@@ -41,7 +42,10 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             return;
         }
         SharedPreferences sharedPrefs = getPreferenceManager().getSharedPreferences();
-        preference.setSummary(sharedPrefs.getString(key, "Default"));
+        if(preference instanceof CheckBoxPreference)
+            preference.setSummary(String.valueOf(sharedPrefs.getBoolean(key, true)));
+        else
+            preference.setSummary(sharedPrefs.getString(key, "Default"));
     }
 
     @Override
