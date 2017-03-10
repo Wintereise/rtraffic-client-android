@@ -28,7 +28,8 @@ public class Point
         this.title = title;
         this.info = info;
     }
-    public String getTitle(){
+    public String getTitle ()
+    {
         return this.title;
     }
 }

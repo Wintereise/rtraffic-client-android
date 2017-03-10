@@ -10,7 +10,7 @@
     <CheckBoxPreference
         android:key="pref_background_service"
         android:title="@string/pref_background_service_enable"
-        android:summary="@string/pref_notif_enable_summary"
+        android:summary="@string/pref_background_service_summary"
         android:defaultValue="true" />
 
     <ListPreference

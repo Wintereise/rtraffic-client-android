@@ -327,7 +327,7 @@ public class MainActivity extends BaseActivity
                     continue;
             }
 
-            PolylineOptions tmp = DirectionConverter.createPolyline(this, (ArrayList<LatLng>) report.polypoints, 5, color);
+            PolylineOptions tmp = DirectionConverter.createPolyline(this, (ArrayList<LatLng>) report.polypoints, Utility.MAIN_MAP_POLYLINE_WIDTH, color);
             mapContainer.addPolyline(tmp, report.severity);
         }
         mapContainer.enableObservers();

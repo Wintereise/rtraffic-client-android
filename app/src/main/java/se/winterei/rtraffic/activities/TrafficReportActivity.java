@@ -171,7 +171,9 @@ public class TrafficReportActivity extends BaseActivity
                         }
                         if (color != -1 && state != -1)
                         {
-                            Polyline polyline = mainMap.addPolyline(polylineOptionsList.get(polyLineIndex), state);
+                            PolylineOptions polylineOptions = polylineOptionsList.get(polyLineIndex);
+                            polylineOptions.width(Utility.MAIN_MAP_POLYLINE_WIDTH);
+                            Polyline polyline = mainMap.addPolyline(polylineOptions, state);
                             polyline.setColor(color);
                             progressDialog = ProgressDialog.show(instance, "", getString(R.string.loading), true);
 

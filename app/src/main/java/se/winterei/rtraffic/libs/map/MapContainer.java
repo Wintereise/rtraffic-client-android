@@ -7,6 +7,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.android.ui.IconGenerator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,6 +44,17 @@ public class MapContainer
         markerList.add(tmp);
         notifyListeners(type.MARKER, tmp);
         return tmp;
+    }
+
+    public Marker addInfoMarker (IconGenerator iconGenerator, CharSequence charSequence, LatLng position)
+    {
+        MarkerOptions markerOptions = new MarkerOptions()
+                .icon(BitmapDescriptorFactory.fromBitmap(iconGenerator.makeIcon(charSequence)))
+                .position(position)
+                .title(charSequence.toString())
+                .anchor(iconGenerator.getAnchorU(), iconGenerator.getAnchorV());
+
+        return addMarker(markerOptions);
     }
 
     public Polyline addPolyline (PolylineOptions polylineOptions)
