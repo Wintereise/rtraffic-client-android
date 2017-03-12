@@ -8,8 +8,10 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import se.winterei.rtraffic.R;
@@ -17,11 +19,17 @@ import se.winterei.rtraffic.R;
 public class SimpleListViewAdapter extends BaseAdapter{
 
     Context context;
-    List<HashMap<String, Object>> data;
+    private List<HashMap<String, Object>> data;
+    private ArrayList< HashMap<String,Object>> arrayList;
+
+
     public SimpleListViewAdapter(Context context, List<HashMap<String, Object>> data) {
         super();
         this.context=context;
         this.data=data;
+
+        this.arrayList = new ArrayList<HashMap<String,Object>>();
+        this.arrayList.addAll(data);
 
     }
 
@@ -79,5 +87,20 @@ public class SimpleListViewAdapter extends BaseAdapter{
     static class HolderView{
         TextView aText;
         ToggleButton aToggle;
+    }
+    public void filter(String searchText){
+        data.clear();
+        if(searchText.length() == 0){
+            data.addAll(arrayList);
+        }
+        else
+        {
+            for (HashMap<String,Object> u: arrayList){
+                if( ((String)u.get("txt")).toLowerCase(Locale.getDefault()).contains(searchText)){
+                    data.add(u);
+                }
+            }
+        }
+        notifyDataSetChanged();
     }
 }

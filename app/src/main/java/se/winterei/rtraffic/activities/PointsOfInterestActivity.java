@@ -33,6 +33,7 @@ public class PointsOfInterestActivity extends BaseActivity
     private boolean[] toggleSwitchStates;
     private Toast toast;
 
+    SimpleListViewAdapter adapter;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -71,16 +72,25 @@ public class PointsOfInterestActivity extends BaseActivity
             aList.add(hm);
         }
 
-        // Keys used in Hashmap
-        final String[] from = { "txt", "stat" };
-
-        // Ids of views in listview_layout
-        final int[] to = { R.id.excludedListViewLabel, R.id.listViewTextViewToggleButton };
 
         // Instantiating an adapter to store each items
-        final SimpleListViewAdapter adapter = new SimpleListViewAdapter(getBaseContext(),aList);
+        adapter = new SimpleListViewAdapter(getBaseContext(),aList);
         listView = (ListView) findViewById(R.id.PointsOfInterestRegionsListView);
         listView.setAdapter(adapter);
+
+
+        //editsearch = (EditText) findViewById(R.id.search);
+
+
+
+
+
+
+
+
+
+
+
 
     }
 
@@ -129,6 +139,7 @@ public class PointsOfInterestActivity extends BaseActivity
                             @Override
                             public boolean onQueryTextSubmit (String query)
                             {
+
                                 filterMarkers(query);
                                 return true;
                             }
@@ -138,7 +149,8 @@ public class PointsOfInterestActivity extends BaseActivity
                             {
                                 if (query.length() >= 3)
                                 {
-                                    filterMarkers(query);
+                                    adapter.filter(query);
+                                    //filterMarkers(query);
                                 }
                                 return true;
                             }
