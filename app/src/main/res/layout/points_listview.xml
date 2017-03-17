@@ -10,22 +10,24 @@
         android:id="@+id/excludedListViewLabel"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="0.80"
+        android:layout_weight="0.8"
         android:padding="10dip"
-        android:textSize="12dip"
+        android:textSize="16dip"
         android:textStyle="bold" />
 
     <ToggleButton
         android:id="@+id/listViewTextViewToggleButton"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight=".30"
-        android:layout_alignParentRight="true"
-        android:focusable="false"
-        android:clickable="false"
-        android:textOff="@string/toggle_OFF"
-        android:background="@color/blue_grey_500"
-        android:layout_gravity="right"
-        android:button="@android:color/transparent" />
+        android:layout_weight="0.2"
+        android:layout_margin="10dp"
+
+        android:textOff=""
+        android:textOn=""
+        android:background="@drawable/check"
+        android:layout_centerVertical="true"
+
+
+         />
 
 </LinearLayout>
