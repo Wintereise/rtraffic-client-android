@@ -37,6 +37,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.android.ui.IconGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,6 +77,7 @@ public class TrafficReportActivity extends BaseActivity
     private EditText commentInput;
     private CheckBox checkBoxInput;
     private ProgressDialog progressDialog;
+    private IconGenerator iconGenerator;
 
     @Override
     @SuppressWarnings({"MissingPermission"})
@@ -104,6 +106,7 @@ public class TrafficReportActivity extends BaseActivity
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME, MIN_DISTANCE, this); //You can also use LocationManager.GPS_PROVIDER and LocationManager.PASSIVE_PROVIDER
         }
 
+        iconGenerator = new IconGenerator(instance);
     }
 
 
@@ -123,8 +126,8 @@ public class TrafficReportActivity extends BaseActivity
         switch (item.getItemId())
         {
             case MENU_CLEAR:
-                if(mMap != null)
-                    mMap.clear();
+                if(mapContainer != null)
+                    mapContainer.clear();
                 dismissSnackbar(snackbar);
                 markerPoints.clear();
                 polyLineIndex = 0;
@@ -236,6 +239,8 @@ public class TrafficReportActivity extends BaseActivity
     public void onMapReady(GoogleMap googleMap)
     {
         mMap = googleMap;
+        mapContainer = new MapContainer(googleMap);
+
         appContext.put("TrafficReportGMap", mMap);
 
         snackbar = showSnackbar(fragment.getView(), R.string.loading_main, Snackbar.LENGTH_INDEFINITE);
@@ -257,10 +262,8 @@ public class TrafficReportActivity extends BaseActivity
                     markerPoints.clear();
                 }
                 markerPoints.add(point);
-                MarkerOptions options = new MarkerOptions();
 
-                // Setting the position of the marker
-                options.position(point);
+
 
                 /**
                  * For the start location, the color of marker is GREEN and
@@ -268,14 +271,16 @@ public class TrafficReportActivity extends BaseActivity
                  */
                 if (markerPoints.size() == 1)
                 {
-                    options.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_start_marker));
+                    iconGenerator.setStyle(IconGenerator.STYLE_GREEN);
+                    mapContainer.addInfoMarker(iconGenerator, getString(R.string.start_map), point);
                     showToast(R.string.traffic_report_second_instruction, Toast.LENGTH_SHORT);
                 }
                 else if (markerPoints.size() == 2)
                 {
-                    options.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_end_marker));
+                    iconGenerator.setStyle(IconGenerator.STYLE_RED);
+                    mapContainer.addInfoMarker(iconGenerator, getString(R.string.end_map), point);
                 }
-                mMap.addMarker(options);
+                //mMap.addMarker(options);
                 if (markerPoints.size() == 2)
                 {
                     src = markerPoints.get(0);
@@ -306,15 +311,18 @@ public class TrafficReportActivity extends BaseActivity
     public void onDirectionSuccess(Direction direction, String rawBody)
     {
         dismissSnackbar(snackbar);
-        mMap.clear();
+        mapContainer.clear();
         polylineList.clear();
         polylineOptionsList.clear();
 
 
         if (direction.isOK())
         {
-            mMap.addMarker(new MarkerOptions().position(src).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_start_marker)));
-            mMap.addMarker(new MarkerOptions().position(dst).icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_end_marker)));
+            iconGenerator.setStyle(IconGenerator.STYLE_GREEN);
+            mapContainer.addInfoMarker(iconGenerator, getString(R.string.start_map), src);
+
+            iconGenerator.setStyle(IconGenerator.STYLE_RED);
+            mapContainer.addInfoMarker(iconGenerator, getString(R.string.end_map), dst);
 
             List<Route> routes = direction.getRouteList();
 

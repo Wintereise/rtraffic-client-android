@@ -24,6 +24,8 @@
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
     <string name="delete">Delete</string>
+    <string name="start_map">Start</string>
+    <string name="end_map">End</string>
     <string name="toggle_OFF">Off</string>
     <string name="no_results">No entries were found.</string>
     <string name="entry_submit">Your entry has been submitted.</string>
