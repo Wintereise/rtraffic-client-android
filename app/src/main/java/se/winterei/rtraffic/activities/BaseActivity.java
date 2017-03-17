@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
@@ -60,6 +61,8 @@ public abstract class BaseActivity extends AppCompatActivity
     public RTraffic appContext;
     public SharedPreferences preferences;
 
+    public Boolean bypassAuthentication = false;
+
 
     public final void setupToolbar (@Nullable View view)
     {
@@ -108,7 +111,7 @@ public abstract class BaseActivity extends AppCompatActivity
 
     private void redirectOnAuthFailure ()
     {
-        if(!authCheck())
+        if(!authCheck() && !bypassAuthentication)
         {
             startActivity(new Intent(this, GSignInActivity.class));
         }
@@ -343,7 +346,11 @@ public abstract class BaseActivity extends AppCompatActivity
             alarmManager.cancel(pendingIntent);
             alarmState = false;
         }
+    }
 
+    public boolean isApiNotLowerThan (int versionCode)
+    {
+        return Build.VERSION.SDK_INT >= versionCode;
     }
 
 

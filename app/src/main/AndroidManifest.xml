@@ -28,23 +28,21 @@
             android:name=".services.PeriodicRunner"
             android:process=":remote" />
 
-        <activity android:name=".activities.GSignInActivity">
+        <activity android:name=".activities.IntroSlider">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".activities.GSignInActivity"/>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".activities.MainActivity">
-            <intent-filter>
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".activities.MainActivity"/>
+
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings" />
@@ -66,7 +64,6 @@
         <activity
             android:name=".activities.GeoFenceActivity"
             android:label="@string/nav_geofence" />
-        <activity android:name=".activities.IntroSlider"></activity>
     </application>
 
 </manifest>

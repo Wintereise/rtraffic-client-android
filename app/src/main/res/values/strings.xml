@@ -52,6 +52,23 @@
 
     <string name="search_hint">Search for Locations</string>
 
+    <!-- Intro Slider Messages -->
+    <string name="next">NEXT</string>
+    <string name="skip">SKIP</string>
+    <string name="start">GOT IT</string>
+
+    <string name="slide_1_title">Hello Commuters!</string>
+    <string name="slide_1_desc">The easiest way to plan your journey!</string>
+
+    <string name="slide_2_title">Live Updates!</string>
+    <string name="slide_2_desc">You will be getting traffic updates at Real Time</string>
+
+    <string name="slide_3_title">Points of Interest!</string>
+    <string name="slide_3_desc">You get notifications of traffic updates of places you have Special interest in!</string>
+
+    <string name="slide_4_title">GeoFencing!</string>
+    <string name="slide_4_desc">Name places from where you do not want updates!</string>
+
     <!-- Sign-in status messages for G-sign in-->
 
     <string name="title_text">Realtime Traffic Management</string>

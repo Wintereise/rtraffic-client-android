@@ -246,4 +246,10 @@ public class GSignInActivity extends AppCompatActivity implements
         }
     }
 
+    @Override
+    public void onBackPressed ()
+    {
+        finish();
+    }
+
 }
