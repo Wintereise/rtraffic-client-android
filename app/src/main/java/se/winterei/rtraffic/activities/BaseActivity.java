@@ -63,6 +63,14 @@ public abstract class BaseActivity extends AppCompatActivity
 
     public Boolean bypassAuthentication = false;
 
+    private Boolean permissionRequested = false;
+
+    private BaseActivity child;
+
+    public void setChild (BaseActivity child)
+    {
+        this.child = child;
+    }
 
     public final void setupToolbar (@Nullable View view)
     {
@@ -224,8 +232,10 @@ public abstract class BaseActivity extends AppCompatActivity
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
-            bToast = showToast(R.string.permission_location_err, Toast.LENGTH_SHORT);
+            if (!permissionRequested)
+                bToast = showToast(R.string.permission_location_err, Toast.LENGTH_SHORT);
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            permissionRequested = true;
             return false;
         }
         return true;
@@ -240,8 +250,10 @@ public abstract class BaseActivity extends AppCompatActivity
             {
                 if (bToast != null)
                     bToast.cancel();
-                finish();
-                startActivity(new Intent(this, MainActivity.class));
+                if (child != null)
+                    child.resumeAfterPermissionGranted();
+                else
+                    showToast(R.string.something_went_wrong, Toast.LENGTH_LONG);
             }
 
             else
@@ -251,6 +263,8 @@ public abstract class BaseActivity extends AppCompatActivity
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
+
+    public void resumeAfterPermissionGranted () {};
 
     public void genericFixToolbar (Menu menu)
     {

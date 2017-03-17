@@ -120,7 +120,6 @@ public class PointsOfInterestActivity extends BaseActivity
                     @Override
                     public boolean onQueryTextSubmit (String query)
                     {
-
                         adapter.filter(query);
                         return true;
                     }

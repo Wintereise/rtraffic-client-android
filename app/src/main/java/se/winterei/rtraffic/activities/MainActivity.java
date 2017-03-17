@@ -68,6 +68,7 @@ public class MainActivity extends BaseActivity
     @SuppressWarnings({"MissingPermission"})
     protected void onCreate(Bundle savedInstanceState)
     {
+        super.setChild(instance);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -91,6 +92,15 @@ public class MainActivity extends BaseActivity
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, Utility.LOCATION_LOCK_MIN_TIME, Utility.LOCATION_LOCK_MIN_DISTANCE, this); //You can also use LocationManager.GPS_PROVIDER and LocationManager.PASSIVE_PROVIDER
             scheduleAlarm(); //The intentservice is heavily reliant on location services, triggering without it makes no sense
         }
+    }
+
+    @Override
+    @SuppressWarnings({"MissingPermission"})
+    public void resumeAfterPermissionGranted ()
+    {
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, Utility.LOCATION_LOCK_MIN_TIME, Utility.LOCATION_LOCK_MIN_DISTANCE, this); //You can also use LocationManager.GPS_PROVIDER and LocationManager.PASSIVE_PROVIDER
+        scheduleAlarm(); //The intentservice is heavily reliant on location services, triggering without it makes no sense
     }
 
     private void setupFloatingActionButton ()
