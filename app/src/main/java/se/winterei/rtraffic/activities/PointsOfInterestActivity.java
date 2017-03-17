@@ -1,6 +1,5 @@
 package se.winterei.rtraffic.activities;
 
-import android.database.MatrixCursor;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
@@ -12,17 +11,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
 import se.winterei.rtraffic.R;
 import se.winterei.rtraffic.libs.generic.Point;
-import se.winterei.rtraffic.libs.map.MapContainer;
 import se.winterei.rtraffic.libs.search.SearchFeedResultsAdapter;
+
+
 public class PointsOfInterestActivity extends BaseActivity
 {
     private SearchFeedResultsAdapter searchFeedResultsAdapter;
-    private MapContainer mapContainer;
-    private final HashMap<Integer, Point> searchPositionPoints = new HashMap<>();
     private final String[] columns = new String[]{"_id", "title", "position"};
 
     private PointsOfInterestActivity instance = this;
@@ -31,7 +28,6 @@ public class PointsOfInterestActivity extends BaseActivity
 
     private final List<String> mobileArray = new ArrayList<>();
     private boolean[] toggleSwitchStates;
-    private Toast toast;
 
     SimpleListViewAdapter adapter;
 
@@ -72,25 +68,10 @@ public class PointsOfInterestActivity extends BaseActivity
             aList.add(hm);
         }
 
-
         // Instantiating an adapter to store each items
         adapter = new SimpleListViewAdapter(getBaseContext(),aList);
         listView = (ListView) findViewById(R.id.PointsOfInterestRegionsListView);
         listView.setAdapter(adapter);
-
-
-        //editsearch = (EditText) findViewById(R.id.search);
-
-
-
-
-
-
-
-
-
-
-
 
     }
 
@@ -133,110 +114,26 @@ public class PointsOfInterestActivity extends BaseActivity
         final SearchView searchView = (SearchView) myActionMenuItem.getActionView();
 
         searchView.setOnQueryTextListener
-                (
-                        new SearchView.OnQueryTextListener ()
-                        {
-                            @Override
-                            public boolean onQueryTextSubmit (String query)
-                            {
-
-                                filterMarkers(query);
-                                return true;
-                            }
-
-                            @Override
-                            public boolean onQueryTextChange (String query)
-                            {
-                                if (query.length() >= 3)
-                                {
-                                    adapter.filter(query);
-                                    //filterMarkers(query);
-                                }
-                                return true;
-                            }
-                        }
-                );
-
-        searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener()
-        {
-            @Override
-            public boolean onSuggestionSelect(int position)
-            {
-                //focusMarker(searchView, position);
-                return true;
-            }
-
-            @Override
-            public boolean onSuggestionClick(int position)
-            {
-                //focusMarker(searchView, position);
-                return true;
-            }
-        });
-
-        searchFeedResultsAdapter = new SearchFeedResultsAdapter(instance, R.layout.search_suggestions, null, columns, null, -1000);
-
-        searchView.setSuggestionsAdapter(searchFeedResultsAdapter);
-    }
-
-//    private void focusMarker (SearchView searchView, int position)
-//    {
-//        Cursor cursor = (Cursor) searchView.getSuggestionsAdapter().getItem(position);
-//        int index = Integer.parseInt(cursor.getString(2));
-//
-//        Marker marker = searchPositionMap.get(index);
-//        if(marker != null)
-//        {
-//            mapContainer.getMap()
-//                    .animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
-//            marker.showInfoWindow();
-//            searchView.setQuery(marker.getTitle(), false);
-//        }
-//
-//        searchView.clearFocus();
-//    }
-
-    private void filterMarkers (String searchText)
-    {
-        List<Point> results;
-        searchText = searchText.toLowerCase(Locale.getDefault());
-
-        if (searchText.isEmpty())
-        {
-            results = pointList;
-        }
-        else
-        {
-            results = new ArrayList<>();
-            for (Point point : pointList)
-            {
-
-                if(point.getTitle().toLowerCase(Locale.getDefault()).contains(searchText))
+        (
+                new SearchView.OnQueryTextListener ()
                 {
-                  results.add(point);
+                    @Override
+                    public boolean onQueryTextSubmit (String query)
+                    {
+
+                        adapter.filter(query);
+                        return true;
+                    }
+
+                    @Override
+                    public boolean onQueryTextChange (String query)
+                    {
+                        adapter.filter(query);
+                        return true;
+                    }
                 }
-            }
-        }
-
-        if (results.size() > 0)
-        {
-            MatrixCursor matrixCursor = new MatrixCursor(columns);
-            searchPositionPoints.clear();
-            int index = 0;
-            for (Point point : results)
-            {
-                String[] tmp = new String[]{ Integer.toString(0), point.getTitle(), Integer.toString(index) };
-                searchPositionPoints.put(index, point);
-                matrixCursor.addRow(tmp);
-                index++;
-            }
-            searchFeedResultsAdapter.changeCursor(matrixCursor);
-        }
-
+        );
     }
-
-
-
 
 }
 
