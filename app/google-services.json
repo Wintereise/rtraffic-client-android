@@ -1,7 +1,9 @@
 {
   "project_info": {
     "project_number": "800072281116",
-    "project_id": "rtraffic-android"
+    "firebase_url": "https://rtraffic-android.firebaseio.com",
+    "project_id": "rtraffic-android",
+    "storage_bucket": "rtraffic-android.appspot.com"
   },
   "client": [
     {
@@ -12,6 +14,10 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "800072281116-omb4f252ejj63scjmdtlcprpq485b1c5.apps.googleusercontent.com",
+          "client_type": 3
+        },
         {
           "client_id": "800072281116-l1d0cmjfqdsvnjsm9cnkgr6logc94r9m.apps.googleusercontent.com",
           "client_type": 1,
@@ -38,11 +44,16 @@
           }
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "800072281116-omb4f252ejj63scjmdtlcprpq485b1c5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
-          "status": 1
+          "status": 2
         }
       }
     }

@@ -24,6 +24,22 @@
             android:name=".services.BackgroundTrafficStatus"
             android:exported="false" />
 
+        <service
+            android:name=".services.FirebaseInstanceIDTracker"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".services.FirebaseNotificationService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+
         <receiver
             android:name=".services.PeriodicRunner"
             android:process=":remote" />

@@ -28,6 +28,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.firebase.crash.FirebaseCrash;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -83,6 +85,8 @@ public class MainActivity extends BaseActivity
         fragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
 
+        FirebaseCrash.report(new Exception("Testing firebase crash!"));
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         fragment.getMapAsync(this);
 
@@ -92,6 +96,7 @@ public class MainActivity extends BaseActivity
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, Utility.LOCATION_LOCK_MIN_TIME, Utility.LOCATION_LOCK_MIN_DISTANCE, this); //You can also use LocationManager.GPS_PROVIDER and LocationManager.PASSIVE_PROVIDER
             scheduleAlarm(); //The intentservice is heavily reliant on location services, triggering without it makes no sense
         }
+
     }
 
     @Override
