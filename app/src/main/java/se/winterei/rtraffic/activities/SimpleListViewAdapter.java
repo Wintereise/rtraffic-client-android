@@ -1,5 +1,6 @@
 package se.winterei.rtraffic.activities;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -7,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import java.util.ArrayList;
@@ -15,7 +17,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import se.winterei.rtraffic.R;
+import se.winterei.rtraffic.libs.api.GenericAPIResponse;
+import se.winterei.rtraffic.libs.generic.PointOfInterest;
 
 public class SimpleListViewAdapter extends BaseAdapter{
 
@@ -23,17 +30,21 @@ public class SimpleListViewAdapter extends BaseAdapter{
     private List<HashMap<String, Object>> data;
     private ArrayList< HashMap<String,Object>> arrayList;
 
+    private PointsOfInterestActivity activity;
+
     private final static String TAG = SimpleListViewAdapter.class.getSimpleName();
 
 
-    public SimpleListViewAdapter(Context context, List<HashMap<String, Object>> data)
+    public SimpleListViewAdapter(Context context, List<HashMap<String, Object>> data, PointsOfInterestActivity activity)
     {
         super();
         this.context=context;
         this.data=data;
 
-        this.arrayList = new ArrayList<HashMap<String,Object>>();
+        this.arrayList = new ArrayList<>();
         this.arrayList.addAll(data);
+
+        this.activity = activity;
 
     }
 
@@ -52,6 +63,7 @@ public class SimpleListViewAdapter extends BaseAdapter{
         return data.size();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public View getView(final int position, View convertView, ViewGroup parent)
     {
@@ -74,7 +86,9 @@ public class SimpleListViewAdapter extends BaseAdapter{
 
         holderView.aToggle.setChecked((Boolean) tmp.get("stat"));
         holderView.aText.setText((String) tmp.get("txt"));
-        holderView.aToggle.setTag(tmp.get("id"));
+        holderView.aToggle.setTag(tmp);
+
+        tmp.put("toggle", holderView.aToggle);
 
         holderView.aToggle.setOnClickListener(new View.OnClickListener()
         {
@@ -82,20 +96,49 @@ public class SimpleListViewAdapter extends BaseAdapter{
             public void onClick(final View v)
             {
                 final ToggleButton  toggleButton  = (ToggleButton) v;
-                final int id = Integer.parseInt((String) v.getTag());
-                Log.d(TAG, "onClick: point id was " + id);
+                final HashMap<String, Object> row = (HashMap<String, Object>) v.getTag();
+
+                activity.progressDialog = ProgressDialog.show(activity, "", activity.getString(R.string.loading), true);
+                activity.progressDialog.show();
+
+                final int point_id = (Integer) row.get("point_id");
+                Call<GenericAPIResponse> call;
 
                 if(toggleButton.isChecked())
-                {
-                    toggleButton.setChecked(true);
-                    data.get(position).put("stat",true);//this is imp to update the value in dataset which is provided to listview
-
-                }
+                    call = activity.api.postPointOfInterest(new PointOfInterest(-1, -1, point_id));
                 else
+                    call = activity.api.deletePointOfInterest(point_id);
+
+                call.enqueue(new Callback<GenericAPIResponse>()
                 {
-                    toggleButton.setChecked(false);
-                    data.get(position).put("stat",false);
-                }
+                    @Override
+                    public void onResponse(Call<GenericAPIResponse> call, Response<GenericAPIResponse> response)
+                    {
+                        activity.progressDialog.dismiss();
+                        if(toggleButton.isChecked())
+                        {
+                            activity.showToast(R.string.entry_submit, Toast.LENGTH_SHORT);
+                            toggleButton.setChecked(true);
+                            data.get(position).put("stat", true);//this is imp to update the value in dataset which is provided to listview
+                        }
+                        else
+                        {
+                            activity.showToast(R.string.excluded_regions_successful_deletion, Toast.LENGTH_SHORT);
+                            toggleButton.setChecked(false);
+                            data.get(position).put("stat", false);
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<GenericAPIResponse> call, Throwable t)
+                    {
+                        activity.progressDialog.dismiss();
+                        activity.showToast(R.string.something_went_wrong, Toast.LENGTH_SHORT);
+                        Log.d(TAG, "onFailure: " + t.getMessage());
+                    }
+                });
+
             }
         });
         return convertView;

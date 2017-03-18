@@ -202,7 +202,6 @@ public class ExcludedRegionsActivity extends BaseActivity
                 markerMap.clear();
 
                 dataset = regions;
-                simpleAdapter.notifyDataSetChanged();
                 for (ExcludedRegion region : regions)
                 {
                     final Map<String, Object> map = new HashMap<>();

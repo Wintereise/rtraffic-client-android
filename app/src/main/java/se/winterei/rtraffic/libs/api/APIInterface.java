@@ -10,6 +10,7 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 import se.winterei.rtraffic.libs.generic.ExcludedRegion;
 import se.winterei.rtraffic.libs.generic.Point;
+import se.winterei.rtraffic.libs.generic.PointOfInterest;
 import se.winterei.rtraffic.libs.generic.Report;
 
 /**
@@ -47,5 +48,14 @@ public interface APIInterface
 
     @DELETE("v1/excluded-regions/{id}")
     Call<GenericAPIResponse> deleteExcludedRegion (@Path("id") int id);
+
+    @GET("v1/poi")
+    Call<List<PointOfInterest>> getPointsOfInterest ();
+
+    @POST("v1/poi")
+    Call<GenericAPIResponse> postPointOfInterest (@Body PointOfInterest pointOfInterest);
+
+    @DELETE("v1/poi/{id}")
+    Call<GenericAPIResponse> deletePointOfInterest (@Path("id") int id);
 
 }
