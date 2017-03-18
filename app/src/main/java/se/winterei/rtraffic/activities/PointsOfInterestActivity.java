@@ -33,8 +33,6 @@ public class PointsOfInterestActivity extends BaseActivity
     private List<Point> pointList;
     private ListView listView;
 
-    private final List<String> mobileArray = new ArrayList<>();
-
     private boolean[] toggleSwitchStates;
     public ProgressDialog progressDialog;
 
