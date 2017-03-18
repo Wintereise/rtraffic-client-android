@@ -48,7 +48,7 @@ import se.winterei.rtraffic.libs.search.SearchFeedResultsAdapter;
 import se.winterei.rtraffic.libs.tasks.AsyncMarkerStateUpdater;
 
 public class MainActivity extends BaseActivity
-        implements OnMapReadyCallback, View.OnClickListener, LocationListener
+        implements OnMapReadyCallback, LocationListener
 {
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -105,25 +105,12 @@ public class MainActivity extends BaseActivity
 
     private void setupFloatingActionButton ()
     {
-        final FloatingActionButton action_report_info = (FloatingActionButton) findViewById(R.id.action_report_info);
         final FloatingActionButton action_report_traffic = (FloatingActionButton) findViewById(R.id.action_report_traffic);
-        final FloatingActionsMenu fab_report = (FloatingActionsMenu) findViewById(R.id.fab_report) ;
-        action_report_info.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                fab_report.collapse();
-                //proc the appropriate activity via intents here
-            }
-        });
-
         action_report_traffic.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                fab_report.collapse();
                 startActivity(new Intent(instance, TrafficReportActivity.class));
             }
         });
@@ -342,16 +329,6 @@ public class MainActivity extends BaseActivity
         }
         mapContainer.enableObservers();
         refreshMarkerStates();
-    }
-
-    @Override
-    public void onClick (View view)
-    {
-        switch (view.getId())
-        {
-            case R.id.fab_report:
-                break;
-        }
     }
 
     @Override

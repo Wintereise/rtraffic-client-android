@@ -53,7 +53,7 @@ import se.winterei.rtraffic.libs.generic.Utility;
 import se.winterei.rtraffic.libs.map.MapContainer;
 
 public class TrafficReportActivity extends BaseActivity
-        implements OnMapReadyCallback, View.OnClickListener, DirectionCallback, LocationListener, GoogleMap.OnPolylineClickListener
+        implements OnMapReadyCallback, DirectionCallback, LocationListener, GoogleMap.OnPolylineClickListener
 {
     private final String TAG = TrafficReportActivity.class.getSimpleName();
     private GoogleMap mMap;
@@ -295,16 +295,6 @@ public class TrafficReportActivity extends BaseActivity
                 }
             }
         });
-    }
-
-    @Override
-    public void onClick (View view)
-    {
-        switch (view.getId())
-        {
-            case R.id.fab_report:
-                break;
-        }
     }
 
     @Override

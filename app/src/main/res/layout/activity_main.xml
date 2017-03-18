@@ -32,38 +32,21 @@
             android:layout_height="match_parent"
             tools:context="se.winterei.rtraffic.activities.MainActivity">
 
-            <com.getbase.floatingactionbutton.FloatingActionsMenu
-                android:id="@+id/fab_report"
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/action_report_traffic"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom|right"
+                android:layout_gravity="bottom|end"
+                fab:fab_colorNormal="@color/accent"
+                fab:fab_title="@string/traffic_report"
+                fab:fab_labelStyle="@style/menu_labels_style"
                 fab:fab_addButtonColorNormal="@color/accent"
                 fab:fab_addButtonColorPressed="@color/accent_light"
                 fab:fab_addButtonPlusIconColor="@color/icons"
-                fab:fab_expandDirection="up"
-                fab:fab_labelStyle="@style/menu_labels_style"
-                android:layout_marginBottom="65dp"
+                fab:fab_icon="@drawable/ic_add_white_36dp"
+                android:layout_marginBottom="55dp"
                 android:layout_marginRight="20dp"
-                android:layout_marginLeft="20dp">
-                <com.getbase.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/action_report_info"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    fab:fab_colorNormal="@color/white"
-                    fab:fab_colorPressed="@color/white_pressed"
-                    fab:fab_size="mini"
-                    fab:fab_icon="@drawable/ic_info_outline_black_18dp"
-                    fab:fab_title="@string/info_report"/>
-                <com.getbase.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/action_report_traffic"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    fab:fab_colorNormal="@color/white"
-                    fab:fab_title="@string/traffic_report"
-                    fab:fab_size="mini"
-                    fab:fab_icon="@drawable/ic_traffic_black_18dp"
-                    fab:fab_colorPressed="@color/white_pressed"/>
-            </com.getbase.floatingactionbutton.FloatingActionsMenu>
+                android:layout_marginLeft="20dp"/>
         </fragment>
     </LinearLayout>
 
