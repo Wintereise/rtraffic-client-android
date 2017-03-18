@@ -5,7 +5,6 @@ import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,19 +13,17 @@ import java.util.List;
 
 import se.winterei.rtraffic.R;
 import se.winterei.rtraffic.libs.generic.Point;
-import se.winterei.rtraffic.libs.search.SearchFeedResultsAdapter;
 
 
 public class PointsOfInterestActivity extends BaseActivity
 {
-    private SearchFeedResultsAdapter searchFeedResultsAdapter;
-    private final String[] columns = new String[]{"_id", "title", "position"};
-
     private PointsOfInterestActivity instance = this;
     private List<Point> pointList;
     private ListView listView;
 
     private final List<String> mobileArray = new ArrayList<>();
+    private final List<Integer> idList = new ArrayList<>();
+
     private boolean[] toggleSwitchStates;
 
     SimpleListViewAdapter adapter;
@@ -55,6 +52,7 @@ public class PointsOfInterestActivity extends BaseActivity
         for (final Point point : pointList)
         {
             mobileArray.add(point.getTitle());
+            idList.add(point.id);
         }
 
         List<HashMap<String, Object>> aList = new ArrayList<>();
@@ -65,6 +63,7 @@ public class PointsOfInterestActivity extends BaseActivity
             final HashMap<String, Object> hm = new HashMap<>();
             hm.put("txt", mobileArray.get(i));
             hm.put("stat",toggleSwitchStates[i]);
+            hm.put("id", String.valueOf(idList.get(i)));
             aList.add(hm);
         }
 

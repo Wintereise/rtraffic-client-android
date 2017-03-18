@@ -1,6 +1,7 @@
 package se.winterei.rtraffic.activities;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +23,11 @@ public class SimpleListViewAdapter extends BaseAdapter{
     private List<HashMap<String, Object>> data;
     private ArrayList< HashMap<String,Object>> arrayList;
 
+    private final static String TAG = SimpleListViewAdapter.class.getSimpleName();
 
-    public SimpleListViewAdapter(Context context, List<HashMap<String, Object>> data) {
+
+    public SimpleListViewAdapter(Context context, List<HashMap<String, Object>> data)
+    {
         super();
         this.context=context;
         this.data=data;
@@ -49,7 +53,8 @@ public class SimpleListViewAdapter extends BaseAdapter{
     }
 
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent)
+    {
         HolderView holderView;
         if (convertView == null) {
             LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -65,19 +70,31 @@ public class SimpleListViewAdapter extends BaseAdapter{
             holderView = (HolderView) convertView.getTag();
         }
 
-        holderView.aToggle.setChecked((Boolean)data.get(position).get("stat"));
-        holderView.aText.setText((String)data.get(position).get("txt"));
-        holderView.aToggle.setOnClickListener(new View.OnClickListener() {
+        final HashMap<String, Object> tmp = data.get(position);
+
+        holderView.aToggle.setChecked((Boolean) tmp.get("stat"));
+        holderView.aText.setText((String) tmp.get("txt"));
+        holderView.aToggle.setTag(tmp.get("id"));
+
+        holderView.aToggle.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(final View v) {
-                if(((ToggleButton)v).isChecked()){
-                    ((ToggleButton)v).setChecked(true);
+            public void onClick(final View v)
+            {
+                final ToggleButton  toggleButton  = (ToggleButton) v;
+                final int id = Integer.parseInt((String) v.getTag());
+                Log.d(TAG, "onClick: point id was " + id);
+
+                if(toggleButton.isChecked())
+                {
+                    toggleButton.setChecked(true);
                     data.get(position).put("stat",true);//this is imp to update the value in dataset which is provided to listview
 
-                }else{
-                    ((ToggleButton)v).setChecked(false);
+                }
+                else
+                {
+                    toggleButton.setChecked(false);
                     data.get(position).put("stat",false);
-
                 }
             }
         });
@@ -88,17 +105,20 @@ public class SimpleListViewAdapter extends BaseAdapter{
         TextView aText;
         ToggleButton aToggle;
     }
-    public void filter(String searchText){
+
+    public void filter(String searchText)
+    {
         data.clear();
-        if(searchText.length() == 0){
+        if(searchText.length() == 0)
+        {
             data.addAll(arrayList);
         }
         else
         {
-            for (HashMap<String,Object> u: arrayList){
-                if( ((String)u.get("txt")).toLowerCase(Locale.getDefault()).contains(searchText)){
+            for (HashMap<String,Object> u: arrayList)
+            {
+                if( ((String) u.get("txt")).toLowerCase(Locale.getDefault()).contains(searchText))
                     data.add(u);
-                }
             }
         }
         notifyDataSetChanged();
