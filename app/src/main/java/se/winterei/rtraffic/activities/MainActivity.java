@@ -85,7 +85,8 @@ public class MainActivity extends BaseActivity
                 .findFragmentById(R.id.map);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        fragment.getMapAsync(this);
+        if (savedInstanceState == null)
+            fragment.getMapAsync(this);
 
         if(checkGPSPermissions())
         {
@@ -251,31 +252,16 @@ public class MainActivity extends BaseActivity
     @SuppressWarnings({"MissingPermission"})
     public void onMapReady(GoogleMap googleMap)
     {
+        Log.d(TAG, "onMapReady: called");
+
         mapContainer = new MapContainer(googleMap);
 
         appContext.put("MainMapContainer", mapContainer);
-
-        //mapContainer.addPoints(pointList);
 
         snackbar = showSnackbar(fragment.getView(), R.string.loading_main, Snackbar.LENGTH_INDEFINITE);
 
         if (checkGPSPermissions())
            mapContainer.getMap().setMyLocationEnabled(true);
-
-        mapContainer.registerListener(new MapChangeListener()
-        {
-            @Override
-            public void onPolylineAdded(Polyline polyline)
-            {
-                refreshMarkerStates();
-            }
-
-            @Override
-            public void onMarkerAdded(Marker marker)
-            {
-                refreshMarkerStates();
-            }
-        });
 
         synchronizeMap();
     }
@@ -284,14 +270,18 @@ public class MainActivity extends BaseActivity
     //TODO: FIX ^
     public void refreshMarkerStates ()
     {
+        new AsyncMarkerStateUpdater(instance, mapContainer).execute();
 
+        /*
+        asyncMarkerStateUpdater.execute();
         if(asyncMarkerStateUpdater !=  null && !asyncMarkerStateUpdater.running)
         {
-            asyncMarkerStateUpdater = new AsyncMarkerStateUpdater(instance, mapContainer);
-            asyncMarkerStateUpdater.execute();
+            //asyncMarkerStateUpdater = new AsyncMarkerStateUpdater(instance, mapContainer);
+            //asyncMarkerStateUpdater.execute();
         }
         else
             Log.d(TAG, "refreshMarkerStates: Refusing to turn on another instance of marker state updater because one is already running!");
+        */
     }
 
 
@@ -303,11 +293,11 @@ public class MainActivity extends BaseActivity
             @Override
             public void onResponse(Call<List<Point>> call, Response<List<Point>> response)
             {
+                
                 if (response.isSuccessful() && response.body() != null)
                 {
                     pointList = response.body();
                     mapContainer.addPointsWithoutObserverNotify(pointList);
-                    fetchReports();
                 }
 
                 else
@@ -315,9 +305,9 @@ public class MainActivity extends BaseActivity
                         showToast(R.string.req_failed_outdated_data, Toast.LENGTH_SHORT);
                         pointList = new PointDataStore().getPoints();
                         mapContainer.addPointsWithoutObserverNotify(pointList);
-                        fetchReports();
                 }
                 appContext.put("MainMapPointList", pointList);
+                fetchReports();
             }
 
             @Override
@@ -340,6 +330,20 @@ public class MainActivity extends BaseActivity
             public void onResponse(Call<List<Report>> call, Response<List<Report>> response)
             {
                 parseReportsAndUpdateMap(response.body());
+                mapContainer.registerListener(new MapChangeListener()
+                {
+                    @Override
+                    public void onPolylineAdded(Polyline polyline)
+                    {
+                        refreshMarkerStates();
+                    }
+
+                    @Override
+                    public void onMarkerAdded(Marker marker)
+                    {
+                        refreshMarkerStates();
+                    }
+                });
             }
 
             @Override

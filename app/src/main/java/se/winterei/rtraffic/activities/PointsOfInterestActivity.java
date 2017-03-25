@@ -112,7 +112,8 @@ public class PointsOfInterestActivity extends BaseActivity
                     Log.d(TAG, "onResponse: empty dataset found or it was null.");
                     return;
                 }
-                Log.d(TAG, "onResponse: " + points.size() + " values returned by API.");
+
+                //Log.d(TAG, "onResponse: " + points.size() + " values returned by API.");
 
                 for (PointOfInterest point : points)
                 {
