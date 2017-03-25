@@ -47,6 +47,7 @@ public class GSignInActivity extends BaseActivity implements
     private final String provider = "GOOGLE";
 
     private boolean contactAPI = true;
+    public boolean startedMainActivity = false;
 
 
     @Override
@@ -155,32 +156,38 @@ public class GSignInActivity extends BaseActivity implements
                 if (contactAPI)
                 {
                     Call<GenericAPIResponse> call = api.authRequest(new AuthRequest(googleIdToken, firebaseIdToken, this.provider));
-
                     call.enqueue(new Callback<GenericAPIResponse>()
                     {
                         @Override
                         public void onResponse(Call<GenericAPIResponse> call, Response<GenericAPIResponse> response)
                         {
                             GenericAPIResponse apiResponse = response.body();
-                            if (apiResponse != null && apiResponse.status == 200)
+                            if (apiResponse != null)
                             {
-                                APIData apiData = apiResponse.data;
-
-                                if (apiData != null)
+                                if (apiResponse.status == 200)
                                 {
-                                    mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
-                                    updateUI(true);
+                                    APIData apiData = apiResponse.data;
 
+                                    if (apiData != null)
+                                    {
+                                        mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
+                                        updateUI(true);
+                                        preference.put(Utility.RTRAFFIC_API_KEY, apiData.token, String.class);
 
-                                    preference.put(Utility.RTRAFFIC_API_KEY, apiData.token, String.class);
-                                    startActivity(new Intent(GSignInActivity.this, MainActivity.class));
+                                        if (!startedMainActivity)
+                                        {
+                                            startedMainActivity = true;
+                                            startActivity(new Intent(GSignInActivity.this, MainActivity.class));
+                                        }
+                                    }
+                                    else
+                                    {
+                                        showToast(R.string.something_went_wrong, Toast.LENGTH_SHORT);
+                                        Log.d(TAG, "onResponse: apiData was null :T");
+                                    }
                                 }
                                 else
-                                {
-                                    showToast(R.string.something_went_wrong, Toast.LENGTH_SHORT);
-                                    Log.d(TAG, "onResponse: apiData was null :T");
-                                }
-
+                                    showToast(response.body().message, Toast.LENGTH_SHORT);
                             }
                             else
                             {
@@ -203,7 +210,11 @@ public class GSignInActivity extends BaseActivity implements
                 {
                     mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
                     updateUI(true);
-                    startActivity(new Intent(GSignInActivity.this, MainActivity.class));
+                    if (!startedMainActivity)
+                    {
+                        startedMainActivity = true;
+                        startActivity(new Intent(GSignInActivity.this, MainActivity.class));
+                    }
                 }
             }
         }

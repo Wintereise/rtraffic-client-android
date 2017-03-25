@@ -34,12 +34,11 @@ public class PointsOfInterestActivity extends BaseActivity
     private ListView listView;
 
     private boolean[] toggleSwitchStates;
-    public ProgressDialog progressDialog;
 
     private SimpleListViewAdapter adapter;
     private SparseArray<HashMap<String, Object>> pointSparseArray;
 
-    private Snackbar snackbar;
+    public ProgressDialog progressDialog;
 
 
     @SuppressWarnings("unchecked")
@@ -88,20 +87,25 @@ public class PointsOfInterestActivity extends BaseActivity
         listView = (ListView) findViewById(R.id.PointsOfInterestRegionsListView);
         listView.setAdapter(adapter);
 
-        snackbar = showSnackbar(null, R.string.loading, Snackbar.LENGTH_SHORT);
         updatePoIStates();
     }
 
     @SuppressWarnings("unchecked")
     private void updatePoIStates ()
     {
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(getString(R.string.loading));
+        progressDialog.setIndeterminate(true);
+        progressDialog.show();
+
         Call<List<PointOfInterest>> call = api.getPointsOfInterest();
         call.enqueue(new Callback<List<PointOfInterest>>()
         {
             @Override
             public void onResponse(Call<List<PointOfInterest>> call, Response<List<PointOfInterest>> response)
             {
-                dismissSnackbar(snackbar);
+                progressDialog.dismiss();
                 List<PointOfInterest> points = response.body();
                 if (points == null || points.size() == 0)
                 {
@@ -131,7 +135,7 @@ public class PointsOfInterestActivity extends BaseActivity
             @Override
             public void onFailure(Call<List<PointOfInterest>> call, Throwable t)
             {
-                dismissSnackbar(snackbar);
+                progressDialog.dismiss();
                 Log.d(TAG, "onFailure: " + t.getMessage());
                 showToast(R.string.something_went_wrong, Toast.LENGTH_SHORT);
             }
