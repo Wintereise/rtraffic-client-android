@@ -33,7 +33,6 @@ public class IntroSlider extends BaseActivity
     private final IntroSlider instance = this;
     private final String TAG = IntroSlider.class.getSimpleName();
 
-    private Preference preference;
 
     ViewPager.OnPageChangeListener viewPagerPageChangeListener = new ViewPager.OnPageChangeListener()
     {
@@ -77,8 +76,6 @@ public class IntroSlider extends BaseActivity
     {
         bypassAuthentication = true;
         super.onCreate(savedInstanceState);
-
-        preference = new Preference(instance);
 
         Boolean isFirstLaunch = (Boolean) preference.get(FIRST_TIME_LAUNCH, true, Boolean.class);
 

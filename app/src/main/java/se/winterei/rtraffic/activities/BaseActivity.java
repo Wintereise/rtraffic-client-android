@@ -20,7 +20,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,6 +36,7 @@ import se.winterei.rtraffic.RTraffic;
 import se.winterei.rtraffic.libs.api.APIClient;
 import se.winterei.rtraffic.libs.api.APIInterface;
 import se.winterei.rtraffic.libs.generic.Utility;
+import se.winterei.rtraffic.libs.settings.Preference;
 import se.winterei.rtraffic.services.PeriodicRunner;
 
 
@@ -66,6 +66,8 @@ public abstract class BaseActivity extends AppCompatActivity
     private Boolean permissionRequested = false;
 
     private BaseActivity child;
+
+    public Preference preference;
 
     public void setChild (BaseActivity child)
     {
@@ -133,6 +135,8 @@ public abstract class BaseActivity extends AppCompatActivity
         redirectOnAuthFailure();
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        preference = new Preference(this);
     }
 
     @Override

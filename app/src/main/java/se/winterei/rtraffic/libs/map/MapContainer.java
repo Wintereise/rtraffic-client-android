@@ -87,6 +87,13 @@ public class MapContainer
         }
     }
 
+    public synchronized void addPointsWithoutObserverNotify (List<Point> points)
+    {
+        disableObservers();
+        addPoints(points);
+        enableObservers();
+    }
+
     public List<Marker> getMarkerList ()
     {
         return markerList;

@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.akexorcist.googledirection.util.DirectionConverter;
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -63,6 +64,8 @@ public class MainActivity extends BaseActivity
     private SearchFeedResultsAdapter searchFeedResultsAdapter;
     private final String[] columns = new String[]{"_id", "title", "position"};
 
+    private AsyncMarkerStateUpdater asyncMarkerStateUpdater;
+
     @SuppressLint("UseSparseArrays")
     private final HashMap<Integer, Marker> searchPositionMap = new HashMap<>();
 
@@ -78,14 +81,8 @@ public class MainActivity extends BaseActivity
         setupNavigationView();
         setupFloatingActionButton();
 
-        pointList = new PointDataStore().getPoints();
-
-        appContext.put("MainMapPointList", pointList);
-
         fragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-
-        FirebaseCrash.report(new Exception("Testing firebase crash!"));
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         fragment.getMapAsync(this);
@@ -105,6 +102,7 @@ public class MainActivity extends BaseActivity
     {
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, Utility.LOCATION_LOCK_MIN_TIME, Utility.LOCATION_LOCK_MIN_DISTANCE, this); //You can also use LocationManager.GPS_PROVIDER and LocationManager.PASSIVE_PROVIDER
+        mapContainer.getMap().setMyLocationEnabled(true);
         scheduleAlarm(); //The intentservice is heavily reliant on location services, triggering without it makes no sense
     }
 
@@ -236,12 +234,7 @@ public class MainActivity extends BaseActivity
         return true;
     }
 
-    //FAR TOO COMPUTATIONALLY HEAVY EVEN WITH ASYNC MODE DUE TO markers and polylines being UI objects which cannot be shoved background
-    //TODO: FIX ^
-    public void refreshMarkerStates ()
-    {
-        new AsyncMarkerStateUpdater(instance, mapContainer).execute();
-    }
+
 
 
     /**
@@ -262,7 +255,7 @@ public class MainActivity extends BaseActivity
 
         appContext.put("MainMapContainer", mapContainer);
 
-        mapContainer.addPoints(pointList);
+        //mapContainer.addPoints(pointList);
 
         snackbar = showSnackbar(fragment.getView(), R.string.loading_main, Snackbar.LENGTH_INDEFINITE);
 
@@ -284,7 +277,58 @@ public class MainActivity extends BaseActivity
             }
         });
 
-        fetchReports();
+        synchronizeMap();
+    }
+
+    //FAR TOO COMPUTATIONALLY HEAVY EVEN WITH ASYNC MODE DUE TO markers and polylines being UI objects which cannot be shoved background
+    //TODO: FIX ^
+    public void refreshMarkerStates ()
+    {
+
+        if(asyncMarkerStateUpdater !=  null && !asyncMarkerStateUpdater.running)
+        {
+            asyncMarkerStateUpdater = new AsyncMarkerStateUpdater(instance, mapContainer);
+            asyncMarkerStateUpdater.execute();
+        }
+        else
+            Log.d(TAG, "refreshMarkerStates: Refusing to turn on another instance of marker state updater because one is already running!");
+    }
+
+
+    private void synchronizeMap ()
+    {
+        Call<List<Point>> call = api.getPoints();
+        call.enqueue(new Callback<List<Point>>()
+        {
+            @Override
+            public void onResponse(Call<List<Point>> call, Response<List<Point>> response)
+            {
+                if (response.isSuccessful() && response.body() != null)
+                {
+                    pointList = response.body();
+                    mapContainer.addPointsWithoutObserverNotify(pointList);
+                    fetchReports();
+                }
+
+                else
+                {
+                        showToast(R.string.req_failed_outdated_data, Toast.LENGTH_SHORT);
+                        pointList = new PointDataStore().getPoints();
+                        mapContainer.addPointsWithoutObserverNotify(pointList);
+                        fetchReports();
+                }
+                appContext.put("MainMapPointList", pointList);
+            }
+
+            @Override
+            public void onFailure(Call<List<Point>> call, Throwable t)
+            {
+                showToast(R.string.req_failed_outdated_data, Toast.LENGTH_SHORT);
+                pointList = new PointDataStore().getPoints();
+                mapContainer.addPointsWithoutObserverNotify(pointList);
+                fetchReports();
+            }
+        });
     }
 
     private void fetchReports ()
@@ -302,6 +346,7 @@ public class MainActivity extends BaseActivity
             public void onFailure(Call<List<Report>> call, Throwable t)
             {
                 Log.d(TAG, "Retrofit onFailure: " + t.toString());
+                showToast(R.string.main_reports_something_went_wrong, Toast.LENGTH_SHORT);
             }
         });
     }

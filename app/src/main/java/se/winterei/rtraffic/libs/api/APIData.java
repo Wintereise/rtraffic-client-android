@@ -7,4 +7,5 @@ package se.winterei.rtraffic.libs.api;
 public class APIData
 {
     public int id;
+    public String token = "";
 }

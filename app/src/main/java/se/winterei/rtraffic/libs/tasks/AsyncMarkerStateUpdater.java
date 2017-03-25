@@ -34,6 +34,8 @@ public class AsyncMarkerStateUpdater extends AsyncTask<Void, Void, Void>
 
     private final String TAG = AsyncMarkerStateUpdater.class.getSimpleName();
 
+    public boolean running = false;
+
     public AsyncMarkerStateUpdater (BaseActivity instance, MapContainer mapContainer)
     {
         this.instance = instance;
@@ -45,6 +47,7 @@ public class AsyncMarkerStateUpdater extends AsyncTask<Void, Void, Void>
     @Override
     protected void onPreExecute ()
     {
+        running = true;
         final List<Marker> markerList = mapContainer.getMarkerList();
         final List<Polyline> polylineList = mapContainer.getPolylineList();
         for (final Marker marker : markerList)
@@ -58,14 +61,14 @@ public class AsyncMarkerStateUpdater extends AsyncTask<Void, Void, Void>
     }
 
     @Override
-    protected Void doInBackground (Void... params)
+    protected synchronized Void doInBackground (Void... params)
     {
         final List<Marker> markerList = mapContainer.getMarkerList();
         final List<Polyline> polylineList = mapContainer.getPolylineList();
+        final HashMap<Polyline, Integer> stateMap = mapContainer.getPolylineStateMap();
 
         for (final Marker marker : markerList)
         {
-            HashMap<Polyline, Integer> stateMap = mapContainer.getPolylineStateMap();
             for (final Polyline polyline : polylineList)
             {
                 if(PolyUtil.isLocationOnPath(markerPositionMap.get(marker), polylinePointsMap.get(polyline), true, Utility.polylineMatchTolerance))
@@ -100,6 +103,7 @@ public class AsyncMarkerStateUpdater extends AsyncTask<Void, Void, Void>
                 }
             }
         }
+        running = false;
         return null;
     }
 }

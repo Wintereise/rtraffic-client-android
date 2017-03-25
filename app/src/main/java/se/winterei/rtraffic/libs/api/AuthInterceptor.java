@@ -5,6 +5,9 @@ import java.io.IOException;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
+import se.winterei.rtraffic.RTraffic;
+import se.winterei.rtraffic.libs.generic.Utility;
+import se.winterei.rtraffic.libs.settings.Preference;
 
 /**
  * Created by reise on 2/24/2017.
@@ -12,11 +15,11 @@ import okhttp3.Response;
 
 public class AuthInterceptor implements Interceptor
 {
-    private String key;
+    private Preference preference;
 
-    public AuthInterceptor (String key)
+    public AuthInterceptor ()
     {
-        this.key = key;
+        preference = new Preference(RTraffic.getAppContext());
     }
 
     @Override
@@ -24,7 +27,7 @@ public class AuthInterceptor implements Interceptor
     {
         Request request = chain.request()
                 .newBuilder()
-                .addHeader("X-RTRAFFIC-KEY", key)
+                .addHeader("X-RTRAFFIC-KEY", (String) preference.get(Utility.RTRAFFIC_API_KEY, "", String.class))
                 .build();
         return chain.proceed(request);
     }

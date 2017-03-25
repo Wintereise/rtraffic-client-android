@@ -4,4 +4,6 @@
     <string name="google_roads_api">AIzaSyAecTuYcVssbb5da4x51U9mQhttLtj3dNw</string>
     <string name="doorbell_app_id">5708</string>
     <string name="doorbell_api">864KR5WxLGZt07j1niNuUJxFYslgqLbfH1wrC4MZxQewVQcMDs5YeHp3xmvyy6yS</string>
+
+    <string name="google_oauth_web_client_id">800072281116-omb4f252ejj63scjmdtlcprpq485b1c5.apps.googleusercontent.com</string>
 </resources>

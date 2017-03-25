@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -18,11 +19,19 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.firebase.iid.FirebaseInstanceId;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import se.winterei.rtraffic.R;
 import se.winterei.rtraffic.RTraffic;
+import se.winterei.rtraffic.libs.api.APIData;
+import se.winterei.rtraffic.libs.api.GenericAPIResponse;
+import se.winterei.rtraffic.libs.generic.AuthRequest;
+import se.winterei.rtraffic.libs.generic.Utility;
 
-public class GSignInActivity extends AppCompatActivity implements
+public class GSignInActivity extends BaseActivity implements
         View.OnClickListener, GoogleApiClient.OnConnectionFailedListener
 {
     private static final String TAG = GSignInActivity.class.getSimpleName();
@@ -34,6 +43,11 @@ public class GSignInActivity extends AppCompatActivity implements
     private ProgressDialog mProgressDialog;
 
     private RTraffic appContext;
+
+    private final String provider = "GOOGLE";
+
+    private boolean contactAPI = true;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -56,6 +70,7 @@ public class GSignInActivity extends AppCompatActivity implements
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
+                .requestIdToken(getString(R.string.google_oauth_web_client_id))
                 .build();
         // [END configure_signin]
 
@@ -130,13 +145,66 @@ public class GSignInActivity extends AppCompatActivity implements
         if (result.isSuccess())
         {
             // Signed in successfully, show authenticated UI.
-            GoogleSignInAccount acct = result.getSignInAccount();
-            mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
-            updateUI(true);
+            final GoogleSignInAccount acct = result.getSignInAccount();
+
             if(getIntent().getStringExtra("se.winterei.rtraffic.GSignInActivityFilter") == null)
             {
-                Intent intent = new Intent(this, MainActivity.class);
-                startActivity(intent);
+                String googleIdToken = acct.getIdToken();
+                String firebaseIdToken = FirebaseInstanceId.getInstance().getToken();
+
+                if (contactAPI)
+                {
+                    Call<GenericAPIResponse> call = api.authRequest(new AuthRequest(googleIdToken, firebaseIdToken, this.provider));
+
+                    call.enqueue(new Callback<GenericAPIResponse>()
+                    {
+                        @Override
+                        public void onResponse(Call<GenericAPIResponse> call, Response<GenericAPIResponse> response)
+                        {
+                            GenericAPIResponse apiResponse = response.body();
+                            if (apiResponse != null && apiResponse.status == 200)
+                            {
+                                APIData apiData = apiResponse.data;
+
+                                if (apiData != null)
+                                {
+                                    mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
+                                    updateUI(true);
+
+
+                                    preference.put(Utility.RTRAFFIC_API_KEY, apiData.token, String.class);
+                                    startActivity(new Intent(GSignInActivity.this, MainActivity.class));
+                                }
+                                else
+                                {
+                                    showToast(R.string.something_went_wrong, Toast.LENGTH_SHORT);
+                                    Log.d(TAG, "onResponse: apiData was null :T");
+                                }
+
+                            }
+                            else
+                            {
+                                Log.d(TAG, "onResponse: apiResponse was null :T");
+                                showToast(R.string.something_went_wrong, Toast.LENGTH_SHORT);
+                            }
+
+                        }
+
+                        @Override
+                        public void onFailure(Call<GenericAPIResponse> call, Throwable t)
+                        {
+                            showToast(R.string.something_went_wrong, Toast.LENGTH_LONG);
+                            updateUI(false);
+                        }
+                    });
+                    contactAPI = false;
+                }
+                else
+                {
+                    mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
+                    updateUI(true);
+                    startActivity(new Intent(GSignInActivity.this, MainActivity.class));
+                }
             }
         }
         else

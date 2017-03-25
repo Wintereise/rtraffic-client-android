@@ -8,6 +8,7 @@ import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import se.winterei.rtraffic.libs.generic.AuthRequest;
 import se.winterei.rtraffic.libs.generic.ExcludedRegion;
 import se.winterei.rtraffic.libs.generic.Point;
 import se.winterei.rtraffic.libs.generic.PointOfInterest;
@@ -25,8 +26,8 @@ public interface APIInterface
     @GET("v1/point/{id}")
     Call<Point> getPoint (@Path("id") int id);
 
-    @GET("v1/point/{lat}/{lng}")
-    Call<List<Point>> getPoints (@Path("lat") Double lat, @Path("lng") Double lng);
+    @GET("v1/point/{lat}/{lng}/{distance}")
+    Call<List<Point>> getPoints (@Path("lat") Double lat, @Path("lng") Double lng, @Path("distance") int distance);
 
     @GET("v1/reports")
     Call<List<Report>> getReports ();
@@ -57,5 +58,8 @@ public interface APIInterface
 
     @DELETE("v1/poi/{id}")
     Call<GenericAPIResponse> deletePointOfInterest (@Path("id") int id);
+
+    @POST("v1/oauth")
+    Call<GenericAPIResponse> authRequest (@Body AuthRequest authRequest);
 
 }

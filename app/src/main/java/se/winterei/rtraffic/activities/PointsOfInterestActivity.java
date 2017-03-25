@@ -54,6 +54,7 @@ public class PointsOfInterestActivity extends BaseActivity
         pointSparseArray = new SparseArray<>();
 
         pointList = (List<Point>) appContext.get("MainMapPointList");
+
         toggleSwitchStates = new boolean[pointList.size()];
 
 

@@ -24,6 +24,8 @@ public class Utility
     public final static long BROADCAST_ALARM_FREQ = 2 * 60 * 1000;
     public final static int MAIN_MAP_POLYLINE_WIDTH = 3;
 
+    public final static String RTRAFFIC_API_KEY = "RTRAFFIC_API_KEY";
+
     public static int dpToPx (Context context, int dp)
     {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
