@@ -15,6 +15,8 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -64,7 +66,6 @@ public class ExcludedRegionsActivity extends BaseActivity
     private ProgressDialog progressDialog;
     private SparseArray<Map<String, Object>> listViewIndexMap;
     private SparseArray<Marker> markerMap;
-
 
     @Override
     @SuppressWarnings({"MissingPermission"})
@@ -159,6 +160,7 @@ public class ExcludedRegionsActivity extends BaseActivity
                                 progressDialog.hide();
                                 simpleAdapter.notifyDataSetChanged();
                                 showToast(R.string.excluded_regions_successful_deletion, Toast.LENGTH_SHORT);
+                                dynamicizeListView(listView, 1);
                             }
 
                             @Override
@@ -213,6 +215,7 @@ public class ExcludedRegionsActivity extends BaseActivity
                     mapArrayList.add(map);
                 }
                 simpleAdapter.notifyDataSetChanged();
+                dynamicizeListView(listView, 1);
             }
 
             @Override
@@ -287,7 +290,7 @@ public class ExcludedRegionsActivity extends BaseActivity
                                     public void onResponse(Call<GenericAPIResponse> call, Response<GenericAPIResponse> response)
                                     {
                                         progressDialog.dismiss();
-                                        if(response.body() != null && response.body().status == 200)
+                                        if(response.isSuccessful() && response.body() != null && response.body().data != null)
                                         {
                                             final Marker marker = mapContainer.addMarker(new MarkerOptions().position(latLng));
                                             point.id =  response.body().data.id;
@@ -305,6 +308,7 @@ public class ExcludedRegionsActivity extends BaseActivity
 
                                             simpleAdapter.notifyDataSetChanged();
                                             showToast(R.string.entry_submit, Toast.LENGTH_SHORT);
+                                            dynamicizeListView(listView, 1);
                                         }
                                         else
                                         {
@@ -364,4 +368,21 @@ public class ExcludedRegionsActivity extends BaseActivity
 
     @Override
     public void onProviderDisabled(String provider) { }
+
+    public void dynamicizeListView (ListView listView, float threshold)
+    {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null)
+            return;
+
+        float val = (float) (listAdapter.getCount() * 0.11);
+        if (val > threshold)
+            return;
+
+        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) listView.getLayoutParams();
+        layoutParams.weight = val;
+
+        listView.setLayoutParams(layoutParams);
+        listView.requestLayout();
+    }
 }

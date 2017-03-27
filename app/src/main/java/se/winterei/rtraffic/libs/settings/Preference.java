@@ -34,6 +34,10 @@ public class Preference
             case "Boolean":
                 ret = preferences.getBoolean(key, (Boolean) def);
                 break;
+            case "integer":
+            case "int":
+            case "Integer":
+                ret = preferences.getInt(key, (Integer) def);
         }
         return ret;
     }

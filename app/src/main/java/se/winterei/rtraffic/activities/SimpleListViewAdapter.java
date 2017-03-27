@@ -107,7 +107,10 @@ public class SimpleListViewAdapter extends BaseAdapter{
                 if(toggleButton.isChecked())
                     call = activity.api.postPointOfInterest(new PointOfInterest(-1, -1, point_id));
                 else
+                {
                     call = activity.api.deletePointOfInterest(point_id);
+                }
+
 
                 call.enqueue(new Callback<GenericAPIResponse>()
                 {
@@ -115,19 +118,34 @@ public class SimpleListViewAdapter extends BaseAdapter{
                     public void onResponse(Call<GenericAPIResponse> call, Response<GenericAPIResponse> response)
                     {
                         activity.progressDialog.dismiss();
-                        if(toggleButton.isChecked())
+                        if (response.isSuccessful())
                         {
-                            activity.showToast(R.string.entry_submit, Toast.LENGTH_SHORT);
-                            toggleButton.setChecked(true);
-                            data.get(position).put("stat", true);//this is imp to update the value in dataset which is provided to listview
+                            if(toggleButton.isChecked())
+                            {
+                                activity.showToast(R.string.entry_submit, Toast.LENGTH_SHORT);
+                                toggleButton.setChecked(true);
+                                data.get(position).put("stat", true);//this is imp to update the value in dataset which is provided to listview
+                            }
+                            else
+                            {
+                                activity.showToast(R.string.excluded_regions_successful_deletion, Toast.LENGTH_SHORT);
+                                toggleButton.setChecked(false);
+                                data.get(position).put("stat", false);
+                            }
+
                         }
-                        else
+
+                        else if (response.code() == 404)
                         {
                             activity.showToast(R.string.excluded_regions_successful_deletion, Toast.LENGTH_SHORT);
                             toggleButton.setChecked(false);
                             data.get(position).put("stat", false);
                         }
 
+                        else if (! response.isSuccessful() && response.body() != null)
+                            activity.showToast(response.body().message, Toast.LENGTH_SHORT);
+                        else
+                            activity.showToast(R.string.something_went_wrong, Toast.LENGTH_SHORT);
                     }
 
                     @Override

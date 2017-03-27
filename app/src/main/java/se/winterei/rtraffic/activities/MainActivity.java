@@ -287,19 +287,19 @@ public class MainActivity extends BaseActivity
 
     private void synchronizeMap ()
     {
+        mapContainer.clear();
+
         Call<List<Point>> call = api.getPoints();
         call.enqueue(new Callback<List<Point>>()
         {
             @Override
             public void onResponse(Call<List<Point>> call, Response<List<Point>> response)
             {
-                
                 if (response.isSuccessful() && response.body() != null)
                 {
                     pointList = response.body();
                     mapContainer.addPointsWithoutObserverNotify(pointList);
                 }
-
                 else
                 {
                         showToast(R.string.req_failed_outdated_data, Toast.LENGTH_SHORT);
@@ -323,7 +323,9 @@ public class MainActivity extends BaseActivity
 
     private void fetchReports ()
     {
-        Call<List<Report>> call = api.getReports();
+        String hours = (String) preference.get("pref_report_history", "1", String.class);
+
+        Call<List<Report>> call = api.getReports(hours);
         call.enqueue(new Callback<List<Report>>()
         {
             @Override
@@ -413,6 +415,7 @@ public class MainActivity extends BaseActivity
         {
             case R.id.action_refresh:
                 fetchReports();
+                showToast(R.string.update_underway, Toast.LENGTH_SHORT);
                 return true;
             default:
                 // If we got here, the user's action was not recognized.

@@ -22,4 +22,13 @@
         android:entryValues="@array/pref_sync_frequency_values"
         android:defaultValue="@string/pref_sync_frequency_default_value" />
 
+    <ListPreference
+        android:key="pref_report_history"
+        android:title="@string/pref_title_report_history"
+        android:summary="@string/pref_summary_report_history"
+        android:dialogTitle="@string/pref_title_report_history"
+        android:entries="@array/pref_report_history_entries"
+        android:entryValues="@array/pref_report_history_values"
+        android:defaultValue="@string/pref_report_history_default_value" />
+
 </PreferenceScreen>

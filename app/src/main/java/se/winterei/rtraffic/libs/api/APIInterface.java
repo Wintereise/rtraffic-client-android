@@ -8,6 +8,7 @@ import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 import se.winterei.rtraffic.libs.generic.AuthRequest;
 import se.winterei.rtraffic.libs.generic.ExcludedRegion;
 import se.winterei.rtraffic.libs.generic.Point;
@@ -30,7 +31,7 @@ public interface APIInterface
     Call<List<Point>> getPoints (@Path("lat") Double lat, @Path("lng") Double lng, @Path("distance") int distance);
 
     @GET("v1/reports")
-    Call<List<Report>> getReports ();
+    Call<List<Report>> getReports (@Query("history") String history);
 
     @GET("v1/reports/{id}")
     Call<Report> getReport (@Path("id") int id);

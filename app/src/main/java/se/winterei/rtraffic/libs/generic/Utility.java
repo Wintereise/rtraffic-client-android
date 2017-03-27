@@ -3,6 +3,12 @@ package se.winterei.rtraffic.libs.generic;
 
 import android.content.Context;
 import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -25,6 +31,8 @@ public class Utility
     public final static int MAIN_MAP_POLYLINE_WIDTH = 3;
 
     public final static String RTRAFFIC_API_KEY = "RTRAFFIC_API_KEY";
+
+    private final static String TAG = Utility.class.getSimpleName();
 
     public static int dpToPx (Context context, int dp)
     {
