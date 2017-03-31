@@ -28,10 +28,10 @@ public class FirebaseNotificationService extends FirebaseMessagingService
     {
         Log.d(TAG, "onMessageReceived: From: " + remoteMessage.getFrom());
         if (remoteMessage.getNotification() != null)
-            showNotification(remoteMessage.getNotification().getBody());
+            showNotification(remoteMessage.getNotification().getBody(), remoteMessage.getNotification().getTitle());
     }
 
-    private void showNotification (String messageBody)
+    private void showNotification (String messageBody, String title)
     {
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -41,7 +41,7 @@ public class FirebaseNotificationService extends FirebaseMessagingService
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_explore_black_24dp)
-                .setContentTitle("FCM Message")
+                .setContentTitle(title)
                 .setContentText(messageBody)
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)

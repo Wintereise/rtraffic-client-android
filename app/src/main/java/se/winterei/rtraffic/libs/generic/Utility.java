@@ -3,21 +3,10 @@ package se.winterei.rtraffic.libs.generic;
 
 import android.content.Context;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.maps.android.ui.IconGenerator;
+import java.util.Arrays;
+import java.util.List;
 
-import se.winterei.rtraffic.libs.map.MapContainer;
 
 public class Utility
 {
@@ -38,6 +27,25 @@ public class Utility
     {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+    }
+
+    public static boolean containsAny (String haystack, String[] needles)
+    {
+        boolean bResult = false;
+
+        final List<String> list = Arrays.asList(needles);
+        final String tempString = haystack.toLowerCase();
+
+        for (final String word : list)
+        {
+            String tempWord = word.toLowerCase();
+            if (tempString.contains(tempWord))
+            {
+                bResult = true;
+                break;
+            }
+        }
+        return bResult;
     }
 
 }
