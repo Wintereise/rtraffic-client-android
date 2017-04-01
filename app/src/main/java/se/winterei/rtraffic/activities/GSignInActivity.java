@@ -216,6 +216,13 @@ public class GSignInActivity extends BaseActivity implements
             // Signed in successfully, show authenticated UI.
             final GoogleSignInAccount acct = result.getSignInAccount();
 
+            if (acct == null)
+            {
+                Log.d(TAG, "handleSignInResult: GoogleSignInAccount was null :(");
+                updateUI(false);
+                return;
+            }
+
             if(getIntent().getStringExtra("se.winterei.rtraffic.GSignInActivityFilter") == null)
             {
                 if (contactAPI)
@@ -233,6 +240,11 @@ public class GSignInActivity extends BaseActivity implements
                         startActivity(new Intent(GSignInActivity.this, MainActivity.class));
                     }
                 }
+            }
+            else
+            {
+                mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
+                updateUI(true);
             }
         }
         else

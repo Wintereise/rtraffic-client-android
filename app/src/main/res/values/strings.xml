@@ -48,6 +48,7 @@
     <string name="excluded_regions_dialog_lint">Enter a name</string>
     <string name="excluded_regions_listview_no_results">You haven\'t registered excluded regions yet.</string>
     <string name="excluded_regions_successful_deletion">The entry has been successfully removed.</string>
+    <string name="excluded_regions_startup_tooltip">Long press anywhere in the map to start the process of adding a new region!</string>
 
     <string name="service_notif_main_header">Contribute Traffic Data</string>
     <string name="service_notif_main_body">Stuck in %s?</string>

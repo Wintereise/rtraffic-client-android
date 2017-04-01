@@ -252,6 +252,8 @@ public class ExcludedRegionsActivity extends BaseActivity
             }
         });
 
+        showToast(R.string.excluded_regions_startup_tooltip, Toast.LENGTH_LONG);
+
         mapContainer.getMap().setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener()
         {
             @Override
@@ -384,5 +386,14 @@ public class ExcludedRegionsActivity extends BaseActivity
 
         listView.setLayoutParams(layoutParams);
         listView.requestLayout();
+    }
+
+    @Override
+    public void onDestroy ()
+    {
+        if (progressDialog != null)
+            progressDialog.dismiss();
+
+        super.onDestroy();
     }
 }

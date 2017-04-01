@@ -77,6 +77,12 @@ public class BackgroundTrafficStatus extends IntentService
 
         Location location = locationManager.getLastKnownLocation(locationProvider);
 
+        if (location == null)
+        {
+            Log.d(TAG, "onHandleIntent: location was null");
+            return;
+        }
+
         Date date = new Date(location.getTime());
         Date  now = new Date();
 
