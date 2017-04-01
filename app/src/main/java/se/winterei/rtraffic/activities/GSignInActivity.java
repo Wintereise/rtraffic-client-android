@@ -143,6 +143,12 @@ public class GSignInActivity extends BaseActivity implements
         String googleIdToken = acct.getIdToken();
         String firebaseIdToken = FirebaseInstanceId.getInstance().getToken();
 
+        if (googleIdToken == null || firebaseIdToken == null)
+        {
+            Log.d(TAG, "handleApiSignIn: one or more required resources were null.");
+            return;
+        }
+
         Call<GenericAPIResponse> call = api.authRequest(new AuthRequest(googleIdToken, firebaseIdToken, this.provider));
         call.enqueue(new Callback<GenericAPIResponse>()
         {
