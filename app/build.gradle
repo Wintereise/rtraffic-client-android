@@ -59,12 +59,7 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    //for google-location-services, without which LocationServices will not be available
-    //for adding circular profile picture
-    //feedback runner
-    //api client
-    //api client converter
-    //json parser
+
     compile 'com.android.support:appcompat-v7:25.3.0'
     compile 'com.android.support:design:25.3.0'
     compile 'com.google.android.gms:play-services-maps:10.2.1'
@@ -83,6 +78,7 @@ dependencies {
     compile 'com.google.maps.android:android-maps-utils:0.5+'
     compile 'com.google.firebase:firebase-crash:10.2.1'
     compile 'com.google.firebase:firebase-messaging:10.2.1'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
     testCompile 'junit:junit:4.12'
 }
 

@@ -131,7 +131,7 @@ public class BackgroundTrafficStatus extends IntentService
         }
 
         String address = sb.toString();
-        String[] roadIdentifiers = { "road", "way", "rd.", "wy.", "highway", "avenue", "rd", "wy"};
+        String[] roadIdentifiers = { "road", "way", "rd.", "wy.", "highway", "avenue", "rd", "wy", "no."};
 
         if (! Utility.containsAny(address, roadIdentifiers))
         {

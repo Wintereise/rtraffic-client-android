@@ -138,6 +138,63 @@ public class GSignInActivity extends BaseActivity implements
     }
     // [END onActivityResult]
 
+    private void handleApiSignIn (final GoogleSignInAccount acct)
+    {
+        String googleIdToken = acct.getIdToken();
+        String firebaseIdToken = FirebaseInstanceId.getInstance().getToken();
+
+        Call<GenericAPIResponse> call = api.authRequest(new AuthRequest(googleIdToken, firebaseIdToken, this.provider));
+        call.enqueue(new Callback<GenericAPIResponse>()
+        {
+            @Override
+            public void onResponse(Call<GenericAPIResponse> call, Response<GenericAPIResponse> response)
+            {
+                GenericAPIResponse apiResponse = response.body();
+                if (apiResponse != null)
+                {
+                    if (apiResponse.status == 200)
+                    {
+                        APIData apiData = apiResponse.data;
+
+                        if (apiData != null)
+                        {
+                            mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
+                            updateUI(true);
+                            preference.put(Utility.RTRAFFIC_API_KEY, apiData.token, String.class);
+
+                            if (!startedMainActivity)
+                            {
+                                startedMainActivity = true;
+                                startActivity(new Intent(GSignInActivity.this, MainActivity.class));
+                            }
+                        }
+                        else
+                        {
+                            showToast(R.string.something_went_wrong, Toast.LENGTH_SHORT);
+                            Log.d(TAG, "onResponse: apiData was null :T");
+                        }
+                    }
+                    else
+                        showToast(response.body().message, Toast.LENGTH_SHORT);
+                }
+                else
+                {
+                    Log.d(TAG, "onResponse: apiResponse was null :T");
+                    showToast(R.string.something_went_wrong, Toast.LENGTH_SHORT);
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<GenericAPIResponse> call, Throwable t)
+            {
+                showToast(R.string.something_went_wrong, Toast.LENGTH_LONG);
+                Log.d(TAG, "onFailure: " + t.getMessage());
+                updateUI(false);
+            }
+        });
+    }
+
     // [START handleSignInResult]
     private void handleSignInResult(GoogleSignInResult result)
     {
@@ -150,60 +207,9 @@ public class GSignInActivity extends BaseActivity implements
 
             if(getIntent().getStringExtra("se.winterei.rtraffic.GSignInActivityFilter") == null)
             {
-                String googleIdToken = acct.getIdToken();
-                String firebaseIdToken = FirebaseInstanceId.getInstance().getToken();
-
                 if (contactAPI)
                 {
-                    Call<GenericAPIResponse> call = api.authRequest(new AuthRequest(googleIdToken, firebaseIdToken, this.provider));
-                    call.enqueue(new Callback<GenericAPIResponse>()
-                    {
-                        @Override
-                        public void onResponse(Call<GenericAPIResponse> call, Response<GenericAPIResponse> response)
-                        {
-                            GenericAPIResponse apiResponse = response.body();
-                            if (apiResponse != null)
-                            {
-                                if (apiResponse.status == 200)
-                                {
-                                    APIData apiData = apiResponse.data;
-
-                                    if (apiData != null)
-                                    {
-                                        mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
-                                        updateUI(true);
-                                        preference.put(Utility.RTRAFFIC_API_KEY, apiData.token, String.class);
-
-                                        if (!startedMainActivity)
-                                        {
-                                            startedMainActivity = true;
-                                            startActivity(new Intent(GSignInActivity.this, MainActivity.class));
-                                        }
-                                    }
-                                    else
-                                    {
-                                        showToast(R.string.something_went_wrong, Toast.LENGTH_SHORT);
-                                        Log.d(TAG, "onResponse: apiData was null :T");
-                                    }
-                                }
-                                else
-                                    showToast(response.body().message, Toast.LENGTH_SHORT);
-                            }
-                            else
-                            {
-                                Log.d(TAG, "onResponse: apiResponse was null :T");
-                                showToast(R.string.something_went_wrong, Toast.LENGTH_SHORT);
-                            }
-
-                        }
-
-                        @Override
-                        public void onFailure(Call<GenericAPIResponse> call, Throwable t)
-                        {
-                            showToast(R.string.something_went_wrong, Toast.LENGTH_LONG);
-                            updateUI(false);
-                        }
-                    });
+                    handleApiSignIn(acct);
                     contactAPI = false;
                 }
                 else

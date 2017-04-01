@@ -48,6 +48,7 @@ import se.winterei.rtraffic.libs.generic.Utility;
 import se.winterei.rtraffic.libs.map.MapChangeListener;
 import se.winterei.rtraffic.libs.map.MapContainer;
 import se.winterei.rtraffic.libs.search.SearchFeedResultsAdapter;
+import se.winterei.rtraffic.libs.settings.Preference;
 import se.winterei.rtraffic.libs.tasks.AsyncMarkerStateUpdater;
 
 public class MainActivity extends BaseActivity
@@ -92,9 +93,9 @@ public class MainActivity extends BaseActivity
         {
             locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, Utility.LOCATION_LOCK_MIN_TIME, Utility.LOCATION_LOCK_MIN_DISTANCE, this); //You can also use LocationManager.GPS_PROVIDER and LocationManager.PASSIVE_PROVIDER
-            scheduleAlarm(); //The intentservice is heavily reliant on location services, triggering without it makes no sense
-        }
 
+            Utility.scheduleAlarm(preference);
+        }
     }
 
     @Override
@@ -104,7 +105,8 @@ public class MainActivity extends BaseActivity
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, Utility.LOCATION_LOCK_MIN_TIME, Utility.LOCATION_LOCK_MIN_DISTANCE, this); //You can also use LocationManager.GPS_PROVIDER and LocationManager.PASSIVE_PROVIDER
         mapContainer.getMap().setMyLocationEnabled(true);
-        scheduleAlarm(); //The intentservice is heavily reliant on location services, triggering without it makes no sense
+
+        Utility.scheduleAlarm(preference);
     }
 
     private void setupFloatingActionButton ()

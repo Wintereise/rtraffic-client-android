@@ -1,14 +1,10 @@
 package se.winterei.rtraffic.activities;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -23,11 +19,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+
+import android.net.Uri;
 
 import io.doorbell.android.Doorbell;
 import io.doorbell.android.callbacks.OnFeedbackSentCallback;
@@ -35,20 +35,17 @@ import se.winterei.rtraffic.R;
 import se.winterei.rtraffic.RTraffic;
 import se.winterei.rtraffic.libs.api.APIClient;
 import se.winterei.rtraffic.libs.api.APIInterface;
-import se.winterei.rtraffic.libs.generic.Utility;
 import se.winterei.rtraffic.libs.settings.Preference;
-import se.winterei.rtraffic.services.PeriodicRunner;
-
 
 public abstract class BaseActivity extends AppCompatActivity
     implements NavigationView.OnNavigationItemSelectedListener
 {
     private final String bTAG  = BaseActivity.class.getSimpleName();
     private Toast bToast;
-    private boolean alarmState = false;
 
     private int backButtonCount = 0;
     public String userName = "Signed out", userEmail = "test@example.com";
+    public Uri photoURI;
 
     public DrawerLayout drawerLayout;
     public NavigationView navigationView;
@@ -98,6 +95,13 @@ public abstract class BaseActivity extends AppCompatActivity
         TextView navHeader = (TextView) header.findViewById(R.id.headerUsername);
         navHeader.setSingleLine(false);
         navHeader.setText(userName + "\n" + userEmail);
+
+        if (photoURI != null)
+        {
+            ImageView imageView = (ImageView) header.findViewById(R.id.profile_image_R8);
+            Glide.with(this).load(photoURI.toString()).into(imageView);
+        }
+
     }
 
     private boolean authCheck ()
@@ -110,6 +114,7 @@ public abstract class BaseActivity extends AppCompatActivity
             {
                 userName = acct.getDisplayName();
                 userEmail = acct.getEmail();
+                photoURI = acct.getPhotoUrl();
                 return true;
             }
             else
@@ -336,34 +341,6 @@ public abstract class BaseActivity extends AppCompatActivity
             }
         });
         doorbell.show();
-    }
-
-    public void scheduleAlarm ()
-    {
-        if(alarmState)
-            return;
-        alarmState = true;
-        Intent intent = new Intent(getApplicationContext(), PeriodicRunner.class);
-        final PendingIntent pendingIntent = PendingIntent.getBroadcast(this, PeriodicRunner.REQUEST_CODE,
-                intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager alarmManager = (AlarmManager)  getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), Utility.BROADCAST_ALARM_FREQ, pendingIntent);
-        alarmState = true;
-    }
-
-    public void cancelAlarm ()
-    {
-        if(!alarmState)
-            return;
-        Intent intent = new Intent(getApplicationContext(), PeriodicRunner.class);
-        final PendingIntent pendingIntent = PendingIntent.getBroadcast(this, PeriodicRunner.REQUEST_CODE,
-                intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        if(pendingIntent != null)
-        {
-            alarmManager.cancel(pendingIntent);
-            alarmState = false;
-        }
     }
 
     public boolean isApiNotLowerThan (int versionCode)

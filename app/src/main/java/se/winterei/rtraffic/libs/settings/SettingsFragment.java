@@ -8,6 +8,8 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 
 import se.winterei.rtraffic.R;
+import se.winterei.rtraffic.RTraffic;
+import se.winterei.rtraffic.libs.generic.Utility;
 
 /**
  * Created by reise on 2/25/2017.
@@ -42,8 +44,26 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             return;
         }
         SharedPreferences sharedPrefs = getPreferenceManager().getSharedPreferences();
+
         if(preference instanceof CheckBoxPreference)
+        {
             preference.setSummary(String.valueOf(sharedPrefs.getBoolean(key, true)));
+
+            String currentKey = preference.getKey();
+
+            if (! sharedPrefs.getBoolean(currentKey, true))
+            {
+                switch (currentKey)
+                {
+                    case "pref_notifications":
+                    case "pref_background_service":
+                        Utility.cancelAlarm();
+                        break;
+                }
+            }
+            else
+                Utility.scheduleAlarm(new se.winterei.rtraffic.libs.settings.Preference(RTraffic.getAppContext()));
+        }
         else
             preference.setSummary(sharedPrefs.getString(key, "Default"));
     }
