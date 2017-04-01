@@ -49,6 +49,11 @@ public class GSignInActivity extends BaseActivity implements
     private boolean contactAPI = true;
     public boolean startedMainActivity = false;
 
+    public GSignInActivity ()
+    {
+        this.bypassAuthentication = true;
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -341,6 +346,14 @@ public class GSignInActivity extends BaseActivity implements
     public void onBackPressed ()
     {
         finish();
+    }
+
+    @Override
+    public void onDestroy ()
+    {
+        if (mProgressDialog != null)
+            mProgressDialog.dismiss();
+        super.onDestroy();
     }
 
 }

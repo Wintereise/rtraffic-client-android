@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +37,6 @@ public class IntroSlider extends BaseActivity
 
     ViewPager.OnPageChangeListener viewPagerPageChangeListener = new ViewPager.OnPageChangeListener()
     {
-
         @Override
         public void onPageSelected(int position)
         {
@@ -80,7 +80,11 @@ public class IntroSlider extends BaseActivity
         Boolean isFirstLaunch = (Boolean) preference.get(FIRST_TIME_LAUNCH, true, Boolean.class);
 
         if (! isFirstLaunch)
+        {
+            Log.d(TAG, "onCreate: not first launch, skipping welcome");
             launchAuthenticationFlow();
+        }
+
 
         if (Build.VERSION.SDK_INT >= 21)
             getWindow().getDecorView()
@@ -190,7 +194,6 @@ public class IntroSlider extends BaseActivity
     {
         preference.put(FIRST_TIME_LAUNCH, false, Boolean.class);
         startActivity(new Intent(instance, GSignInActivity.class));
-        finish();
     }
 
     public class MyViewPagerAdapter extends PagerAdapter
