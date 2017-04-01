@@ -77,7 +77,7 @@ public class IntroSlider extends BaseActivity
         bypassAuthentication = true;
         super.onCreate(savedInstanceState);
 
-        Boolean isFirstLaunch = (Boolean) preference.get(FIRST_TIME_LAUNCH, true, Boolean.class);
+        Boolean isFirstLaunch = (Boolean) preference.get(FIRST_TIME_LAUNCH, false, Boolean.class);
 
         if (! isFirstLaunch)
         {
