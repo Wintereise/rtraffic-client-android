@@ -1,5 +1,7 @@
 package se.winterei.rtraffic.libs.map;
 
+import android.support.annotation.NonNull;
+
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -22,6 +24,7 @@ public class MapContainer
     private List<Marker> markerList;
     private List<Polyline> polylineList;
     private HashMap<Polyline, Integer> polylineStateMap;
+    private HashMap<Polyline, String> polylineCommentMap;
     private List<MapChangeListener> mapChangeListenerList;
     private boolean notificationEnabled = true;
     private enum type
@@ -35,7 +38,14 @@ public class MapContainer
         markerList = new ArrayList<>();
         polylineList = new ArrayList<>();
         polylineStateMap = new HashMap<>();
+        polylineCommentMap = new HashMap<>();
         mapChangeListenerList = new ArrayList<>();
+    }
+
+    public MapContainer(@NonNull GoogleMap map, @NonNull GoogleMap.OnInfoWindowLongClickListener listener)
+    {
+        this(map);
+        this.map.setOnInfoWindowLongClickListener(listener);
     }
 
     public Marker addMarker (MarkerOptions markerOptions)
@@ -65,11 +75,12 @@ public class MapContainer
         return tmp;
     }
 
-    public Polyline addPolyline (PolylineOptions polylineOptions, int state)
+    public Polyline addPolyline (PolylineOptions polylineOptions, int state, String comment)
     {
         Polyline tmp = map.addPolyline(polylineOptions);
         polylineList.add(tmp);
         polylineStateMap.put(tmp, state);
+        polylineCommentMap.put(tmp, comment);
         notifyListeners(type.POLYLINE, tmp);
         return tmp;
     }
@@ -107,6 +118,11 @@ public class MapContainer
     public HashMap<Polyline, Integer> getPolylineStateMap()
     {
         return polylineStateMap;
+    }
+
+    public HashMap<Polyline, String> getPolylineCommentMap ()
+    {
+        return polylineCommentMap;
     }
 
     public GoogleMap getMap ()

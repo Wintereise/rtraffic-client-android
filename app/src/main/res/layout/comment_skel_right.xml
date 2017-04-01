@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/comment_overlay_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_weight="6"
+        android:background="@drawable/rounded_corner"
+        android:padding="16dp"
+        android:text="Been stuck here for 30 minutes!"
+        android:textColor="#000" />
+
+    <ImageView
+        android:id="@+id/comment_overlay_imageview_arrow"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="-15dp"
+        android:layout_marginTop="10.21dp"
+        android:layout_weight="1"
+        android:src="@drawable/arrow_bg1" />
+
+    <ImageView
+        android:id="@+id/comment_overlay_imageview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:layout_weight="3"
+        android:src="@drawable/ic_info_outline_black_24dp" />
+
+</LinearLayout>

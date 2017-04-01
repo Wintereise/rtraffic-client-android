@@ -9,6 +9,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.maps.android.PolyUtil;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -66,15 +67,22 @@ public class AsyncMarkerStateUpdater extends AsyncTask<Void, Void, Void>
         final List<Marker> markerList = mapContainer.getMarkerList();
         final List<Polyline> polylineList = mapContainer.getPolylineList();
         final HashMap<Polyline, Integer> stateMap = mapContainer.getPolylineStateMap();
+        final HashMap<Polyline, String> commentMap = mapContainer.getPolylineCommentMap();
 
         for (final Marker marker : markerList)
         {
+            final List<String> markerComments = new ArrayList<>();
+
             for (final Polyline polyline : polylineList)
             {
                 if(PolyUtil.isLocationOnPath(markerPositionMap.get(marker), polylinePointsMap.get(polyline), true, Utility.polylineMatchTolerance))
                 {
                     final int state = stateMap.containsKey(polyline) ? stateMap.get(polyline) : -1;
                     final int markerType;
+                    final String comment = commentMap.containsKey(polyline) ? commentMap.get(polyline) : null;
+
+                    if (comment != null && ! comment.equals(""))
+                        markerComments.add(comment);
 
                     switch (state)
                     {
@@ -99,7 +107,21 @@ public class AsyncMarkerStateUpdater extends AsyncTask<Void, Void, Void>
                             marker.setIcon(BitmapDescriptorFactory.fromResource(markerType));
                         }
                     });
-
+                }
+                final int commentListSize = markerComments.size();
+                if (commentListSize > 0)
+                {
+                    instance.runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            String existingMarkerTitle = marker.getTitle();
+                            existingMarkerTitle = existingMarkerTitle.replaceAll("\\s*\\[[^\\]]*\\]\\s*", " ");
+                            marker.setTitle("[" + commentListSize + "] " + existingMarkerTitle);
+                            marker.setTag(markerComments);
+                        }
+                    });
                 }
             }
         }

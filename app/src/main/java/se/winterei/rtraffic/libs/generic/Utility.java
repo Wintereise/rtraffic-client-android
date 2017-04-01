@@ -9,6 +9,8 @@ import android.os.SystemClock;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -55,6 +57,35 @@ public class Utility
             }
         }
         return bResult;
+    }
+
+    /**
+     * This is the implementation Haversine Distance Algorithm between two places
+     *
+        R = earth’s radius (mean radius = 6,371km)
+        Δlat = lat2 − lat1
+        Δlong = long2 − long1
+        a = sin²(Δlat/2) + cos(lat1).cos(lat2).sin²(Δlong/2)
+        c = 2.atan2(√a, √(1−a))
+        d = R.c
+     *
+     */
+
+    public static double greaterCircleDistance (LatLng one, LatLng two)
+    {
+        final int R = 6371;
+        double latDistance = degreesToRadians(two.latitude - one.latitude);
+        double lonDistance = degreesToRadians(two.longitude  - one.longitude);
+        Double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2) +
+                Math.cos(degreesToRadians(one.latitude)) * Math.cos(degreesToRadians(two.latitude)) *
+                        Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+        Double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
+    }
+
+    private static double degreesToRadians (double value)
+    {
+        return value * Math.PI / 180;
     }
 
     public static void scheduleAlarm (Preference preference)

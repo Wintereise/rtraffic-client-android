@@ -41,6 +41,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import se.winterei.rtraffic.R;
+import se.winterei.rtraffic.libs.generic.CommentData;
 import se.winterei.rtraffic.libs.generic.Point;
 import se.winterei.rtraffic.libs.generic.PointDataStore;
 import se.winterei.rtraffic.libs.generic.Report;
@@ -251,12 +252,34 @@ public class MainActivity extends BaseActivity
      */
 
     @Override
-    @SuppressWarnings({"MissingPermission"})
+    @SuppressWarnings({"MissingPermission", "unchecked"})
     public void onMapReady(GoogleMap googleMap)
     {
         Log.d(TAG, "onMapReady: called");
 
-        mapContainer = new MapContainer(googleMap);
+        mapContainer = new MapContainer(googleMap, new GoogleMap.OnInfoWindowLongClickListener()
+        {
+            @Override
+            public void onInfoWindowLongClick(Marker marker)
+            {
+                final List<String> comments = (List<String>) marker.getTag();
+                if (comments != null && comments.size() > 0)
+                {
+                    ArrayList<CommentData> commentDataList = new ArrayList<>();
+
+                    for (String comment : comments)
+                    {
+                        commentDataList.add(new CommentData(comment, ""));
+                    }
+
+                    Intent tmpIntent = new Intent(MainActivity.this, CommentOverlay.class);
+                    tmpIntent.putExtra("data", commentDataList);
+                    startActivity(tmpIntent);
+                }
+                else
+                    showToast(R.string.main_comment_ui_no_comments_available, Toast.LENGTH_SHORT);
+            }
+        });
 
         appContext.put("MainMapContainer", mapContainer);
 
@@ -273,17 +296,6 @@ public class MainActivity extends BaseActivity
     public void refreshMarkerStates ()
     {
         new AsyncMarkerStateUpdater(instance, mapContainer).execute();
-
-        /*
-        asyncMarkerStateUpdater.execute();
-        if(asyncMarkerStateUpdater !=  null && !asyncMarkerStateUpdater.running)
-        {
-            //asyncMarkerStateUpdater = new AsyncMarkerStateUpdater(instance, mapContainer);
-            //asyncMarkerStateUpdater.execute();
-        }
-        else
-            Log.d(TAG, "refreshMarkerStates: Refusing to turn on another instance of marker state updater because one is already running!");
-        */
     }
 
 
@@ -383,7 +395,7 @@ public class MainActivity extends BaseActivity
             }
 
             PolylineOptions tmp = DirectionConverter.createPolyline(this, (ArrayList<LatLng>) report.polypoints, Utility.MAIN_MAP_POLYLINE_WIDTH, color);
-            mapContainer.addPolyline(tmp, report.severity);
+            Polyline tempPolyline = mapContainer.addPolyline(tmp, report.severity, report.comment);
         }
         mapContainer.enableObservers();
         refreshMarkerStates();
@@ -395,8 +407,11 @@ public class MainActivity extends BaseActivity
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 12);
         dismissSnackbar(snackbar);
-        mapContainer.getMap()
-                .animateCamera(cameraUpdate);
+        GoogleMap map = mapContainer.getMap();
+
+        if (map != null)
+            map.animateCamera(cameraUpdate);
+
         locationManager.removeUpdates(this);
     }
 

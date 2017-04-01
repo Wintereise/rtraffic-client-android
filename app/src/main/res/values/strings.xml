@@ -42,6 +42,8 @@
     <string name="traffic_report_state_free">No Congestion</string>
     <string name="traffic_report_thank_you">Thank you for your report!</string>
 
+    <string name="main_comment_ui_no_comments_available">This intersection does not have any user comment(s) yet.</string>
+
     <string name="excluded_regions_dialog_title">Add Region</string>
     <string name="excluded_regions_dialog_lint">Enter a name</string>
     <string name="excluded_regions_listview_no_results">You haven\'t registered excluded regions yet.</string>
@@ -138,6 +140,7 @@
     <string name="nav_settings">Settings</string>
     <string name="nav_help">Help</string>
     <string name="nav_feedback">Send Feedback</string>
+    <string name="nav_comment_overlay">Comments</string>
 
     <!-- Strings related to SettingsActivity -->
 

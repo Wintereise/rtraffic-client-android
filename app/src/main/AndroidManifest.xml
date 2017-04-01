@@ -23,20 +23,18 @@
         <service
             android:name=".services.BackgroundTrafficStatus"
             android:exported="false" />
-
         <service
             android:name=".services.FirebaseInstanceIDTracker"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-
         <service
             android:name=".services.FirebaseNotificationService"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
@@ -47,18 +45,18 @@
         <activity android:name=".activities.IntroSlider">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".activities.GSignInActivity"/>
+        <activity android:name=".activities.GSignInActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".activities.MainActivity"/>
-
+        <activity android:name=".activities.MainActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings" />
@@ -67,9 +65,11 @@
             android:label="@string/help_label" />
         <activity
             android:name=".activities.TrafficReportActivity"
+            android:screenOrientation="portrait"
             android:label="@string/traffic_report" />
         <activity
             android:name=".activities.ExcludedRegionsActivity"
+            android:screenOrientation="portrait"
             android:label="@string/nav_exclude_regions" />
         <activity
             android:name=".activities.PointsOfInterestActivity"
@@ -80,6 +80,9 @@
         <activity
             android:name=".activities.GeoFenceActivity"
             android:label="@string/nav_geofence" />
+
+        <activity android:name=".activities.CommentOverlay"
+            android:label="@string/nav_comment_overlay" />
     </application>
 
 </manifest>
