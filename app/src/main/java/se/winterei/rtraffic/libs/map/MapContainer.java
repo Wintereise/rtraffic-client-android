@@ -174,4 +174,13 @@ public class MapContainer
         polylineList.clear();
         map.clear();
     }
+
+    public void clearPolylines ()
+    {
+        for (Polyline polyline : polylineList)
+        {
+            polyline.remove();
+        }
+        polylineList.clear();
+    }
 }

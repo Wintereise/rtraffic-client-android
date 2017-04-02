@@ -373,9 +373,10 @@ public class MainActivity extends BaseActivity
 
     private void parseReportsAndUpdateMap (List<Report> reports)
     {
-        if(reports == null)
+        if(reports == null || reports.size() == 0)
             return;
         mapContainer.disableObservers();
+        mapContainer.clearPolylines();
         for (Report report : reports)
         {
             int color;
@@ -395,7 +396,7 @@ public class MainActivity extends BaseActivity
             }
 
             PolylineOptions tmp = DirectionConverter.createPolyline(this, (ArrayList<LatLng>) report.polypoints, Utility.MAIN_MAP_POLYLINE_WIDTH, color);
-            Polyline tempPolyline = mapContainer.addPolyline(tmp, report.severity, report.comment);
+            mapContainer.addPolyline(tmp, report.severity, report.comment);
         }
         mapContainer.enableObservers();
         refreshMarkerStates();

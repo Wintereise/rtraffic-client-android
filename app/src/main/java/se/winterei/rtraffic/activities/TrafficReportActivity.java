@@ -193,6 +193,7 @@ public class TrafficReportActivity extends BaseActivity
                                 @Override
                                 public void onFailure(Call<Report> call, Throwable t)
                                 {
+                                    progressDialog.dismiss();
                                     showToast(R.string.something_went_wrong, Toast.LENGTH_SHORT);
                                 }
                             });
@@ -405,5 +406,14 @@ public class TrafficReportActivity extends BaseActivity
     public void onBackPressed ()
     {
         finish();
+    }
+
+    @Override
+    public void onDestroy ()
+    {
+        if (progressDialog != null)
+            progressDialog.dismiss();
+
+        super.onDestroy();
     }
 }
