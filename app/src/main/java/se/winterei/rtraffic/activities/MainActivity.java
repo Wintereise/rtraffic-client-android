@@ -62,7 +62,6 @@ public class MainActivity extends BaseActivity
     private SearchFeedResultsAdapter searchFeedResultsAdapter;
     private final String[] columns = new String[]{"_id", "title", "position"};
 
-    private AsyncMarkerStateUpdater asyncMarkerStateUpdater;
 
     @SuppressLint("UseSparseArrays")
     private final HashMap<Integer, Marker> searchPositionMap = new HashMap<>();

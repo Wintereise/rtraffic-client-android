@@ -194,7 +194,7 @@ public class TrafficReportActivity extends BaseActivity
                                 public void onFailure(Call<Report> call, Throwable t)
                                 {
                                     progressDialog.dismiss();
-                                    showToast(R.string.something_went_wrong, Toast.LENGTH_SHORT);
+                                    showToast(R.string.err_inet_could_not_connect, Toast.LENGTH_SHORT);
                                 }
                             });
                         }

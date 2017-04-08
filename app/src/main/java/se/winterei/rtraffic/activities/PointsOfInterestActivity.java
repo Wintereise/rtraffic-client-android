@@ -138,7 +138,7 @@ public class PointsOfInterestActivity extends BaseActivity
             {
                 progressDialog.dismiss();
                 Log.d(TAG, "onFailure: " + t.getMessage());
-                showToast(R.string.something_went_wrong, Toast.LENGTH_SHORT);
+                showToast(R.string.err_inet_could_not_connect, Toast.LENGTH_SHORT);
             }
         });
     }

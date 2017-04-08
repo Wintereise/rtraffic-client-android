@@ -244,6 +244,7 @@ public class ExcludedRegionsActivity extends BaseActivity
             public void onFailure(Call<List<ExcludedRegion>> call, Throwable t)
             {
                 Log.d(TAG, "onFailure: " + t.toString());
+                showToast(R.string.err_inet_could_not_connect, Toast.LENGTH_SHORT);
             }
         });
     }
@@ -352,7 +353,7 @@ public class ExcludedRegionsActivity extends BaseActivity
                                     {
                                         progressDialog.dismiss();
                                         Log.d(TAG, "onFailure: " + t.getMessage());
-                                        showToast(R.string.something_went_wrong, Toast.LENGTH_SHORT);
+                                        showToast(R.string.err_inet_could_not_connect, Toast.LENGTH_SHORT);
                                     }
                                 });
                             }

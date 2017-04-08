@@ -200,7 +200,7 @@ public class GSignInActivity extends BaseActivity implements
             public void onFailure(Call<GenericAPIResponse> call, Throwable t)
             {
                 hideProgressDialog();
-                showToast(R.string.something_went_wrong, Toast.LENGTH_LONG);
+                showToast(R.string.err_inet_could_not_connect, Toast.LENGTH_LONG);
                 Log.d(TAG, "onFailure: " + t.getMessage());
                 updateUI(false);
             }
