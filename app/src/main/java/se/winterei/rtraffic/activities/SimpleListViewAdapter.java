@@ -31,6 +31,7 @@ public class SimpleListViewAdapter extends BaseAdapter{
     private ArrayList< HashMap<String,Object>> arrayList;
 
     private PointsOfInterestActivity activity;
+    private Toast toast;
 
     private final static String TAG = SimpleListViewAdapter.class.getSimpleName();
 
@@ -120,15 +121,18 @@ public class SimpleListViewAdapter extends BaseAdapter{
                         activity.progressDialog.dismiss();
                         if (response.isSuccessful())
                         {
+                            if (toast != null)
+                                toast.cancel();
+
                             if(toggleButton.isChecked())
                             {
-                                activity.showToast(R.string.entry_submit, Toast.LENGTH_SHORT);
+                                toast = activity.showToast(R.string.entry_submit, Toast.LENGTH_SHORT);
                                 toggleButton.setChecked(true);
                                 data.get(position).put("stat", true);//this is imp to update the value in dataset which is provided to listview
                             }
                             else
                             {
-                                activity.showToast(R.string.excluded_regions_successful_deletion, Toast.LENGTH_SHORT);
+                                toast = activity.showToast(R.string.excluded_regions_successful_deletion, Toast.LENGTH_SHORT);
                                 toggleButton.setChecked(false);
                                 data.get(position).put("stat", false);
                             }

@@ -14,9 +14,11 @@ import java.util.HashMap;
 import java.util.List;
 
 import se.winterei.rtraffic.R;
+import se.winterei.rtraffic.RTraffic;
 import se.winterei.rtraffic.activities.BaseActivity;
 import se.winterei.rtraffic.libs.generic.Utility;
 import se.winterei.rtraffic.libs.map.MapContainer;
+import se.winterei.rtraffic.libs.settings.Preference;
 
 import static se.winterei.rtraffic.libs.generic.Utility.CONGESTED;
 import static se.winterei.rtraffic.libs.generic.Utility.SLOW_BUT_MOVING;
@@ -34,6 +36,7 @@ public class AsyncMarkerStateUpdater extends AsyncTask<Void, Void, Void>
     private final HashMap<Polyline, List<LatLng>> polylinePointsMap;
 
     private final String TAG = AsyncMarkerStateUpdater.class.getSimpleName();
+    private Preference preference;
 
     public boolean running = false;
 
@@ -43,6 +46,7 @@ public class AsyncMarkerStateUpdater extends AsyncTask<Void, Void, Void>
         this.mapContainer = mapContainer;
         markerPositionMap = new HashMap<>();
         polylinePointsMap = new HashMap<>();
+        preference = new Preference(RTraffic.getAppContext());
     }
 
     @Override
@@ -72,6 +76,7 @@ public class AsyncMarkerStateUpdater extends AsyncTask<Void, Void, Void>
         for (final Marker marker : markerList)
         {
             final List<String> markerComments = new ArrayList<>();
+            int matchCounter = 0;
 
             for (final Polyline polyline : polylineList)
             {
@@ -99,6 +104,7 @@ public class AsyncMarkerStateUpdater extends AsyncTask<Void, Void, Void>
                             Log.d(TAG, "doInBackground: Unrecognized state found, this polyline does not likely have state information associated with it.");
                             continue;
                     }
+                    matchCounter++;
                     instance.runOnUiThread(new Runnable()
                     {
                         @Override
@@ -108,21 +114,36 @@ public class AsyncMarkerStateUpdater extends AsyncTask<Void, Void, Void>
                         }
                     });
                 }
-                final int commentListSize = markerComments.size();
-                if (commentListSize > 0)
+            }
+
+            //Add comment count to the market title enclosed in []
+            final int commentListSize = markerComments.size();
+            if (commentListSize > 0)
+            {
+                instance.runOnUiThread(new Runnable()
                 {
-                    instance.runOnUiThread(new Runnable()
+                    @Override
+                    public void run()
                     {
-                        @Override
-                        public void run()
-                        {
-                            String existingMarkerTitle = marker.getTitle();
-                            existingMarkerTitle = existingMarkerTitle.replaceAll("\\s*\\[[^\\]]*\\]\\s*", " ");
-                            marker.setTitle("[" + commentListSize + "] " + existingMarkerTitle);
-                            marker.setTag(markerComments);
-                        }
-                    });
-                }
+                        String existingMarkerTitle = marker.getTitle();
+                        existingMarkerTitle = existingMarkerTitle.replaceAll("\\s*\\[[^\\]]*\\]\\s*", " ");
+                        marker.setTitle("[" + commentListSize + "] " + existingMarkerTitle);
+                        marker.setTag(markerComments);
+                    }
+                });
+            }
+
+            //Hide marker if said marker has not had a polyline intersect it.
+            if (matchCounter == 0 && (Boolean) preference.get("pref_hide_excess_markers", false, Boolean.class))
+            {
+                instance.runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        marker.setVisible(false);
+                    }
+                });
             }
         }
         running = false;

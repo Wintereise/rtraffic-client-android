@@ -33,6 +33,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
+import com.squareup.moshi.Moshi;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,6 +67,8 @@ public class ExcludedRegionsActivity extends BaseActivity
     private ProgressDialog progressDialog;
     private SparseArray<Map<String, Object>> listViewIndexMap;
     private SparseArray<Marker> markerMap;
+    private Moshi moshi;
+    private SparseArray<Integer> excludedRegionIdToDataSetIndexMap;
 
     @Override
     @SuppressWarnings({"MissingPermission"})
@@ -78,6 +81,9 @@ public class ExcludedRegionsActivity extends BaseActivity
         mapArrayList = new ArrayList<>();
         listViewIndexMap = new SparseArray<>();
         markerMap = new SparseArray<>();
+        excludedRegionIdToDataSetIndexMap = new SparseArray<>();
+
+        moshi = new Moshi.Builder().build();
 
         fragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -159,6 +165,17 @@ public class ExcludedRegionsActivity extends BaseActivity
                             {
                                 progressDialog.hide();
                                 simpleAdapter.notifyDataSetChanged();
+
+                                Integer removalIndex = excludedRegionIdToDataSetIndexMap.get(id);
+                                if (removalIndex != null)
+                                {
+                                    int value = removalIndex;
+                                    dataset.remove(value);
+                                }
+
+                                String jsonRegions = moshi.adapter(List.class).toJson(dataset);
+                                preference.put(TAG, jsonRegions, String.class);
+
                                 showToast(R.string.excluded_regions_successful_deletion, Toast.LENGTH_SHORT);
                                 dynamicizeListView(listView, 1);
                             }
@@ -204,6 +221,10 @@ public class ExcludedRegionsActivity extends BaseActivity
                 markerMap.clear();
 
                 dataset = regions;
+
+                String jsonRegions = moshi.adapter(List.class).toJson(dataset);
+                preference.put(TAG, jsonRegions, String.class);
+
                 for (ExcludedRegion region : regions)
                 {
                     final Map<String, Object> map = new HashMap<>();
@@ -212,6 +233,7 @@ public class ExcludedRegionsActivity extends BaseActivity
                     Marker marker = mapContainer.addMarker(new MarkerOptions().position(region.location).title(region.title));
                     markerMap.append(region.id, marker);
                     listViewIndexMap.append(region.id, map);
+                    excludedRegionIdToDataSetIndexMap.append(region.id, dataset.indexOf(region));
                     mapArrayList.add(map);
                 }
                 simpleAdapter.notifyDataSetChanged();
@@ -299,6 +321,9 @@ public class ExcludedRegionsActivity extends BaseActivity
                                             final Map<String, Object> map = new HashMap<>();
                                             dataset.add(point);
 
+                                            String jsonRegions = moshi.adapter(List.class).toJson(dataset);
+                                            preference.put(TAG, jsonRegions, String.class);
+
                                             marker.setTitle(point.title);
 
                                             map.put("title", point.title);
@@ -307,6 +332,8 @@ public class ExcludedRegionsActivity extends BaseActivity
                                             mapArrayList.add(map);
                                             listViewIndexMap.append(point.id, map);
                                             markerMap.append(point.id, marker);
+
+                                            excludedRegionIdToDataSetIndexMap.append(point.id, dataset.indexOf(point));
 
                                             simpleAdapter.notifyDataSetChanged();
                                             showToast(R.string.entry_submit, Toast.LENGTH_SHORT);

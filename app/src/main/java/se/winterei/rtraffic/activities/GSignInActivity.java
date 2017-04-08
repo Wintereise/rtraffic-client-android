@@ -121,7 +121,6 @@ public class GSignInActivity extends BaseActivity implements
                 @Override
                 public void onResult(GoogleSignInResult googleSignInResult)
                 {
-                    hideProgressDialog();
                     handleSignInResult(googleSignInResult);
                 }
             });
@@ -160,6 +159,7 @@ public class GSignInActivity extends BaseActivity implements
             @Override
             public void onResponse(Call<GenericAPIResponse> call, Response<GenericAPIResponse> response)
             {
+                hideProgressDialog();
                 GenericAPIResponse apiResponse = response.body();
                 if (apiResponse != null)
                 {
@@ -190,6 +190,7 @@ public class GSignInActivity extends BaseActivity implements
                 }
                 else
                 {
+                    hideProgressDialog();
                     Log.d(TAG, "onResponse: apiResponse was null :T");
                     showToast(R.string.something_went_wrong, Toast.LENGTH_SHORT);
                 }

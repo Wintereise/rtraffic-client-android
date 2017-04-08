@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import com.akexorcist.googledirection.util.DirectionConverter;
 import com.getbase.floatingactionbutton.FloatingActionButton;
-import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -29,8 +28,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.firebase.crash.FirebaseCrash;
-import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,7 +46,6 @@ import se.winterei.rtraffic.libs.generic.Utility;
 import se.winterei.rtraffic.libs.map.MapChangeListener;
 import se.winterei.rtraffic.libs.map.MapContainer;
 import se.winterei.rtraffic.libs.search.SearchFeedResultsAdapter;
-import se.winterei.rtraffic.libs.settings.Preference;
 import se.winterei.rtraffic.libs.tasks.AsyncMarkerStateUpdater;
 
 public class MainActivity extends BaseActivity
@@ -345,7 +341,7 @@ public class MainActivity extends BaseActivity
             @Override
             public void onResponse(Call<List<Report>> call, Response<List<Report>> response)
             {
-                parseReportsAndUpdateMap(response.body());
+                parseReportsAndUpdateMap(response.body(), false);
                 mapContainer.registerListener(new MapChangeListener()
                 {
                     @Override
@@ -371,12 +367,15 @@ public class MainActivity extends BaseActivity
         });
     }
 
-    private void parseReportsAndUpdateMap (List<Report> reports)
+    private void parseReportsAndUpdateMap (List<Report> reports, boolean clearPolyLines)
     {
         if(reports == null || reports.size() == 0)
             return;
         mapContainer.disableObservers();
-        mapContainer.clearPolylines();
+
+        if (clearPolyLines)
+            mapContainer.clearPolylines();
+
         for (Report report : reports)
         {
             int color;
@@ -432,7 +431,7 @@ public class MainActivity extends BaseActivity
         switch (item.getItemId())
         {
             case R.id.action_refresh:
-                fetchReports();
+                synchronizeMap();
                 showToast(R.string.update_underway, Toast.LENGTH_SHORT);
                 return true;
             default:

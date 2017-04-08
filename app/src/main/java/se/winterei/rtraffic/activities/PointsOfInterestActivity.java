@@ -167,7 +167,6 @@ public class PointsOfInterestActivity extends BaseActivity
      */
 
     @Override
-
     protected void onSaveInstanceState(Bundle outState)
     {
 
@@ -200,6 +199,14 @@ public class PointsOfInterestActivity extends BaseActivity
                     }
                 }
         );
+    }
+
+    @Override
+    public void onDestroy ()
+    {
+        if (progressDialog != null)
+            progressDialog.dismiss();
+        super.onDestroy();
     }
 
 }

@@ -215,6 +215,9 @@
     <string name="pref_background_service_summary">Controls whether the app asks you to contribute data</string>
     <string name="pref_notif_enable_summary">Controls whether the app shows real-time notifications</string>
 
+    <string name="pref_hide_excess_markers_enable">Hide Intersections without Data</string>
+    <string name="pref_hide_excess_markers_summary">Controls whether intersections that the app does not have data in should be hidden or not.</string>
+
     <string name="nav_mylocation">My Location</string>
 
     <!--GeoFence string values START-->
