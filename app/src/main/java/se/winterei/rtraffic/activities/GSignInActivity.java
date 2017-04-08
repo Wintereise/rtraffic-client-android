@@ -190,7 +190,6 @@ public class GSignInActivity extends BaseActivity implements
                 }
                 else
                 {
-                    hideProgressDialog();
                     Log.d(TAG, "onResponse: apiResponse was null :T");
                     showToast(R.string.something_went_wrong, Toast.LENGTH_SHORT);
                 }
@@ -200,6 +199,7 @@ public class GSignInActivity extends BaseActivity implements
             @Override
             public void onFailure(Call<GenericAPIResponse> call, Throwable t)
             {
+                hideProgressDialog();
                 showToast(R.string.something_went_wrong, Toast.LENGTH_LONG);
                 Log.d(TAG, "onFailure: " + t.getMessage());
                 updateUI(false);
