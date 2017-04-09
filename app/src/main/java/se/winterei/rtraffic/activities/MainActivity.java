@@ -394,7 +394,9 @@ public class MainActivity extends BaseActivity
             }
 
             PolylineOptions tmp = DirectionConverter.createPolyline(this, (ArrayList<LatLng>) report.polypoints, Utility.MAIN_MAP_POLYLINE_WIDTH, color);
-            mapContainer.addPolyline(tmp, report.severity, report.comment);
+            String tmpComment = report.comment + "\n\nSent " + report.created_at;
+
+            mapContainer.addPolyline(tmp, report.severity, tmpComment);
         }
         mapContainer.enableObservers();
         refreshMarkerStates();

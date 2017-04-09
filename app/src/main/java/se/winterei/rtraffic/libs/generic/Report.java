@@ -16,7 +16,9 @@ public class Report
     public final String comment;
     public final int severity, id;
     public final List<LatLng> polypoints;
+
     public int user_id = 1;
+    public String created_at = "";
 
     public Report (@Nullable int id, int severity, String comment, boolean anonymous, List<LatLng> polylineList)
     {

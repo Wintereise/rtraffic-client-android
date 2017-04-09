@@ -53,6 +53,8 @@ public class CommentOverlay extends BaseActivity
                 layout = childLayoutLeft;
 
             TextView textView = (TextView) layout.findViewById(R.id.comment_overlay_textview);
+            textView.setSingleLine(false);
+
             textView.setText(commentData.comment);
 
             if (turnTracker != 0)
