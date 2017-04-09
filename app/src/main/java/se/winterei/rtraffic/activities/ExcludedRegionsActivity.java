@@ -40,6 +40,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.Polyline;
 import com.squareup.moshi.Moshi;
+import com.squareup.moshi.Types;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -189,7 +190,7 @@ public class ExcludedRegionsActivity extends BaseActivity
                                     dataset.remove(value);
                                 }
 
-                                String jsonRegions = moshi.adapter(List.class).toJson(dataset);
+                                String jsonRegions = moshi.adapter(Types.newParameterizedType(List.class, ExcludedRegion.class)).toJson(dataset);
                                 preference.put(TAG, jsonRegions, String.class);
 
                                 showToast(R.string.excluded_regions_successful_deletion, Toast.LENGTH_SHORT);

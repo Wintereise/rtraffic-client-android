@@ -14,13 +14,19 @@ import android.location.LocationManager;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.squareup.moshi.Moshi;
+import com.squareup.moshi.Types;
+
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import se.winterei.rtraffic.R;
+import se.winterei.rtraffic.activities.ExcludedRegionsActivity;
 import se.winterei.rtraffic.activities.TrafficReportActivity;
+import se.winterei.rtraffic.libs.generic.ExcludedRegion;
 import se.winterei.rtraffic.libs.generic.Utility;
 import se.winterei.rtraffic.libs.settings.Preference;
 
@@ -65,10 +71,9 @@ public class BackgroundTrafficStatus extends IntentService
 
 
     @Override
-    @SuppressWarnings({"MissingPermission"})
+    @SuppressWarnings({"MissingPermission", "unchecked"})
     protected void onHandleIntent (Intent intent)
     {
-        Log.d(TAG, "onHandleIntent: called");
         if(intent == null || !backgroundServiceEnabled || !notificationsEnabled)
         {
             Log.d(TAG, "onHandleIntent: Services are disabled :(");
@@ -90,6 +95,31 @@ public class BackgroundTrafficStatus extends IntentService
         {
             Log.d(TAG, "onHandleIntent: location update is older than 5 minutes, skipping.");
             return;
+        }
+
+        String JSONExcludedRegions = (String) preference.get(ExcludedRegionsActivity.class.getSimpleName(), "", String.class);
+        if (! JSONExcludedRegions.equals(""))
+        {
+            Moshi moshi = new Moshi.Builder().build();
+            try
+            {
+                List<ExcludedRegion> excludedRegions = (List<ExcludedRegion>) moshi.adapter(Types.newParameterizedType(List.class, ExcludedRegion.class)).fromJson(JSONExcludedRegions);
+                if (excludedRegions != null && excludedRegions.size() > 0)
+                {
+                    for (ExcludedRegion excludedRegion : excludedRegions)
+                    {
+                        if (Utility.greaterCircleDistance(new LatLng(location.getLatitude(), location.getLongitude()), excludedRegion.location) <= Utility.exclusionRadius)
+                        {
+                            Log.d(TAG, "onHandleIntent: current location is excluded via region exclusions");
+                            return;
+                        }
+                    }
+                }
+            }
+            catch (IOException e)
+            {
+                Log.d(TAG, "onHandleIntent: " + e.getMessage());
+            }
         }
 
         if (location.hasSpeed())
