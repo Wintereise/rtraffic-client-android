@@ -1,6 +1,7 @@
 package se.winterei.rtraffic.activities;
 
 import android.app.ProgressDialog;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -10,6 +11,7 @@ import android.support.design.widget.Snackbar;
 import android.text.InputType;
 import android.util.Log;
 import android.util.SparseArray;
+import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -29,9 +31,13 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.Dot;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.Polyline;
 import com.squareup.moshi.Moshi;
 
@@ -67,8 +73,10 @@ public class ExcludedRegionsActivity extends BaseActivity
     private ProgressDialog progressDialog;
     private SparseArray<Map<String, Object>> listViewIndexMap;
     private SparseArray<Marker> markerMap;
+    private SparseArray<Circle> circleMap;
     private Moshi moshi;
-    private SparseArray<Integer> excludedRegionIdToDataSetIndexMap;
+    private SparseIntArray excludedRegionIdToDataSetIndexMap;
+    private List<PatternItem> patternItemList;
 
     @Override
     @SuppressWarnings({"MissingPermission"})
@@ -81,7 +89,11 @@ public class ExcludedRegionsActivity extends BaseActivity
         mapArrayList = new ArrayList<>();
         listViewIndexMap = new SparseArray<>();
         markerMap = new SparseArray<>();
-        excludedRegionIdToDataSetIndexMap = new SparseArray<>();
+        circleMap = new SparseArray<>();
+        excludedRegionIdToDataSetIndexMap = new SparseIntArray();
+
+        patternItemList = new ArrayList<>();
+        patternItemList.add(new Dot());
 
         moshi = new Moshi.Builder().build();
 
@@ -141,15 +153,19 @@ public class ExcludedRegionsActivity extends BaseActivity
 
                         final int id = Integer.parseInt((String) v.getTag());
                         final Map<String, Object> row = listViewIndexMap.get(id);
+
                         final Marker bMarker = markerMap.get(id);
+                        final Circle bCircle = circleMap.get(id);
+
                         if(row != null)
-                        {
                             mapArrayList.remove(row);
-                        }
+
                         if(bMarker != null)
-                        {
                             bMarker.remove();
-                        }
+
+                        if (bCircle != null)
+                            bCircle.remove();
+
                         if(id == -1)
                         {
                             progressDialog.hide();
@@ -230,8 +246,13 @@ public class ExcludedRegionsActivity extends BaseActivity
                     final Map<String, Object> map = new HashMap<>();
                     map.put("title", region.title);
                     map.put("id", String.valueOf(region.id));
+
                     Marker marker = mapContainer.addMarker(new MarkerOptions().position(region.location).title(region.title));
+                    Circle circle = mapContainer.addCircle(new CircleOptions().center(region.location).radius(Utility.exclusionRadius).strokeColor(Color.RED).strokePattern(patternItemList));
+
                     markerMap.append(region.id, marker);
+                    circleMap.append(region.id, circle);
+
                     listViewIndexMap.append(region.id, map);
                     excludedRegionIdToDataSetIndexMap.append(region.id, dataset.indexOf(region));
                     mapArrayList.add(map);
@@ -300,8 +321,6 @@ public class ExcludedRegionsActivity extends BaseActivity
                             @Override
                             public void onClick(@NonNull final MaterialDialog dialog, @NonNull DialogAction which)
                             {
-
-
                                 progressDialog = ProgressDialog.show(instance, "", getString(R.string.loading), true);
                                 progressDialog.show();
 
@@ -318,7 +337,13 @@ public class ExcludedRegionsActivity extends BaseActivity
                                         if(response.isSuccessful() && response.body() != null && response.body().data != null)
                                         {
                                             final Marker marker = mapContainer.addMarker(new MarkerOptions().position(latLng));
+                                            final Circle circle = mapContainer.addCircle(new CircleOptions().center(latLng).radius(Utility.exclusionRadius).strokeColor(Color.RED).strokePattern(patternItemList));
+
                                             point.id =  response.body().data.id;
+
+                                            markerMap.append(point.id, marker);
+                                            circleMap.append(point.id, circle);
+
                                             final Map<String, Object> map = new HashMap<>();
                                             dataset.add(point);
 
@@ -332,8 +357,6 @@ public class ExcludedRegionsActivity extends BaseActivity
 
                                             mapArrayList.add(map);
                                             listViewIndexMap.append(point.id, map);
-                                            markerMap.append(point.id, marker);
-
                                             excludedRegionIdToDataSetIndexMap.append(point.id, dataset.indexOf(point));
 
                                             simpleAdapter.notifyDataSetChanged();

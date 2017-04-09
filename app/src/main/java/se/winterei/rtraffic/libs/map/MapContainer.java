@@ -4,6 +4,8 @@ import android.support.annotation.NonNull;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -22,6 +24,7 @@ public class MapContainer
 {
     private GoogleMap map;
     private List<Marker> markerList;
+    private List<Circle> circleList;
     private List<Polyline> polylineList;
     private HashMap<Polyline, Integer> polylineStateMap;
     private HashMap<Polyline, String> polylineCommentMap;
@@ -29,13 +32,14 @@ public class MapContainer
     private boolean notificationEnabled = true;
     private enum type
     {
-        MARKER, POLYLINE
+        MARKER, POLYLINE, CIRCLE
     }
 
     public MapContainer (GoogleMap map)
     {
         this.map = map;
         markerList = new ArrayList<>();
+        circleList = new ArrayList<>();
         polylineList = new ArrayList<>();
         polylineStateMap = new HashMap<>();
         polylineCommentMap = new HashMap<>();
@@ -55,6 +59,15 @@ public class MapContainer
         notifyListeners(type.MARKER, tmp);
         return tmp;
     }
+
+    public Circle addCircle (CircleOptions circleOptions)
+    {
+        Circle tmp = map.addCircle(circleOptions);
+        circleList.add(tmp);
+        notifyListeners(type.CIRCLE, tmp);
+        return tmp;
+    }
+
 
     public Marker addInfoMarker (IconGenerator iconGenerator, CharSequence charSequence, LatLng position)
     {
@@ -115,6 +128,11 @@ public class MapContainer
         return polylineList;
     }
 
+    public List<Circle> getCircleList ()
+    {
+        return circleList;
+    }
+
     public HashMap<Polyline, Integer> getPolylineStateMap()
     {
         return polylineStateMap;
@@ -172,6 +190,7 @@ public class MapContainer
     {
         markerList.clear();
         polylineList.clear();
+        circleList.clear();
         map.clear();
     }
 

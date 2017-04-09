@@ -22,6 +22,8 @@ import se.winterei.rtraffic.services.PeriodicRunner;
 public class Utility
 {
     public final static int polylineMatchTolerance = 50;
+    public final static int exclusionRadius = 200;
+
     public final static int CONGESTED = 32001;
     public final static int SLOW_BUT_MOVING = 32002;
     public final static int UNCONGESTED = 32003;
