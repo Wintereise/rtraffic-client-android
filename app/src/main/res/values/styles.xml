@@ -17,8 +17,19 @@
         <!-- color of the menu overflow icon (three vertical dots) -->
         <item name="android:textColorSecondary">@color/secondary_text</item>
 
-
+        <!-- u wot m8? -->
         <item name="android:windowBackground">@color/window_background</item>
+
+        <!-- Colors associated with popmenu and its text (toolbar) -->
+
+        <item name="android:itemBackground">@color/window_background</item>
+        <item name="android:itemTextAppearance">@style/ItemTextAppearence</item>
+
+    </style>
+
+    <!-- Toolbar popup background -->
+    <style name="ItemTextAppearence">
+        <item name="android:textColor">@color/primary_text</item>
     </style>
 
     <!-- Dark Buttons -->
