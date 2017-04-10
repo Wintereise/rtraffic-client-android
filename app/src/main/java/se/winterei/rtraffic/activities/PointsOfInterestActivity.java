@@ -54,8 +54,13 @@ public class PointsOfInterestActivity extends BaseActivity
 
         pointList = (List<Point>) appContext.get("MainMapPointList");
 
-        toggleSwitchStates = new boolean[pointList.size()];
+        if (pointList == null)
+        {
+            showToast(R.string.poi_not_ready_yet, Toast.LENGTH_SHORT);
+            finish();
+        }
 
+        toggleSwitchStates = new boolean[pointList.size()];
 
         if (savedInstanceState != null)
         {

@@ -5,6 +5,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.location.LocationManager;
 import android.os.SystemClock;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -123,6 +124,36 @@ public class Utility
         if(pendingIntent != null)
             alarmManager.cancel(pendingIntent);
         Log.d(TAG, "cancelAlarm: cancelled alarm.");
+    }
+
+    public static boolean isLocationServicesEnabled ()
+    {
+        final Context context = RTraffic.getAppContext();
+
+        LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+
+        boolean gps_enabled = false;
+        boolean net_enabled = false;
+
+        try
+        {
+            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        }
+        catch (Exception ex)
+        {
+            Log.d(TAG, "locationServicesEnabled: " + ex.getMessage());
+        }
+
+        try
+        {
+            net_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        }
+        catch (Exception ex)
+        {
+            Log.d(TAG, "locationServicesEnabled: " + ex.getMessage());
+        }
+
+        return gps_enabled || net_enabled;
     }
 
 }

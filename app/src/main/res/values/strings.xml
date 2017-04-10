@@ -51,6 +51,8 @@
     <string name="excluded_regions_successful_deletion">The entry has been successfully removed.</string>
     <string name="excluded_regions_startup_tooltip">Long press anywhere in the map to start the process of adding a new region!</string>
 
+    <string name="poi_not_ready_yet">The list of intersection(s) is not ready yet, please retry after they have been loaded onto the map.</string>
+
     <string name="service_notif_main_header">Contribute Traffic Data</string>
     <string name="service_notif_main_body">Stuck in %s?</string>
     <string name="service_notif_affirmative_answer">Submit Report</string>
