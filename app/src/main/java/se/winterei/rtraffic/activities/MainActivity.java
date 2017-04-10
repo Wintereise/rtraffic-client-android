@@ -423,12 +423,9 @@ public class MainActivity extends BaseActivity
             final String tmpComment;
 
             if (report.comment != null && report.comment.length() >= 4)
-            {
                 tmpComment = report.comment.trim() + "\n\nSent " + report.created_at;
-            }
             else
                 tmpComment = null;
-
 
             mapContainer.addPolyline(tmp, report.severity, tmpComment);
         }
