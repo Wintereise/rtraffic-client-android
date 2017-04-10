@@ -128,7 +128,7 @@ public abstract class BaseActivity extends AppCompatActivity
     {
         if(!authCheck() && !bypassAuthentication)
         {
-            startActivity(new Intent(this, GSignInActivity.class));
+            startActivity(new Intent(this, SophisticatedSignIn.class));
         }
     }
 

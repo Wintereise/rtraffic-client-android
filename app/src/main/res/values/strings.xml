@@ -2,6 +2,9 @@
     <string name="app_name">rTraffic</string>
     <string name="help_label">Help</string>
 
+    <string name="google_sign_in">Google Sign-in</string>
+    <string name="rtraffic_sign_in_policy">By signing-in, you agree to be bound by rTraffic\'s \\nterms of services and privacy policy.</string>
+
     <string name="edit_message">Enter a message</string>
     <string name="button_send">Send</string>
     <string name="action_refresh">Refresh</string>

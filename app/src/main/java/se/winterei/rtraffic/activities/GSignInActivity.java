@@ -3,7 +3,6 @@ package se.winterei.rtraffic.activities;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -277,6 +276,7 @@ public class GSignInActivity extends BaseActivity implements
                         // [END_EXCLUDE]
                     }
                 });
+        startActivity(new Intent(this, SophisticatedSignIn.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
     }
     // [END signOut]
 
@@ -292,6 +292,7 @@ public class GSignInActivity extends BaseActivity implements
                         // [END_EXCLUDE]
                     }
                 });
+        startActivity(new Intent(this, SophisticatedSignIn.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
     }
     // [END revokeAccess]
 

@@ -45,18 +45,19 @@
         <activity android:name=".activities.IntroSlider">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".activities.GSignInActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".activities.MainActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".activities.MainActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings" />
@@ -65,21 +66,22 @@
             android:label="@string/help_label" />
         <activity
             android:name=".activities.TrafficReportActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/traffic_report" />
+            android:label="@string/traffic_report"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.ExcludedRegionsActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/nav_exclude_regions" />
+            android:label="@string/nav_exclude_regions"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.PointsOfInterestActivity"
             android:label="@string/nav_notif_reg" />
         <activity
             android:name=".activities.GeoFenceActivity"
             android:label="@string/nav_geofence" />
-
-        <activity android:name=".activities.CommentOverlay"
+        <activity
+            android:name=".activities.CommentOverlay"
             android:label="@string/nav_comment_overlay" />
+        <activity android:name=".activities.SophisticatedSignIn"></activity>
     </application>
 
 </manifest>

@@ -192,7 +192,7 @@ public class IntroSlider extends BaseActivity
     private void launchAuthenticationFlow ()
     {
         preference.put(FIRST_TIME_LAUNCH, false, Boolean.class);
-        startActivity(new Intent(instance, GSignInActivity.class));
+        startActivity(new Intent(instance, SophisticatedSignIn.class));
     }
 
     public class MyViewPagerAdapter extends PagerAdapter
