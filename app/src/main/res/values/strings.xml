@@ -153,52 +153,23 @@
 
     <!-- Strings related to SettingsActivity -->
 
-    <!-- Example General settings -->
-    <string name="pref_header_general">General</string>
-
-    <string name="pref_title_social_recommendations">Enable social recommendations</string>
-    <string name="pref_description_social_recommendations">Recommendations for people to contact
-        based on your message history
-    </string>
-
-    <string name="pref_title_display_name">Display name</string>
-    <string name="pref_default_display_name">John Smith</string>
-
-    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
-    <string-array name="pref_example_list_titles">
-        <item>Always</item>
-        <item>When possible</item>
-        <item>Never</item>
-    </string-array>
-    <string-array name="pref_example_list_values">
-        <item>1</item>
-        <item>0</item>
-        <item>-1</item>
-    </string-array>
 
     <!-- Example settings for Data & Sync -->
 
-    <string name="pref_title_sync_frequency">Cloud Sync Interval</string>
-    <string name="pref_summary_sync_frequency">Synchronizes %s</string>
+    <string name="pref_location_provider_title">Location Services Provider</string>
+    <string name="pref_location_provider_summary">Currently using: %s</string>
 
-    <string-array name="pref_sync_frequency_titles">
-        <item>Every 5 minutes</item>
-        <item>Every 15 minutes</item>
-        <item>Every 30 minutes</item>
-        <item>Every 1 hour</item>
-        <item>Every 3 hours</item>
-        <item>Never</item>
+    <string-array name="pref_location_provider_options">
+        <item>GPS</item>
+        <item>Network (Cell towers)</item>
     </string-array>
 
-    <string name="pref_sync_frequency_default_value">5</string>
-    <string-array name="pref_sync_frequency_values">
-        <item>5</item>
-        <item>15</item>
-        <item>30</item>
-        <item>60</item>
-        <item>180</item>
-        <item>-1</item>
+    <string-array name="pref_location_provider_options_values">
+        <item>1</item>
+        <item>2</item>
     </string-array>
+
+    <string name="pref_location_provider_options_default_value">2</string>
 
     <string name="pref_title_report_history">Report Retention</string>
     <string name="pref_summary_report_history">Fetch data for the last %s</string>

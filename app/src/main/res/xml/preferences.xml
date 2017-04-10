@@ -20,13 +20,13 @@
         android:defaultValue="false" />
 
     <ListPreference
-        android:key="pref_sync"
-        android:title="@string/pref_title_sync_frequency"
-        android:summary="@string/pref_summary_sync_frequency"
-        android:dialogTitle="@string/pref_title_sync_frequency"
-        android:entries="@array/pref_sync_frequency_titles"
-        android:entryValues="@array/pref_sync_frequency_values"
-        android:defaultValue="@string/pref_sync_frequency_default_value" />
+        android:key="pref_location_provider"
+        android:title="@string/pref_location_provider_title"
+        android:summary="@string/pref_location_provider_summary"
+        android:dialogTitle="@string/pref_location_provider_title"
+        android:entries="@array/pref_location_provider_options"
+        android:entryValues="@array/pref_location_provider_options_values"
+        android:defaultValue="@string/pref_location_provider_options_default_value" />
 
     <ListPreference
         android:key="pref_report_history"

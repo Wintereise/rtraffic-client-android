@@ -92,8 +92,16 @@ public class MainActivity extends BaseActivity
 
         if(checkGPSPermissions())
         {
+            String preferredProvider = (String) preference.get("pref_location_provider", LocationManager.NETWORK_PROVIDER, String.class);
+            String provider;
+
+            if (preferredProvider.equals("2"))
+                provider = LocationManager.NETWORK_PROVIDER;
+            else
+                provider = LocationManager.GPS_PROVIDER;
+
             locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, Utility.LOCATION_LOCK_MIN_TIME, Utility.LOCATION_LOCK_MIN_DISTANCE, this); //You can also use LocationManager.GPS_PROVIDER and LocationManager.PASSIVE_PROVIDER
+            locationManager.requestLocationUpdates(provider, Utility.LOCATION_LOCK_MIN_TIME, Utility.LOCATION_LOCK_MIN_DISTANCE, this); //You can also use LocationManager.GPS_PROVIDER and LocationManager.PASSIVE_PROVIDER
 
             Utility.scheduleAlarm(preference);
         }
