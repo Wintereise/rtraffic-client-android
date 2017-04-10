@@ -76,9 +76,6 @@
             android:name=".activities.PointsOfInterestActivity"
             android:label="@string/nav_notif_reg" />
         <activity
-            android:name=".activities.GeoFenceActivity"
-            android:label="@string/nav_geofence" />
-        <activity
             android:name=".activities.CommentOverlay"
             android:label="@string/nav_comment_overlay" />
         <activity android:name=".activities.SophisticatedSignIn"></activity>
