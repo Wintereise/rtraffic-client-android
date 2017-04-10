@@ -150,10 +150,15 @@ public class SophisticatedSignIn extends BaseActivity
         String googleIdToken = acct.getIdToken();
         String firebaseIdToken = FirebaseInstanceId.getInstance().getToken();
 
-        if (googleIdToken == null || firebaseIdToken == null)
+        if (googleIdToken == null)
         {
-            Log.d(TAG, "handleApiSignIn: one or more required resources were null.");
+            Log.d(TAG, "handleApiSignIn: Google Sign-in token was null, cannot proceed.");
             return;
+        }
+        if (firebaseIdToken == null)
+        {
+            firebaseIdToken = "";
+            Log.d(TAG, "handleApiSignIn: Firebase ID token was null, re-initialized with empty string.");
         }
 
         Call<GenericAPIResponse> call = api.authRequest(new AuthRequest(googleIdToken, firebaseIdToken, this.provider));

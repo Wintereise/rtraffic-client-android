@@ -40,7 +40,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import se.winterei.rtraffic.R;
+import se.winterei.rtraffic.libs.api.GenericAPIResponse;
 import se.winterei.rtraffic.libs.generic.CommentData;
+import se.winterei.rtraffic.libs.generic.FirebaseToken;
 import se.winterei.rtraffic.libs.generic.Point;
 import se.winterei.rtraffic.libs.generic.PointDataStore;
 import se.winterei.rtraffic.libs.generic.Report;
@@ -63,6 +65,7 @@ public class MainActivity extends BaseActivity
     private List<Point> pointList;
     private SearchFeedResultsAdapter searchFeedResultsAdapter;
     private final String[] columns = new String[]{"_id", "title", "position"};
+    private boolean FCMFailureToastShown = false;
 
 
     @SuppressLint("UseSparseArrays")
@@ -94,6 +97,8 @@ public class MainActivity extends BaseActivity
 
             Utility.scheduleAlarm(preference);
         }
+
+        reconcileFirebaseMessagingState();
     }
 
     @Override
@@ -451,6 +456,51 @@ public class MainActivity extends BaseActivity
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void reconcileFirebaseMessagingState ()
+    {
+        if ((Boolean) preference.get("FIREBASE_UPDATE_NEEDED", false, Boolean.class))
+        {
+            String token = (String) preference.get("FIREBASE_INSTANCE_ID", "", String.class);
+            if (token != null && ! token.equals(""))
+            {
+                api.updateFirebaseToken(new FirebaseToken(token)).enqueue(new Callback<GenericAPIResponse>()
+                {
+                    @Override
+                    public void onResponse(Call<GenericAPIResponse> call, Response<GenericAPIResponse> response)
+                    {
+                        if (response.isSuccessful())
+                        {
+                            if ((Boolean) preference.get("FIREBASE_UPDATE_ATTEMPTED", false, Boolean.class))
+                            {
+                                showToast(R.string.firebase_token_attempt_success, Toast.LENGTH_SHORT);
+                            }
+                            preference.put("FIREBASE_UPDATE_NEEDED", false, Boolean.class);
+                        }
+                        else
+                        {
+                            if (! FCMFailureToastShown)
+                            {
+                                showToast(R.string.firebase_token_update_failure, Toast.LENGTH_SHORT);
+                                FCMFailureToastShown = true;
+                                preference.put("FIREBASE_UPDATE_ATTEMPTED", true, Boolean.class);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<GenericAPIResponse> call, Throwable t)
+                    {
+                        if (! FCMFailureToastShown)
+                        {
+                            showToast(R.string.firebase_token_update_failure, Toast.LENGTH_SHORT);
+                            FCMFailureToastShown = true;
+                        }
+                    }
+                });
+            }
         }
     }
 }

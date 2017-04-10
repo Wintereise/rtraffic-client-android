@@ -16,6 +16,8 @@
     <string name="loading_main">Getting map and GPS data</string>
     <string name="something_went_wrong">Something went wrong, please try again later.</string>
     <string name="err_inet_could_not_connect">Could not connect to system, please check your internet connectivity.</string>
+    <string name="firebase_token_update_failure">Failed to update messaging token, you may not receive real-time updates.</string>
+    <string name="firebase_token_attempt_success">You have successfully re-registered for real-time notifications. Congrats!</string>
 
     <string name="main_reports_something_went_wrong">Could not communicate with API to fetch traffic reports :(</string>
     <string name="traffic_report_multipath_chooser">Found %1$d path(s), please select the correct path by tapping on it.</string>

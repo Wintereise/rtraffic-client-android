@@ -11,6 +11,7 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 import se.winterei.rtraffic.libs.generic.AuthRequest;
 import se.winterei.rtraffic.libs.generic.ExcludedRegion;
+import se.winterei.rtraffic.libs.generic.FirebaseToken;
 import se.winterei.rtraffic.libs.generic.Point;
 import se.winterei.rtraffic.libs.generic.PointOfInterest;
 import se.winterei.rtraffic.libs.generic.Report;
@@ -62,5 +63,8 @@ public interface APIInterface
 
     @POST("v1/oauth")
     Call<GenericAPIResponse> authRequest (@Body AuthRequest authRequest);
+
+    @POST("v1/firebase-update")
+    Call<GenericAPIResponse> updateFirebaseToken (@Body FirebaseToken firebaseToken);
 
 }
