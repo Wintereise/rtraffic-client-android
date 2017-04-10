@@ -86,7 +86,7 @@ public class AsyncMarkerStateUpdater extends AsyncTask<Void, Void, Void>
                     final int markerType;
                     final String comment = commentMap.containsKey(polyline) ? commentMap.get(polyline) : null;
 
-                    if (comment != null && ! comment.equals(""))
+                    if (comment != null)
                         markerComments.add(comment);
 
                     switch (state)

@@ -93,7 +93,10 @@ public class MapContainer
         Polyline tmp = map.addPolyline(polylineOptions);
         polylineList.add(tmp);
         polylineStateMap.put(tmp, state);
-        polylineCommentMap.put(tmp, comment);
+
+        if (comment != null)
+            polylineCommentMap.put(tmp, comment);
+
         notifyListeners(type.POLYLINE, tmp);
         return tmp;
     }
