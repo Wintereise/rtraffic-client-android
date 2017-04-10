@@ -15,6 +15,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.akexorcist.googledirection.util.DirectionConverter;
@@ -103,6 +105,11 @@ public class MainActivity extends BaseActivity
         mapContainer.getMap().setMyLocationEnabled(true);
 
         Utility.scheduleAlarm(preference);
+
+        WindowManager.LayoutParams layoutParams = getWindow().getAttributes();
+        layoutParams.dimAmount =  0.00f;
+        layoutParams.flags |= WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+        getWindow().setAttributes(layoutParams);
     }
 
     private void setupFloatingActionButton ()
