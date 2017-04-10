@@ -107,7 +107,7 @@ public class MainActivity extends BaseActivity
         Utility.scheduleAlarm(preference);
 
         Window window = getWindow();
-        WindowManager.LayoutParams layoutParams = getWindow().getAttributes();
+        WindowManager.LayoutParams layoutParams = window.getAttributes();
 
         if (window == null || layoutParams == null)
             return;
