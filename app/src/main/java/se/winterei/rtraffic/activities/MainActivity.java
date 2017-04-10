@@ -106,10 +106,15 @@ public class MainActivity extends BaseActivity
 
         Utility.scheduleAlarm(preference);
 
+        Window window = getWindow();
         WindowManager.LayoutParams layoutParams = getWindow().getAttributes();
+
+        if (window == null || layoutParams == null)
+            return;
+
         layoutParams.dimAmount =  0.00f;
         layoutParams.flags |= WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-        getWindow().setAttributes(layoutParams);
+        window.setAttributes(layoutParams);
     }
 
     private void setupFloatingActionButton ()
