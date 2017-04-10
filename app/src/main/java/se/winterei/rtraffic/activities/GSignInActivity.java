@@ -276,7 +276,7 @@ public class GSignInActivity extends BaseActivity implements
                         // [END_EXCLUDE]
                     }
                 });
-        startActivity(new Intent(this, SophisticatedSignIn.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+        startActivity(new Intent(this, SophisticatedSignIn.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP));
     }
     // [END signOut]
 
@@ -292,7 +292,7 @@ public class GSignInActivity extends BaseActivity implements
                         // [END_EXCLUDE]
                     }
                 });
-        startActivity(new Intent(this, SophisticatedSignIn.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+        startActivity(new Intent(this, SophisticatedSignIn.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP));
     }
     // [END revokeAccess]
 

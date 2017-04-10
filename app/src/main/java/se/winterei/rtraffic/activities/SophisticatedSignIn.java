@@ -73,6 +73,7 @@ public class SophisticatedSignIn extends BaseActivity
             public void onPrepared(MediaPlayer mp)
             {
                 mp.setLooping(true);
+                mp.setScreenOnWhilePlaying(false);
             }
         });
 
