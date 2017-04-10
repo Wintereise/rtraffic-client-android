@@ -492,6 +492,7 @@ public class MainActivity extends BaseActivity
                                 showToast(R.string.firebase_token_attempt_success, Toast.LENGTH_SHORT);
                             }
                             preference.put("FIREBASE_UPDATE_NEEDED", false, Boolean.class);
+                            preference.put("FIREBASE_UPDATE_ATTEMPTED", false, Boolean.class);
                         }
                         else
                         {
