@@ -28,6 +28,7 @@ public class MapContainer
     private List<Polyline> polylineList;
     private HashMap<Polyline, Integer> polylineStateMap;
     private HashMap<Polyline, String> polylineCommentMap;
+    private HashMap<Marker, MarkerOptions> markerOptionsMap;
     private List<MapChangeListener> mapChangeListenerList;
     private boolean notificationEnabled = true;
     private enum type
@@ -44,6 +45,7 @@ public class MapContainer
         polylineStateMap = new HashMap<>();
         polylineCommentMap = new HashMap<>();
         mapChangeListenerList = new ArrayList<>();
+        markerOptionsMap = new HashMap<>();
     }
 
     public MapContainer(@NonNull GoogleMap map, @NonNull GoogleMap.OnInfoWindowLongClickListener listener)
@@ -56,6 +58,7 @@ public class MapContainer
     {
         Marker tmp = map.addMarker(markerOptions);
         markerList.add(tmp);
+        markerOptionsMap.put(tmp, markerOptions);
         notifyListeners(type.MARKER, tmp);
         return tmp;
     }
@@ -68,7 +71,6 @@ public class MapContainer
         return tmp;
     }
 
-
     public Marker addInfoMarker (IconGenerator iconGenerator, CharSequence charSequence, LatLng position)
     {
         MarkerOptions markerOptions = new MarkerOptions()
@@ -78,6 +80,15 @@ public class MapContainer
                 .anchor(iconGenerator.getAnchorU(), iconGenerator.getAnchorV());
 
         return addMarker(markerOptions);
+    }
+
+    public void reconcileMarkers (@NonNull MapContainer source)
+    {
+        final HashMap<Marker, MarkerOptions> markerOptionsHashMap = source.getMarkerOptionsMap();
+        for (MarkerOptions markerOptions : markerOptionsHashMap.values())
+        {
+            addMarker(markerOptions);
+        }
     }
 
     public Polyline addPolyline (PolylineOptions polylineOptions)
@@ -144,6 +155,11 @@ public class MapContainer
     public HashMap<Polyline, String> getPolylineCommentMap ()
     {
         return polylineCommentMap;
+    }
+
+    public HashMap<Marker, MarkerOptions> getMarkerOptionsMap ()
+    {
+        return markerOptionsMap;
     }
 
     public GoogleMap getMap ()

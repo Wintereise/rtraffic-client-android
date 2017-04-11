@@ -3,9 +3,11 @@ package se.winterei.rtraffic.libs.tasks;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.maps.android.PolyUtil;
 
@@ -72,10 +74,12 @@ public class AsyncMarkerStateUpdater extends AsyncTask<Void, Void, Void>
         final List<Polyline> polylineList = mapContainer.getPolylineList();
         final HashMap<Polyline, Integer> stateMap = mapContainer.getPolylineStateMap();
         final HashMap<Polyline, String> commentMap = mapContainer.getPolylineCommentMap();
+        final HashMap<Marker, MarkerOptions> markerOptionsHashMap = mapContainer.getMarkerOptionsMap();
 
         for (final Marker marker : markerList)
         {
             final List<String> markerComments = new ArrayList<>();
+            final MarkerOptions markerOptions = markerOptionsHashMap.containsKey(marker) ? markerOptionsHashMap.get(marker) : null;
             int matchCounter = 0;
 
             for (final Polyline polyline : polylineList)
@@ -104,7 +108,12 @@ public class AsyncMarkerStateUpdater extends AsyncTask<Void, Void, Void>
                             Log.d(TAG, "doInBackground: Unrecognized state found, this polyline does not likely have state information associated with it.");
                             continue;
                     }
+
                     matchCounter++;
+
+                    if (markerOptions != null)
+                        markerOptions.icon(BitmapDescriptorFactory.fromResource(markerType));
+
                     instance.runOnUiThread(new Runnable()
                     {
                         @Override

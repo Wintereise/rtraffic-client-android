@@ -134,15 +134,28 @@ public class TrafficReportActivity extends BaseActivity
         switch (item.getItemId())
         {
             case MENU_CLEAR:
-                if(mapContainer != null)
-                    mapContainer.clear();
-                dismissSnackbar(snackbar);
-                markerPoints.clear();
-                polyLineIndex = 0;
-                showToast(R.string.traffic_report_toast_clear_markers, Toast.LENGTH_SHORT);
+                clearLocalMap(true);
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void clearLocalMap (boolean notify)
+    {
+        if(mapContainer != null)
+            mapContainer.clear();
+
+        markerPoints.clear();
+        polyLineIndex = 0;
+
+        if (mainMap != null && mapContainer != null)
+            mapContainer.reconcileMarkers(mainMap);
+
+        if (notify)
+        {
+            dismissSnackbar(snackbar);
+            showToast(R.string.traffic_report_toast_clear_markers, Toast.LENGTH_SHORT);
+        }
     }
 
     public void radioButtonClicked (View view)
@@ -258,6 +271,9 @@ public class TrafficReportActivity extends BaseActivity
 
         appContext.put("TrafficReportGMap", mMap);
 
+        if (mainMap != null)
+            mapContainer.reconcileMarkers(mainMap);
+
         snackbar = showSnackbar(fragment.getView(), R.string.loading_main, Snackbar.LENGTH_INDEFINITE);
 
         if (checkGPSPermissions())
@@ -316,7 +332,7 @@ public class TrafficReportActivity extends BaseActivity
     public void onDirectionSuccess(Direction direction, String rawBody)
     {
         dismissSnackbar(snackbar);
-        mapContainer.clear();
+        clearLocalMap(false);
         polylineList.clear();
         polylineOptionsList.clear();
 
