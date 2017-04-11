@@ -5,6 +5,8 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.SystemClock;
 import android.util.DisplayMetrics;
@@ -13,6 +15,7 @@ import android.util.Log;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import se.winterei.rtraffic.RTraffic;
@@ -124,5 +127,37 @@ public class Utility
         if(pendingIntent != null)
             alarmManager.cancel(pendingIntent);
         Log.d(TAG, "cancelAlarm: cancelled alarm.");
+    }
+
+    @SuppressWarnings({"MissingPermission"})
+    public static Location getCachedLocationOrRegisterForLocationUpdates (RTraffic context, Preference preference, LocationManager locationManager, LocationListener callback)
+    {
+        final Location cached = (Location) context.get("lastLocation");
+        boolean useCached = true;
+
+        if (cached == null)
+            useCached = false;
+        else
+        {
+            Date date = new Date(cached.getTime());
+            Date now = new Date();
+            if (now.getTime() - date.getTime() >= 1*60*1000) //checking if update is older than 5 minutes
+                useCached = false;
+        }
+
+        if (useCached)
+            return cached;
+        else
+        {
+            String preferredProvider = (String) preference.get("pref_location_provider", LocationManager.NETWORK_PROVIDER, String.class);
+            String provider;
+
+            if (preferredProvider.equals("2"))
+                provider = LocationManager.NETWORK_PROVIDER;
+            else
+                provider = LocationManager.GPS_PROVIDER;
+            locationManager.requestLocationUpdates(provider, Utility.LOCATION_LOCK_MIN_TIME, Utility.LOCATION_LOCK_MIN_DISTANCE, callback);
+            return null;
+        }
     }
 }

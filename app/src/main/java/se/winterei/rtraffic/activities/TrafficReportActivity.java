@@ -32,9 +32,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.ui.IconGenerator;
@@ -78,6 +76,8 @@ public class TrafficReportActivity extends BaseActivity
     private CheckBox checkBoxInput;
     private ProgressDialog progressDialog;
     private IconGenerator iconGenerator;
+    private Location currentLocation;
+    private boolean requestedLocationUpdates = false;
 
     @Override
     @SuppressWarnings({"MissingPermission"})
@@ -102,16 +102,11 @@ public class TrafficReportActivity extends BaseActivity
 
         if(checkGPSPermissions())
         {
-            String preferredProvider = (String) preference.get("pref_location_provider", LocationManager.NETWORK_PROVIDER, String.class);
-            String provider;
-
-            if (preferredProvider.equals("2"))
-                provider = LocationManager.NETWORK_PROVIDER;
-            else
-                provider = LocationManager.GPS_PROVIDER;
-
             locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-            locationManager.requestLocationUpdates(provider, Utility.LOCATION_LOCK_MIN_TIME, Utility.LOCATION_LOCK_MIN_DISTANCE, this); //You can also use LocationManager.GPS_PROVIDER and LocationManager.PASSIVE_PROVIDER
+            currentLocation = Utility.getCachedLocationOrRegisterForLocationUpdates(appContext, preference, locationManager, this);
+
+            if (currentLocation == null)
+                requestedLocationUpdates = true;
         }
 
         iconGenerator = new IconGenerator(instance);
@@ -326,6 +321,8 @@ public class TrafficReportActivity extends BaseActivity
                 }
             }
         });
+        if (currentLocation != null)
+            onLocationChanged(currentLocation);
     }
 
     @Override
@@ -419,7 +416,10 @@ public class TrafficReportActivity extends BaseActivity
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
         dismissSnackbar(snackbar);
         mMap.animateCamera(cameraUpdate);
-        locationManager.removeUpdates(this);
+
+        if (requestedLocationUpdates)
+            locationManager.removeUpdates(this);
+
         showToast(R.string.traffic_report_initial_instructions, Toast.LENGTH_LONG);
     }
 

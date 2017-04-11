@@ -78,6 +78,8 @@ public class ExcludedRegionsActivity extends BaseActivity
     private Moshi moshi;
     private SparseIntArray excludedRegionIdToDataSetIndexMap;
     private List<PatternItem> patternItemList;
+    private Location currentLocation;
+    private boolean requestedLocationUpdates = false;
 
     @Override
     @SuppressWarnings({"MissingPermission"})
@@ -107,7 +109,10 @@ public class ExcludedRegionsActivity extends BaseActivity
         if(checkGPSPermissions())
         {
             locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, Utility.LOCATION_LOCK_MIN_TIME, Utility.LOCATION_LOCK_MIN_DISTANCE, this); //You can also use LocationManager.GPS_PROVIDER and LocationManager.PASSIVE_PROVIDER
+            currentLocation = Utility.getCachedLocationOrRegisterForLocationUpdates(appContext, preference, locationManager, this);
+
+            if (currentLocation == null)
+                requestedLocationUpdates = true;
         }
 
         listView = (ListView) findViewById(R.id.ExcludedRegionsListView);
@@ -386,6 +391,9 @@ public class ExcludedRegionsActivity extends BaseActivity
             }
         });
         fetchAndUpdateExclusions();
+
+        if (currentLocation != null)
+            onLocationChanged(currentLocation);
     }
 
     @Override
@@ -396,7 +404,9 @@ public class ExcludedRegionsActivity extends BaseActivity
         dismissSnackbar(snackbar);
         mapContainer.getMap()
                 .animateCamera(cameraUpdate);
-        locationManager.removeUpdates(this);
+
+        if (requestedLocationUpdates)
+            locationManager.removeUpdates(this);
     }
 
     @Override

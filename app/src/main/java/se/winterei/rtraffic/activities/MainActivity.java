@@ -66,6 +66,8 @@ public class MainActivity extends BaseActivity
     private SearchFeedResultsAdapter searchFeedResultsAdapter;
     private final String[] columns = new String[]{"_id", "title", "position"};
     private boolean FCMFailureToastShown = false;
+    private boolean requestedLocationUpdates = false;
+    private Location currentLocation;
 
 
     @SuppressLint("UseSparseArrays")
@@ -92,16 +94,11 @@ public class MainActivity extends BaseActivity
 
         if(checkGPSPermissions())
         {
-            String preferredProvider = (String) preference.get("pref_location_provider", LocationManager.NETWORK_PROVIDER, String.class);
-            String provider;
-
-            if (preferredProvider.equals("2"))
-                provider = LocationManager.NETWORK_PROVIDER;
-            else
-                provider = LocationManager.GPS_PROVIDER;
-
             locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-            locationManager.requestLocationUpdates(provider, Utility.LOCATION_LOCK_MIN_TIME, Utility.LOCATION_LOCK_MIN_DISTANCE, this); //You can also use LocationManager.GPS_PROVIDER and LocationManager.PASSIVE_PROVIDER
+            currentLocation = Utility.getCachedLocationOrRegisterForLocationUpdates(appContext, preference, locationManager, this);
+
+            if (currentLocation == null)
+                requestedLocationUpdates = true;
 
             Utility.scheduleAlarm(preference);
         }
@@ -309,6 +306,9 @@ public class MainActivity extends BaseActivity
            mapContainer.getMap().setMyLocationEnabled(true);
 
         synchronizeMap();
+
+        if (currentLocation != null)
+            onLocationChanged(currentLocation);
     }
 
     //FAR TOO COMPUTATIONALLY HEAVY EVEN WITH ASYNC MODE DUE TO markers and polylines being UI objects which cannot be shoved background
@@ -436,6 +436,7 @@ public class MainActivity extends BaseActivity
     @Override
     public void onLocationChanged(Location location)
     {
+        appContext.put("lastLocation", location);
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 12);
         dismissSnackbar(snackbar);
@@ -444,7 +445,8 @@ public class MainActivity extends BaseActivity
         if (map != null)
             map.animateCamera(cameraUpdate);
 
-        locationManager.removeUpdates(this);
+        if (requestedLocationUpdates)
+            locationManager.removeUpdates(this);
     }
 
     @Override
