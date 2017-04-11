@@ -412,6 +412,7 @@ public class TrafficReportActivity extends BaseActivity
     @Override
     public void onLocationChanged(Location location)
     {
+        appContext.put("lastLocation", location);
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
         dismissSnackbar(snackbar);

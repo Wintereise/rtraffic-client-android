@@ -141,7 +141,7 @@ public class Utility
         {
             Date date = new Date(cached.getTime());
             Date now = new Date();
-            if (now.getTime() - date.getTime() >= 1*60*1000) //checking if update is older than 5 minutes
+            if (now.getTime() - date.getTime() >= 2.5*60*1000) //checking if update is older than 5 minutes
                 useCached = false;
         }
 
