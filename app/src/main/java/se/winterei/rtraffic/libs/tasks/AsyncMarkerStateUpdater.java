@@ -123,11 +123,11 @@ public class AsyncMarkerStateUpdater extends AsyncTask<Void, Void, Void>
                 if (congested > sbm && congested > uncongested)
                     markerType = R.drawable.ic_traffic_black_red;
                 else if (sbm > congested && sbm > uncongested)
-                    markerType = R.drawable.ic_traffic_black_yellow;
+                    markerType = R.drawable.ic_traffic_black_orange;
                 else if (uncongested > congested && uncongested > sbm)
                     markerType = R.drawable.ic_traffic_black_green;
                 else
-                    markerType = R.drawable.ic_traffic_black_yellow;
+                    markerType = R.drawable.ic_traffic_black_orange;
 
                 if (markerOptions != null)
                     markerOptions.icon(BitmapDescriptorFactory.fromResource(markerType));
