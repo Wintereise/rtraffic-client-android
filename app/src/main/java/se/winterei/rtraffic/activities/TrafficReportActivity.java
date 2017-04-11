@@ -191,7 +191,7 @@ public class TrafficReportActivity extends BaseActivity
                         if (color != -1 && state != -1)
                         {
                             PolylineOptions polylineOptions = polylineOptionsList.get(polyLineIndex);
-                            polylineOptions.width(Utility.MAIN_MAP_POLYLINE_WIDTH);
+                            polylineOptions.width(Utility.dpToPx(TrafficReportActivity.this, Utility.MAIN_MAP_POLYLINE_WIDTH));
                             Polyline polyline;
 
                             if (mainMap != null)

@@ -81,13 +81,17 @@ public class AsyncMarkerStateUpdater extends AsyncTask<Void, Void, Void>
             final List<String> markerComments = new ArrayList<>();
             final MarkerOptions markerOptions = markerOptionsHashMap.containsKey(marker) ? markerOptionsHashMap.get(marker) : null;
             int matchCounter = 0;
+            int congested = 0;
+            int sbm = 0;
+            int uncongested = 0;
+            final int markerType;
 
             for (final Polyline polyline : polylineList)
             {
                 if(PolyUtil.isLocationOnPath(markerPositionMap.get(marker), polylinePointsMap.get(polyline), true, Utility.polylineMatchTolerance))
                 {
                     final int state = stateMap.containsKey(polyline) ? stateMap.get(polyline) : -1;
-                    final int markerType;
+
                     final String comment = commentMap.containsKey(polyline) ? commentMap.get(polyline) : null;
 
                     if (comment != null)
@@ -96,13 +100,13 @@ public class AsyncMarkerStateUpdater extends AsyncTask<Void, Void, Void>
                     switch (state)
                     {
                         case CONGESTED:
-                            markerType = R.drawable.ic_traffic_black_red;
+                            congested++;
                             break;
                         case SLOW_BUT_MOVING:
-                            markerType = R.drawable.ic_traffic_black_yellow;
+                            sbm++;
                             break;
                         case UNCONGESTED:
-                            markerType = R.drawable.ic_traffic_black_green;
+                            uncongested++;
                             break;
                         default:
                             Log.d(TAG, "doInBackground: Unrecognized state found, this polyline does not likely have state information associated with it.");
@@ -111,18 +115,31 @@ public class AsyncMarkerStateUpdater extends AsyncTask<Void, Void, Void>
 
                     matchCounter++;
 
-                    if (markerOptions != null)
-                        markerOptions.icon(BitmapDescriptorFactory.fromResource(markerType));
-
-                    instance.runOnUiThread(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            marker.setIcon(BitmapDescriptorFactory.fromResource(markerType));
-                        }
-                    });
                 }
+            }
+
+            if (matchCounter > 0)
+            {
+                if (congested > sbm && congested > uncongested)
+                    markerType = R.drawable.ic_traffic_black_red;
+                else if (sbm > congested && sbm > uncongested)
+                    markerType = R.drawable.ic_traffic_black_yellow;
+                else if (uncongested > congested && uncongested > sbm)
+                    markerType = R.drawable.ic_traffic_black_green;
+                else
+                    markerType = R.drawable.ic_traffic_black_yellow;
+
+                if (markerOptions != null)
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(markerType));
+
+                instance.runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        marker.setIcon(BitmapDescriptorFactory.fromResource(markerType));
+                    }
+                });
             }
 
             //Add comment count to the market title enclosed in []

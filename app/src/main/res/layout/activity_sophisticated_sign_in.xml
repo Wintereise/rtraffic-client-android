@@ -54,6 +54,13 @@
         tools:layout_editor_absoluteX="0dp"
         app:layout_constraintGuide_percent="0.5749559"/>
 
+    <android.support.constraint.Guideline
+        android:id="@+id/h_guideline2"
+        android:layout_width="384dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.13" />
+
     <Button
         android:id="@+id/sign_in_button"
         android:text="@string/google_sign_in"
@@ -65,5 +72,20 @@
         app:layout_constraintTop_toTopOf="@+id/h_guideline1"
         android:drawableStart="@drawable/google_sign_in"
         android:background="@drawable/google_button_bg"/>
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="7dp"
+        android:text="@string/app_name"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="@+id/v_guideline1"
+        app:layout_constraintRight_toLeftOf="@+id/v_guideline2"
+        app:layout_constraintTop_toTopOf="@+id/h_guideline2"
+        tools:gravity="center" />
 
 </android.support.constraint.ConstraintLayout>
