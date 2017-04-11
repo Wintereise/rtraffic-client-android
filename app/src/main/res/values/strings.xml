@@ -85,10 +85,10 @@
     <string name="slide_2_title">Live Updates!</string>
     <string name="slide_2_desc">You will be getting traffic updates at Real Time, see it as it happens.</string>
 
-    <string name="slide_3_title">Points of Interest!</string>
+    <string name="slide_3_title">Points of Interest</string>
     <string name="slide_3_desc">You can register to only get updates from places you have a Special interest in.</string>
 
-    <string name="slide_4_title">Region Exclusions!</string>
+    <string name="slide_4_title">Region Exclusions</string>
     <string name="slide_4_desc">We support silencing app activities at regions of your choice so you don\'t feel bothered.</string>
 
     <!-- Sign-in status messages for G-sign in-->
