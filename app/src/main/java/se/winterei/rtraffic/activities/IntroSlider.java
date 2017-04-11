@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.Html;
@@ -17,8 +19,13 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import se.winterei.rtraffic.R;
+import se.winterei.rtraffic.libs.generic.AppStatus;
 import se.winterei.rtraffic.libs.settings.Preference;
 
 public class IntroSlider extends BaseActivity
@@ -29,6 +36,7 @@ public class IntroSlider extends BaseActivity
     private TextView[] dots;
     private int[] layouts;
     private Button btnSkip, btnNext;
+    private MaterialDialog materialDialog;
 
     private final String FIRST_TIME_LAUNCH = "first_time_launch";
     private final IntroSlider instance = this;
@@ -83,7 +91,6 @@ public class IntroSlider extends BaseActivity
             Log.d(TAG, "onCreate: not first launch, skipping welcome");
             launchAuthenticationFlow();
         }
-
 
         if (Build.VERSION.SDK_INT >= 21)
             getWindow().getDecorView()
@@ -191,8 +198,41 @@ public class IntroSlider extends BaseActivity
 
     private void launchAuthenticationFlow ()
     {
-        preference.put(FIRST_TIME_LAUNCH, false, Boolean.class);
-        startActivity(new Intent(instance, SophisticatedSignIn.class));
+        AppStatus appStatus = AppStatus.getInstance(this);
+
+        if (appStatus.isOnline() && appStatus.isLocationServicesEnabled())
+        {
+            preference.put(FIRST_TIME_LAUNCH, false, Boolean.class);
+            startActivity(new Intent(instance, SophisticatedSignIn.class));
+        }
+        else
+        {
+            materialDialog =  new MaterialDialog.Builder(this)
+                    .title(R.string.dialog_resource_access)
+                    .content(R.string.dialog_resource_access_content)
+                    .positiveText(R.string.confirm)
+                    .negativeText(R.string.cancel)
+                    .onPositive(new MaterialDialog.SingleButtonCallback()
+                    {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which)
+                        {
+                            startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                        }
+                    })
+                    .onNegative(new MaterialDialog.SingleButtonCallback()
+                    {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which)
+                        {
+                            if (dialog.isShowing())
+                                dialog.dismiss();
+                            showToast(R.string.dialog_resource_access_content_negative_response, Toast.LENGTH_LONG);
+                        }
+                    })
+                    .build();
+            materialDialog.show();
+        }
     }
 
     public class MyViewPagerAdapter extends PagerAdapter
@@ -203,7 +243,8 @@ public class IntroSlider extends BaseActivity
         }
 
         @Override
-        public Object instantiateItem(ViewGroup container, int position) {
+        public Object instantiateItem(ViewGroup container, int position)
+        {
             layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
             View view = layoutInflater.inflate(layouts[position], container, false);

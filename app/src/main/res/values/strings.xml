@@ -19,6 +19,10 @@
     <string name="firebase_token_update_failure">Failed to update messaging token, you may not receive real-time updates.</string>
     <string name="firebase_token_attempt_success">You have successfully re-registered for real-time notifications. Congrats!</string>
 
+    <string name="dialog_resource_access">Resource Access</string>
+    <string name="dialog_resource_access_content">rTraffic requires location services to be turned on. You must also be connected to the internet.</string>
+    <string name="dialog_resource_access_content_negative_response">rTraffic requires location services and a working internet connection to function.</string>
+
     <string name="main_reports_something_went_wrong">Could not communicate with API to fetch traffic reports :(</string>
     <string name="traffic_report_multipath_chooser">Found %1$d path(s), please select the correct path by tapping on it.</string>
     <string name="traffic_report_singlepath">Only found one path, auto selected.</string>
