@@ -178,7 +178,7 @@ public class TrafficReportActivity extends BaseActivity
                                 state = Utility.CONGESTED;
                                 break;
                             case R.id.moderatelyCongested:
-                                color = Color.YELLOW;
+                                color = ContextCompat.getColor(TrafficReportActivity.this, R.color.custom_slow_but_moving);;
                                 state = Utility.SLOW_BUT_MOVING;
                                 break;
                             case R.id.notCongested:

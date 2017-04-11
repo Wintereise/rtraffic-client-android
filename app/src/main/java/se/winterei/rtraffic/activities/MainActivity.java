@@ -10,6 +10,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
@@ -409,7 +410,7 @@ public class MainActivity extends BaseActivity
                     color = Color.RED;
                     break;
                 case Utility.SLOW_BUT_MOVING:
-                    color = Color.YELLOW;
+                    color = ContextCompat.getColor(this, R.color.custom_slow_but_moving);
                     break;
                 case Utility.UNCONGESTED:
                     color = Color.GREEN;

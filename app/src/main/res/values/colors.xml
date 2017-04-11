@@ -21,6 +21,7 @@
     <color name="white_pressed">#f1f1f1</color>
     <color name="black_semi_transparent">#B2000000</color>
 
+    <color name="custom_slow_but_moving">#b2f1a56f</color>
     <!-- Intro Slider Colors -->
     <!-- Screens background color-->
     <color name="bg_screen1">#f64c73</color>
