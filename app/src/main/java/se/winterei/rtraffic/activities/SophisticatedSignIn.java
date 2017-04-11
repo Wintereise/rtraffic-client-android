@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -45,6 +46,7 @@ public class SophisticatedSignIn extends BaseActivity
     private ProgressDialog mProgressDialog;
     private RTraffic appContext;
     private final String provider = "GOOGLE";
+    private Button signInButton;
 
     public SophisticatedSignIn ()
     {
@@ -78,7 +80,9 @@ public class SophisticatedSignIn extends BaseActivity
         });
 
         appContext = (RTraffic) getApplicationContext();
-        findViewById(R.id.sign_in_button).setOnClickListener(this);
+
+        signInButton = (Button) findViewById(R.id.sign_in_button);
+        signInButton.setOnClickListener(this);
 
         // [START configure_signin]
         // Configure sign-in to request the user's ID, email address, and basic
@@ -105,11 +109,19 @@ public class SophisticatedSignIn extends BaseActivity
         super.onStart();
 
         OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
+        showProgressDialog();
         if (opr.isDone())
         {
             // If the user's cached credentials are valid, the OptionalPendingResult will be "done"
             // and the GoogleSignInResult will be available instantly.
             Log.d(TAG, "Got cached sign-in");
+
+            if (signInButton != null)
+            {
+                signInButton.setEnabled(false);
+                signInButton.setClickable(false);
+            }
+
             GoogleSignInResult result = opr.get();
             handleSignInResult(result);
         }
@@ -118,7 +130,6 @@ public class SophisticatedSignIn extends BaseActivity
             // If the user has not previously signed in on this device or the sign-in has expired,
             // this asynchronous branch will attempt to sign in the user silently.  Cross-device
             // single sign-on will occur in this branch.
-            showProgressDialog();
             opr.setResultCallback(new ResultCallback<GoogleSignInResult>()
             {
                 @Override
