@@ -74,18 +74,19 @@
         android:background="@drawable/google_button_bg"/>
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/rtraffic_login_banner"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="7dp"
         android:text="@string/app_name"
-        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:textColor="@color/white"
+        android:textSize="35sp"
+        android:gravity="center"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="@+id/v_guideline1"
         app:layout_constraintRight_toLeftOf="@+id/v_guideline2"
-        app:layout_constraintTop_toTopOf="@+id/h_guideline2"
-        tools:gravity="center" />
+        app:layout_constraintTop_toTopOf="@+id/h_guideline2" />
 
 </android.support.constraint.ConstraintLayout>

@@ -2,6 +2,7 @@ package se.winterei.rtraffic.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -23,6 +25,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.firebase.iid.FirebaseInstanceId;
+
+import org.w3c.dom.Text;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -47,6 +51,7 @@ public class SophisticatedSignIn extends BaseActivity
     private RTraffic appContext;
     private final String provider = "GOOGLE";
     private Button signInButton;
+    private TextView rTrafficBanner;
 
     public SophisticatedSignIn ()
     {
@@ -64,6 +69,8 @@ public class SophisticatedSignIn extends BaseActivity
         setContentView(R.layout.activity_sophisticated_sign_in);
 
         videoView = (VideoView) findViewById(R.id.bgVideoView);
+        rTrafficBanner = (TextView) findViewById(R.id.rtraffic_login_banner);
+        rTrafficBanner.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/print_clearly.otf"), Typeface.NORMAL);
 
         Uri uri  = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.city_traffic);
 
