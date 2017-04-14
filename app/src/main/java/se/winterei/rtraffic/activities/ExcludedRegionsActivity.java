@@ -403,8 +403,13 @@ public class ExcludedRegionsActivity extends BaseActivity
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
         dismissSnackbar(snackbar);
-        mapContainer.getMap()
-                .animateCamera(cameraUpdate);
+
+        if (mapContainer != null)
+        {
+            GoogleMap map = mapContainer.getMap();
+            if (map != null)
+                map.animateCamera(cameraUpdate);
+        }
 
         if (requestedLocationUpdates)
             locationManager.removeUpdates(this);

@@ -416,7 +416,9 @@ public class TrafficReportActivity extends BaseActivity
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
         dismissSnackbar(snackbar);
-        mMap.animateCamera(cameraUpdate);
+
+        if (mMap != null)
+            mMap.animateCamera(cameraUpdate);
 
         if (requestedLocationUpdates)
             locationManager.removeUpdates(this);

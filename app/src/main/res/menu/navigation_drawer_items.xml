@@ -40,6 +40,12 @@
             android:checked="false"
             android:icon="@drawable/ic_feedback_black_24dp"/>
 
+        <item
+            android:id="@+id/action_simulate_gps"
+            android:title="Simulate B-GPS"
+            android:checked="false"
+            android:icon="@drawable/ic_feedback_black_24dp"/>
+
     </group>
 
 </menu>

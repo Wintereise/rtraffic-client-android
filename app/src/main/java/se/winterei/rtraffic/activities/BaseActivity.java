@@ -1,5 +1,8 @@
 package se.winterei.rtraffic.activities;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -15,6 +18,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -203,6 +207,24 @@ public abstract class BaseActivity extends AppCompatActivity
                 break;
             case R.id.action_feedback:
                 showDoorbell();
+                break;
+            case R.id.action_simulate_gps:
+                NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                Intent tIntent = new Intent(this, TrafficReportActivity.class);
+                PendingIntent pIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), tIntent, 0);
+                android.support.v4.app.NotificationCompat.Action affirmative_action = new NotificationCompat.Action.Builder(R.drawable.ic_done_black_24dp,
+                        getString(R.string.service_notif_affirmative_answer), pIntent)
+                        .build();
+
+                Notification notification = new NotificationCompat.Builder(this)
+                        .setContentTitle(getString(R.string.service_notif_main_header))
+                        .setContentText(getString(R.string.service_notif_main_body, "North South University Parking Lot"))
+                        .setSmallIcon(R.drawable.ic_explore_black_24dp)
+                        .setContentIntent(pIntent)
+                        .setAutoCancel(true)
+                        .addAction(affirmative_action)
+                        .build();
+                notificationManager.notify(0, notification);
                 break;
         }
         if (tmp != null)
